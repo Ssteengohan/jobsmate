@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 
 export function SpotlightPreview() {
   return (
-    <div className="relative flex h-[40rem] w-full items-center overflow-hidden antialiased sm:h-[70rem] md:justify-center">
+    <div className="relative flex h-screen w-full items-center overflow-hidden antialiased sm:h-[60rem] md:justify-center">
       <div className="absolute inset-0 z-0 bg-gradient-to-b from-transparent to-gray-50/30" />
 
       <Spotlight

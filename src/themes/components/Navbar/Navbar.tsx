@@ -197,7 +197,7 @@ const Navbar = () => {
               <motion.div variants={itemVariants}>
                 <Link
                   href="/services"
-                  className="block rounded-md px-3 py-2 text-base font-medium text-black hover:bg-[#f3f4f6]"
+                  className="block rounded-md px-3 py-1 text-base font-medium text-black hover:bg-[#f3f4f6]"
                 >
                   Price
                 </Link>
