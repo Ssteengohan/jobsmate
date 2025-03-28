@@ -17,7 +17,7 @@ export function SpotlightPreview() {
           fill="rgba(234, 179, 8, 0.15)"
         />
 
-        <h1 className="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-gold)] to-[var(--primary-medium-blue)] bg-clip-text text-center text-4xl font-bold text-transparent drop-shadow-[0_0_5px_rgba(0,0,0,0.2)] md:text-8xl">
+        <h1 className="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-gold)] bg-clip-text text-center text-4xl font-bold text-transparent drop-shadow-[0_0_5px_rgba(0,0,0,0.2)] md:text-8xl">
           Attract, Access <br />
           <span className="transition-all duration-300 hover:text-[var(--primary-gold)]">
             and Hire
