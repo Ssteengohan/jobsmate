@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 
 export function SpotlightPreview() {
   return (
-    <div className="relative flex h-[40rem] w-full items-center overflow-hidden bg-white antialiased sm:h-[70rem] md:justify-center">
+    <div className="relative flex h-[40rem] w-full items-center overflow-hidden antialiased sm:h-[70rem] md:justify-center">
       <div className="absolute inset-0 z-0 bg-gradient-to-b from-transparent to-gray-50/30" />
 
       <Spotlight
@@ -20,16 +20,14 @@ export function SpotlightPreview() {
         transition={{ duration: 0.6 }}
         className="relative z-10 container mx-auto w-full max-w-7xl rounded-md p-4 pt-20 md:pt-0"
       >
-        {/* Spotlights directly in container - not wrapped in motion.div */}
 
         <motion.h1
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-gold)] bg-clip-text text-center text-5xl font-bold text-transparent drop-shadow-[0_0_5px_rgba(0,0,0,0.2)] md:text-9xl"
+          className="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-gold)] bg-clip-text text-center text-5xl font-bold text-transparent drop-shadow-[0_0_5px_rgba(0,0,0,0.2)] md:text-8xl"
         >
           Attract, Access <br />
-          {/* Removed individual animation props for smoother transition */}
           <motion.span className="transition-all duration-300 hover:text-[var(--primary-gold)]">
             and Hire
           </motion.span>
@@ -39,7 +37,7 @@ export function SpotlightPreview() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.8 }}
-          className="mx-auto mt-6 max-w-lg text-center text-base font-normal text-neutral-500 md:text-lg"
+          className="mx-auto mt-2 sm:mt-6 max-w-lg text-center text-base font-normal text-neutral-500 md:text-lg"
         >
           Hire the best applicants for your open tech position. Focus on skills, not just resumes.
         </motion.p>
@@ -50,7 +48,6 @@ export function SpotlightPreview() {
           transition={{ duration: 0.8, delay: 1 }}
           className="mt-8 flex justify-center gap-4"
         >
-          {/* Start for free Button */}
           <motion.button
             whileHover={{ scale: 1.05 }}
             className="group relative rounded-full border border-transparent bg-[var(--primary-gold)] px-8 py-3 text-xs font-medium text-[var(--primary-dark-blue)] transition-all duration-300 ease-in-out hover:shadow-lg focus:ring-2 focus:ring-[var(--primary-gold)] focus:ring-offset-2 focus:outline-none sm:text-sm"
@@ -60,7 +57,6 @@ export function SpotlightPreview() {
             </span>
           </motion.button>
 
-          {/* Talk to Sales Button */}
           <motion.button
             whileHover={{ boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)' }}
             className="group relative inline-flex overflow-hidden rounded-full p-[1px] shadow-sm transition-all duration-300 ease-in-out hover:shadow-xl focus:ring-2 focus:ring-[var(--primary-light-blue)] focus:ring-offset-2 focus:outline-none"
