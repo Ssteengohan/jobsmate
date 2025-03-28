@@ -6,19 +6,14 @@ import { motion } from 'framer-motion';
 
 export function SpotlightPreview() {
   return (
-    <div className="relative flex h-[40rem] w-full items-center overflow-hidden bg-white antialiased sm:h-[60rem] md:justify-center">
+    <div className="relative flex h-[40rem] w-full items-center overflow-hidden bg-white antialiased sm:h-[70rem] md:justify-center">
       <div className="absolute inset-0 z-0 bg-gradient-to-b from-transparent to-gray-50/30" />
 
       <Spotlight
-        className="-top-40 left-20 md:-top-20 md:left-1/4"
+        className="-top-40 left-20 md:-top-20 md:left-1/4 "
         fill="rgba(59, 130, 246, 0.15)"
-
       />
-      <Spotlight
-        className="top-0 right-0 md:top-60 md:right-1/4"
-        fill="rgba(234, 179, 8, 0.15)"
-
-      />
+      <Spotlight className="top-0 right-0 md:top-60 md:right-1/4" fill="rgba(234, 179, 8, 0.15)" />
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -31,15 +26,11 @@ export function SpotlightPreview() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-gold)] bg-clip-text text-center text-5xl font-bold text-transparent drop-shadow-[0_0_5px_rgba(0,0,0,0.2)] md:text-8xl"
+          className="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-gold)] bg-clip-text text-center text-5xl font-bold text-transparent drop-shadow-[0_0_5px_rgba(0,0,0,0.2)] md:text-9xl"
         >
           Attract, Access <br />
-          <motion.span
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="transition-all duration-300 hover:text-[var(--primary-gold)]"
-          >
+          {/* Removed individual animation props for smoother transition */}
+          <motion.span className="transition-all duration-300 hover:text-[var(--primary-gold)]">
             and Hire
           </motion.span>
         </motion.h1>
