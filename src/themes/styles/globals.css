@@ -108,6 +108,25 @@ body {
   padding: var(--spacing-lg) 0;
 }
 
+.line-vertical,
+.line-horizontal {
+  position: absolute;
+  background-color: var(--neutral-200);
+  opacity: 0.2;
+}
+
+/* Vertical lines */
+.line-vertical {
+  width: 1px;
+  height: 100vh;
+}
+
+/* Horizontal lines */
+.line-horizontal {
+  height: 1px;
+  width: 100%;
+}
+
 @keyframes spotlight {
   0% {
     opacity: 0;
