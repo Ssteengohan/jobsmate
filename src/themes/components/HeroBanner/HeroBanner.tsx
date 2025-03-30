@@ -6,29 +6,34 @@ import { motion } from 'framer-motion';
 
 export function SpotlightPreview() {
   return (
-    <div className="relative flex h-screen w-full items-center overflow-hidden antialiased sm:h-[60rem] md:justify-center">
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-transparent to-gray-50/30" />
+    <div className="relative z-0 flex h-screen w-full items-center overflow-hidden antialiased transition-colors duration-300 sm:h-[60rem] md:justify-center dark:bg-[var(--neutral-50)]">
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-transparent to-gray-50/30 transition-colors duration-300 dark:from-transparent dark:to-[var(--primary-dark)]/20" />
 
       <Spotlight
-        className="-top-40 left-20 md:-top-20 md:left-1/4 "
+        className="-top-40 left-20 md:-top-20 md:left-1/4"
         fill="rgba(59, 130, 246, 0.15)"
+        darkModeFill="rgba(58, 168, 236, 0.25)"
       />
-      <Spotlight className="top-0 right-0 md:top-60 md:right-1/4" fill="rgba(234, 179, 8, 0.15)" />
+      <Spotlight
+        className="top-0 right-0 md:top-60 md:right-1/4"
+        fill="rgba(234, 179, 8, 0.15)"
+        darkModeFill="rgba(142, 85, 255, 0.22)"
+      />
+
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
         className="relative z-10 container mx-auto w-full max-w-7xl rounded-md p-4 pt-20 md:pt-0"
       >
-
         <motion.h1
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-gold)] bg-clip-text text-center text-5xl font-bold text-transparent drop-shadow-[0_0_5px_rgba(0,0,0,0.2)] md:text-8xl"
+          className="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-gold)] bg-clip-text text-center text-5xl font-bold text-transparent drop-shadow-[0_0_5px_rgba(0,0,0,0.2)] md:text-8xl dark:drop-shadow-[0_0_8px_rgba(42,151,219,0.3)]"
         >
           Attract, Access <br />
-          <motion.span className="transition-all duration-300 hover:text-[var(--primary-gold)]">
+          <motion.span className="transition-all duration-800 hover:text-[var(--primary-gold)]">
             and Hire
           </motion.span>
         </motion.h1>
@@ -37,7 +42,7 @@ export function SpotlightPreview() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.8 }}
-          className="mx-auto mt-2 sm:mt-6 max-w-lg text-center text-base font-normal text-neutral-500 md:text-lg"
+          className="mx-auto mt-2 max-w-lg text-center text-base font-normal text-neutral-500 transition-colors duration-300 sm:mt-6 md:text-lg dark:text-neutral-300"
         >
           Hire the best applicants for your open tech position. Focus on skills, not just resumes.
         </motion.p>
@@ -50,7 +55,7 @@ export function SpotlightPreview() {
         >
           <motion.button
             whileHover={{ scale: 1.05 }}
-            className="group relative rounded-full border border-transparent bg-[var(--primary-gold)] px-8 py-3 text-xs font-medium text-[var(--primary-dark-blue)] transition-all duration-300 ease-in-out hover:shadow-lg focus:ring-2 focus:ring-[var(--primary-gold)] focus:ring-offset-2 focus:outline-none sm:text-sm"
+            className="group relative rounded-full border border-transparent bg-[var(--primary-gold)] px-8 py-3 text-xs font-medium text-[var(--primary-dark-blue)] transition-all duration-300 ease-in-out hover:shadow-lg focus:ring-2 focus:ring-[var(--primary-gold)] focus:ring-offset-2 focus:outline-none sm:text-sm dark:text-[var(--primary-dark)] dark:hover:shadow-[0_0_15px_rgba(240,180,41,0.4)]"
           >
             <span className="relative z-20 transition-all duration-300 group-hover:text-[var(--primary-medium-blue)]">
               Start for free
@@ -59,10 +64,10 @@ export function SpotlightPreview() {
 
           <motion.button
             whileHover={{ boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)' }}
-            className="group relative inline-flex overflow-hidden rounded-full p-[1px] shadow-sm transition-all duration-300 ease-in-out hover:shadow-xl focus:ring-2 focus:ring-[var(--primary-light-blue)] focus:ring-offset-2 focus:outline-none"
+            className="group relative inline-flex overflow-hidden rounded-full p-[1px] shadow-sm transition-all duration-300 ease-in-out hover:shadow-xl focus:ring-2 focus:ring-[var(--primary-light-blue)] focus:ring-offset-2 focus:outline-none dark:hover:shadow-[0_0_20px_rgba(42,151,219,0.4)]"
           >
             <span className="absolute inset-[-1000%] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,var(--primary-light-blue)_0%,var(--primary-medium-blue)_40%,var(--primary-gold)_70%,var(--primary-dark)_100%)] opacity-80 transition-all duration-300 ease-in-out group-hover:animate-[spin_3s_linear_infinite] group-hover:opacity-100" />
-            <span className="relative z-10 inline-flex h-full w-full items-center justify-center rounded-full bg-white px-8 py-3 text-sm font-medium text-[var(--primary-light-blue)] backdrop-blur-3xl transition-all duration-300 ease-in-out group-hover:bg-[var(--primary-light-blue)] group-hover:text-white group-hover:shadow-inner">
+            <span className="relative z-10 inline-flex h-full w-full items-center justify-center rounded-full bg-white px-8 py-3 text-sm font-medium text-[var(--primary-light-blue)] backdrop-blur-3xl transition-all duration-300 ease-in-out group-hover:bg-[var(--primary-light-blue)] group-hover:text-white group-hover:shadow-inner dark:bg-[var(--neutral-50)] dark:text-[var(--primary-medium-blue)] dark:group-hover:bg-[var(--primary-dark-blue)] dark:group-hover:text-white dark:group-hover:shadow-[inset_0_2px_8px_rgba(0,0,0,0.3)]">
               Talk to sales
             </span>
           </motion.button>
