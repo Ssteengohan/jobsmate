@@ -8,14 +8,13 @@ type SpotlightProps = {
 };
 
 export const Spotlight = ({ className, fill, darkModeFill }: SpotlightProps) => {
-  // Default fill colors with better dark mode handling
   const lightFill = fill || 'rgba(59, 130, 246, 0.2)';
   const darkFill = darkModeFill || fill || 'rgba(58, 168, 236, 0.25)';
 
   return (
     <svg
       className={cn(
-        'animate-spotlight pointer-events-none absolute z-[1] h-[169%] w-[138%] opacity-0 transition-all duration-300 lg:w-[84%]',
+        'animate-spotlight pointer-events-none absolute z-[1] h-[200%] w-[180%] opacity-0 transition-all duration-300 sm:h-[180%] lg:h-[169%] lg:w-[84%]',
         className,
       )}
       xmlns="http://www.w3.org/2000/svg"

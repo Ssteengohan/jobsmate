@@ -7,27 +7,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [prevScrollPos, setPrevScrollPos] = useState(0);
 
-  useEffect(() => {
-    // Check for system preference on initial load
-    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setDarkMode(isDarkMode);
 
-    // Add listener for changes to system preference
-    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleDarkModeChange = (e: MediaQueryListEvent) => setDarkMode(e.matches);
-    darkModeMediaQuery.addEventListener('change', handleDarkModeChange);
-
-    return () => {
-      darkModeMediaQuery.removeEventListener('change', handleDarkModeChange);
-    };
-  }, []);
 
   useEffect(() => {
-    // Initial scroll position
     setPrevScrollPos(window.scrollY);
 
     const handleScroll = () => {
@@ -47,7 +32,6 @@ const Navbar = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
-  // Animation variants
   const menuVariants = {
     closed: {
       opacity: 0,
@@ -97,13 +81,7 @@ const Navbar = () => {
     },
   };
 
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [darkMode]);
+
 
   const navbarClasses = `fixed w-full transform ${
     isVisible ? 'translate-y-0' : '-translate-y-full'

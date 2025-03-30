@@ -10,12 +10,12 @@ export function SpotlightPreview() {
       <div className="absolute inset-0 z-0 bg-gradient-to-b from-transparent to-gray-50/30 transition-colors duration-300 dark:from-transparent dark:to-[var(--primary-dark)]/20" />
 
       <Spotlight
-        className="-top-40 left-20 md:-top-20 md:left-1/4"
+        className="-top-20 -left-10 sm:-top-30 sm:left-0 md:-top-20 md:left-1/4"
         fill="rgba(59, 130, 246, 0.15)"
         darkModeFill="rgba(58, 168, 236, 0.25)"
       />
       <Spotlight
-        className="top-0 right-0 md:top-60 md:right-1/4"
+        className="-top-10 -right-10 sm:top-0 sm:right-0 md:top-60 md:right-1/4"
         fill="rgba(234, 179, 8, 0.15)"
         darkModeFill="rgba(142, 85, 255, 0.22)"
       />
@@ -55,11 +55,12 @@ export function SpotlightPreview() {
         >
           <motion.button
             whileHover={{ scale: 1.05 }}
-            className="group relative rounded-full border border-transparent bg-[var(--primary-gold)] px-8 py-3 text-xs font-medium text-[var(--primary-dark-blue)] transition-all duration-300 ease-in-out hover:shadow-lg focus:ring-2 focus:ring-[var(--primary-gold)] focus:ring-offset-2 focus:outline-none sm:text-sm dark:text-[var(--primary-dark)] dark:hover:shadow-[0_0_15px_rgba(240,180,41,0.4)]"
+            className="group relative rounded-full border border-transparent bg-[var(--primary-gold)] px-8 py-3 text-xs font-medium text-[var(--primary-dark-blue)] transition-all duration-300 ease-in-out hover:border-transparent hover:shadow-lg focus:ring-2 focus:ring-[var(--primary-gold)] focus:ring-offset-2 focus:outline-none sm:text-sm dark:text-[var(--primary-dark)] dark:hover:shadow-[0_0_15px_rgba(240,180,41,0.4)]"
           >
-            <span className="relative z-20 transition-all duration-300 group-hover:text-[var(--primary-medium-blue)]">
-              Start for free
-            </span>
+            <div className="via-primary-light-blue absolute inset-x-0 -top-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent to-transparent opacity-70 shadow-sm transition-all duration-300 group-hover:w-3/4 group-hover:opacity-100 group-hover:shadow-md" />
+            <div className="via-primary-gold absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent to-transparent opacity-0 shadow-sm transition-all duration-300 group-hover:w-3/4 group-hover:opacity-100" />
+            <div className="from-primary-light-blue via-primary-medium-blue to-primary-gold absolute -top-px -right-px -left-px h-[3px] w-0 rounded-t-full bg-gradient-to-r transition-all duration-700 group-hover:w-full" />
+            <span className="relative z-20 transition-all duration-300">Start for free</span>
           </motion.button>
 
           <motion.button
