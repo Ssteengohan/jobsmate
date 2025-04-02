@@ -30,6 +30,41 @@
   --spacing-md: 2rem;
   --spacing-lg: 4rem;
   --spacing-xl: 6rem;
+
+  /* Spotlight effect variables */
+  --spotlight-blue: rgba(59, 130, 246, 0.15);
+  --spotlight-gold: rgba(234, 179, 8, 0.15);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #121620;
+    --foreground: #e6eaf0;
+    
+    /* Dark mode adjusted palette */
+    --primary-dark: #0a2b40;
+    --primary-white: #e6eaf0;
+    --primary-light-blue: #3aa8ec;
+    --primary-medium-blue: #2581b8;
+    --primary-dark-blue: #0a3759;
+    --primary-gold: #ffc547;
+    
+    /* Dark mode accent colors */
+    --accent-purple: #9055ff;
+    --accent-teal: #15b8a9;
+    --accent-rose: #ff3a65;
+    
+    /* Dark mode neutral tones */
+    --neutral-50: #1e2635;
+    --neutral-100: #283142;
+    --neutral-200: #374357;
+    --neutral-800: #d0d5dd;
+    --neutral-900: #e6eaf0;
+
+    /* Dark mode spotlight effects */
+    --spotlight-blue: rgba(58, 168, 236, 0.25);
+    --spotlight-gold: rgba(142, 85, 255, 0.22);
+  }
 }
 
 @theme inline {
@@ -79,13 +114,6 @@
   background-color: var(--primary-gold);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   margin: 0;
   padding: 0;
@@ -93,6 +121,7 @@ body {
   background-attachment: fixed;
   color: var(--foreground);
   font-family: var(--font-lexend), sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Container for centered content */
@@ -108,21 +137,84 @@ body {
   padding: var(--spacing-lg) 0;
 }
 
+.line-vertical,
+.line-horizontal {
+  position: absolute;
+  background-color: var(--neutral-200);
+  opacity: 0.15;
+  transition: opacity 0.3s ease, background-color 0.3s ease;
+}
+
+/* Vertical lines */
+.line-vertical {
+  width: 1px;
+  height: 100vh;
+}
+
+/* Horizontal lines */
+.line-horizontal {
+  height: 1px;
+  width: 100%;
+}
+
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 @keyframes spotlight {
   0% {
     opacity: 0;
     transform: translate(-75%, -65%) scale(0.4);
+    filter: blur(40px);
   }
   100% {
     opacity: 1;
     transform: translate(-50%, -40%) scale(1);
+    filter: blur(0px);
   }
 }
 
 @media (prefers-color-scheme: dark) {
   .card {
-    background-color: rgba(30, 30, 30, 0.9);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background-color: rgba(30, 38, 53, 0.9);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(12px);
+  }
+  
+  /* Enhanced dark mode specific styles */
+  .dark-glass {
+    background: rgba(30, 38, 53, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Subtle glow effects for interactive elements */
+  .glow-effect:hover {
+    box-shadow: 0 0 15px rgba(58, 168, 236, 0.5);
+  }
+  
+  /* Dark mode button enhancement */
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary-medium-blue), var(--primary-dark-blue));
+    color: var(--primary-white);
+    border: 1px solid rgba(58, 168, 236, 0.3);
+  }
+  
+  /* Dark mode overlay */
+  .overlay-dark {
+    background: linear-gradient(to bottom, rgba(10, 16, 28, 0.7), rgba(10, 16, 28, 0.9));
+  }
+
+  /* Dark mode spotlight enhancement */
+  .animate-spotlight {
+    animation-duration: 3s;
+    filter: saturate(1.2);
   }
 }
 

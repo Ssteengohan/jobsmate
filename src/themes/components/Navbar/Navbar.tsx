@@ -2,17 +2,36 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [prevScrollPos, setPrevScrollPos] = useState(0);
+
+
+
+  useEffect(() => {
+    setPrevScrollPos(window.scrollY);
+
+    const handleScroll = () => {
+      const currentScrollPos = window.scrollY;
+      const visible = prevScrollPos > currentScrollPos || currentScrollPos < 10;
+
+      setPrevScrollPos(currentScrollPos);
+      setIsVisible(visible);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [prevScrollPos]);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
-  // Animation variants
   const menuVariants = {
     closed: {
       opacity: 0,
@@ -62,8 +81,14 @@ const Navbar = () => {
     },
   };
 
+
+
+  const navbarClasses = `fixed w-full transform ${
+    isVisible ? 'translate-y-0' : '-translate-y-full'
+  } z-50 border-b border-gray-200 bg-white px-4 py-4 shadow-md backdrop-blur-sm transition-transform duration-300 ease-in-out dark:border-[var(--neutral-200)] dark:bg-[var(--neutral-50)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.2)]`;
+
   return (
-    <header className="sticky top-0 z-50 border-b border-gray-200 bg-white px-4 py-4 shadow-md">
+    <header className={navbarClasses}>
       <div className="container mx-auto flex h-16 w-full items-center justify-between">
         <div className="flex items-center gap-12">
           <div className="flex items-center">
@@ -73,9 +98,11 @@ const Navbar = () => {
                 alt="Jobsmate Logo"
                 width={100}
                 height={250}
-                className=""
+                className="transition-opacity duration-300"
               />
-              <span className="text-3xl text-black">Jobsmate</span>
+              <span className="text-3xl text-black transition-colors duration-300 dark:text-[var(--primary-white)]">
+                Jobsmate
+              </span>
             </Link>
           </div>
 
@@ -84,7 +111,7 @@ const Navbar = () => {
               <li>
                 <Link
                   href="/about"
-                  className="px-3 py-2 text-black transition-all duration-400 ease-in-out hover:rounded-xl hover:bg-[#f3f4f6]"
+                  className="px-3 py-2 text-black transition-all duration-400 ease-in-out hover:rounded-xl hover:bg-[#f3f4f6] dark:text-[var(--primary-white)] dark:hover:bg-[var(--neutral-200)]"
                 >
                   Features
                 </Link>
@@ -92,7 +119,7 @@ const Navbar = () => {
               <li>
                 <Link
                   href="/services"
-                  className="px-3 py-2 text-black transition-all duration-400 ease-in-out hover:rounded-xl hover:bg-[#f3f4f6]"
+                  className="px-3 py-2 text-black transition-all duration-400 ease-in-out hover:rounded-xl hover:bg-[#f3f4f6] dark:text-[var(--primary-white)] dark:hover:bg-[var(--neutral-200)]"
                 >
                   Price
                 </Link>
@@ -100,7 +127,7 @@ const Navbar = () => {
               <li>
                 <Link
                   href="/contact"
-                  className="px-3 py-2 text-black transition-all duration-400 ease-in-out hover:rounded-xl hover:bg-[#f3f4f6]"
+                  className="px-3 py-2 text-black transition-all duration-400 ease-in-out hover:rounded-xl hover:bg-[#f3f4f6] dark:text-[var(--primary-white)] dark:hover:bg-[var(--neutral-200)]"
                 >
                   About us
                 </Link>
@@ -113,7 +140,7 @@ const Navbar = () => {
         <div className="hidden items-center gap-4 lg:flex">
           <Link
             href="/"
-            className="group relative rounded-full border border-slate-300 bg-white px-8 py-2 text-sm font-medium text-black transition-all duration-300 ease-in-out hover:scale-105 hover:border-transparent hover:shadow-lg"
+            className="group relative rounded-full border border-slate-300 bg-white px-8 py-2 text-sm font-medium text-black transition-all duration-300 ease-in-out hover:scale-105 hover:border-transparent hover:shadow-lg dark:border-[var(--neutral-200)] dark:bg-[var(--neutral-50)] dark:text-[var(--primary-white)] dark:hover:shadow-[0_4px_20px_rgba(42,151,219,0.2)]"
           >
             <div className="via-primary-light-blue absolute inset-x-0 -top-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent to-transparent opacity-70 shadow-sm transition-all duration-300 group-hover:w-3/4 group-hover:opacity-100 group-hover:shadow-md" />
             <div className="via-primary-gold absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent to-transparent opacity-0 shadow-sm transition-all duration-300 group-hover:w-3/4 group-hover:opacity-100" />
@@ -124,10 +151,10 @@ const Navbar = () => {
           </Link>
           <Link
             href="/"
-            className="group relative inline-flex h-10 overflow-hidden rounded-full p-[1px] shadow-sm transition-all duration-300 ease-in-out hover:shadow-md focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 focus:outline-none"
+            className="group relative inline-flex h-10 overflow-hidden rounded-full p-[1px] shadow-sm transition-all duration-300 ease-in-out hover:shadow-md focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 focus:outline-none dark:hover:shadow-[0_4px_20px_rgba(42,151,219,0.2)]"
           >
             <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,var(--primary-light-blue)_0%,var(--primary-medium-blue)_40%,var(--primary-gold)_70%,var(--primary-dark)_100%)] transition-transform duration-300 ease-in-out group-hover:scale-110 group-hover:animate-[spin_1.5s_linear_infinite]" />
-            <span className="group-hover:text-primary-medium-blue inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-white px-3 py-1 text-sm font-medium text-black backdrop-blur-3xl transition-all duration-300 ease-in-out group-hover:bg-gray-50">
+            <span className="group-hover:text-primary-medium-blue inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-white px-3 py-1 text-sm font-medium text-black backdrop-blur-3xl transition-all duration-300 ease-in-out group-hover:bg-gray-50 dark:bg-[var(--neutral-50)] dark:text-[var(--primary-white)] dark:group-hover:bg-[var(--neutral-200)]">
               Candidate
             </span>
           </Link>
@@ -136,7 +163,7 @@ const Navbar = () => {
         {/* Mobile menu button */}
         <button
           type="button"
-          className="mt-2 inline-flex items-center justify-center rounded-md p-2 text-gray-600 lg:hidden"
+          className="mt-2 inline-flex items-center justify-center rounded-md p-2 text-gray-600 transition-colors duration-300 lg:hidden dark:text-gray-300"
           onClick={toggleMobileMenu}
           aria-expanded={mobileMenuOpen}
           aria-controls="mobile-menu"
@@ -188,7 +215,7 @@ const Navbar = () => {
               <motion.div variants={itemVariants}>
                 <Link
                   href="/about"
-                  className="block rounded-md px-3 py-2 text-base font-medium text-black hover:bg-[#f3f4f6]"
+                  className="block rounded-md px-3 py-2 text-base font-medium text-black transition-colors duration-300 hover:bg-[#f3f4f6] dark:text-[var(--primary-white)] dark:hover:bg-[var(--neutral-200)]"
                 >
                   Features
                 </Link>
@@ -197,7 +224,7 @@ const Navbar = () => {
               <motion.div variants={itemVariants}>
                 <Link
                   href="/services"
-                  className="block rounded-md px-3 py-2 text-base font-medium text-black hover:bg-[#f3f4f6]"
+                  className="block rounded-md px-3 py-1 text-base font-medium text-black transition-colors duration-300 hover:bg-[#f3f4f6] dark:text-[var(--primary-white)] dark:hover:bg-[var(--neutral-200)]"
                 >
                   Price
                 </Link>
@@ -206,7 +233,7 @@ const Navbar = () => {
               <motion.div variants={itemVariants}>
                 <Link
                   href="/contact"
-                  className="block rounded-md px-3 py-2 text-base font-medium text-black hover:bg-[#f3f4f6]"
+                  className="block rounded-md px-3 py-2 text-base font-medium text-black transition-colors duration-300 hover:bg-[#f3f4f6] dark:text-[var(--primary-white)] dark:hover:bg-[var(--neutral-200)]"
                 >
                   About us
                 </Link>
@@ -216,7 +243,7 @@ const Navbar = () => {
                 <motion.div variants={buttonVariants}>
                   <Link
                     href="/"
-                    className="w-full rounded-full border border-slate-300 bg-white px-8 py-2 text-center text-sm font-medium text-black"
+                    className="w-full rounded-full border border-slate-300 bg-white px-8 py-2 text-center text-sm font-medium text-black transition-colors duration-300 dark:border-[var(--neutral-200)] dark:bg-[var(--neutral-50)] dark:text-[var(--primary-white)]"
                   >
                     Company
                   </Link>
@@ -225,7 +252,7 @@ const Navbar = () => {
                 <motion.div variants={buttonVariants}>
                   <Link
                     href="/"
-                    className="w-full rounded-full border border-slate-300 bg-white px-8 py-2 text-center text-sm font-medium text-black"
+                    className="w-full rounded-full border border-slate-300 bg-white px-8 py-2 text-center text-sm font-medium text-black transition-colors duration-300 dark:border-[var(--neutral-200)] dark:bg-[var(--neutral-50)] dark:text-[var(--primary-white)]"
                   >
                     Candidate
                   </Link>

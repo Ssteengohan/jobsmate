@@ -5,7 +5,7 @@ import '@/themes/styles/globals.css';
 const lexend = Lexend({
   variable: '--font-lexend',
   subsets: ['latin'],
-  weight: ['400', '600', '700'], // Add or adjust weights as needed
+  weight: ['400', '600', '700'], 
 });
 
 export const metadata: Metadata = {
