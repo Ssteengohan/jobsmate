@@ -3,7 +3,6 @@
 import { Tabs } from '../ui/tabs';
 import Dashboard from './Dashboard';
 
-
 export function TabsDemo() {
   const tabs = [
     {
@@ -41,4 +40,3 @@ export function TabsDemo() {
     </div>
   );
 }
-

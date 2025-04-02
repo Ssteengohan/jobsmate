@@ -5,10 +5,126 @@ import { RiSettings3Line } from 'react-icons/ri';
 import { CiMail } from 'react-icons/ci';
 import { BiFilterAlt } from 'react-icons/bi';
 import { IoIosArrowDown } from 'react-icons/io';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { useRef, useEffect } from 'react';
 
 const Dashboard = () => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const contentScrollRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: scrollRef,
+    offset: ['start start', 'end end'],
+  });
+
+  const scaleEffect = useTransform(scrollYProgress, [0, 1], [1, 0.9]);
+
+  useEffect(() => {
+    if (contentScrollRef.current) {
+      setTimeout(() => {
+        const element = contentScrollRef.current;
+        if (!element) return;
+        const start = element.scrollTop;
+        const target = element.scrollHeight;
+        const duration = 6000;
+        let startTime: number | null = null;
+        const animateScroll = (currentTime: number) => {
+          if (!element) return;
+          if (startTime === null) startTime = currentTime;
+          const timeElapsed = currentTime - startTime;
+          const progress = Math.min(timeElapsed / duration, 1);
+          const easeInOutQuad =
+            progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
+          element.scrollTop = start + (target - start) * easeInOutQuad;
+          if (timeElapsed < duration) {
+            requestAnimationFrame(animateScroll);
+          }
+        };
+        requestAnimationFrame(animateScroll);
+      }, 4000);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (contentScrollRef.current) {
+      const element = contentScrollRef.current;
+      const preventScroll = (e: WheelEvent) => e.preventDefault();
+      element.addEventListener('wheel', preventScroll, { passive: false });
+      return () => {
+        element.removeEventListener('wheel', preventScroll);
+      };
+    }
+  }, []);
+
+  const sectionVariants = {
+    section1: {
+      hidden: { opacity: 0 },
+      visible: {
+        opacity: 1,
+        transition: {
+          staggerChildren: 0.005,
+          delayChildren: 0.1,
+        },
+      },
+    },
+    section2: {
+      hidden: { opacity: 0 },
+      visible: {
+        opacity: 1,
+        transition: {
+          staggerChildren: 0.005,
+          delayChildren: 1.1,
+        },
+      },
+    },
+    section3: {
+      hidden: { opacity: 0 },
+      visible: {
+        opacity: 1,
+        transition: {
+          staggerChildren: 0.005,
+          delayChildren: 1.5,
+        },
+      },
+    },
+    section4: {
+      hidden: { opacity: 0 },
+      visible: {
+        opacity: 1,
+        transition: {
+          staggerChildren: 0.005,
+          delayChildren: 2.4,
+        },
+      },
+    },
+    section5: {
+      hidden: { opacity: 0 },
+      visible: {
+        opacity: 1,
+        transition: {
+          staggerChildren: 0.005,
+          delayChildren: 3.0,
+        },
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: 'easeOut',
+      },
+    },
+  };
+
   return (
-    <section className="scrollbar-hide pointer-events-auto flex h-full w-full flex-row overflow-hidden rounded-2xl border-1 border-zinc-300 bg-white select-none">
+    <section
+      ref={scrollRef}
+      className="scrollbar-hide pointer-events-auto flex h-full w-full flex-row overflow-hidden rounded-2xl border-1 border-zinc-300 bg-white select-none"
+    >
       <div className="Navbar scrollbar-hide flex w-5/12 flex-col items-start rounded-2xl bg-white md:w-2/6 2xl:w-2/12">
         <div className="flex items-center px-2 pt-2">
           <Image
@@ -104,18 +220,36 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="flex h-full w-full gap-12 rounded-r-2xl bg-[#f9f9f9] pt-3 pl-3 sm:px-4 sm:pt-6 md:px-7">
-        <div className="scrollbar-hide flex max-h-full w-full flex-col items-start gap-4 overflow-y-auto sm:gap-8">
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-            <span className="text-[10px] font-bold text-[#00253b] sm:text-xs md:text-sm lg:text-base">
+        <div
+          ref={contentScrollRef}
+          className="scrollbar-hide flex max-h-full w-full flex-col items-start gap-4 overflow-y-auto sm:gap-8"
+        >
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={sectionVariants.section1}
+            className="section-1 flex w-full flex-wrap items-center gap-2 sm:gap-3"
+          >
+            <motion.span
+              variants={itemVariants}
+              className="text-[10px] font-bold text-[#00253b] sm:text-xs md:text-sm lg:text-base"
+            >
               16 jobs
-            </span>
-            <span className="rounded-lg bg-[#00253b] px-2 py-1 text-[8px] text-white sm:text-[10px] md:text-xs lg:px-3 lg:text-sm">
+            </motion.span>
+            <motion.span
+              variants={itemVariants}
+              className="rounded-lg bg-[#00253b] px-2 py-1 text-[8px] text-white sm:text-[10px] md:text-xs lg:px-3 lg:text-sm"
+            >
               4 published
-            </span>
-            <span className="rounded-lg bg-[#38b6ff] px-2 py-1 text-[8px] text-white sm:text-[10px] md:text-xs lg:px-3 lg:text-sm">
+            </motion.span>
+            <motion.span
+              variants={itemVariants}
+              className="rounded-lg bg-[#38b6ff] px-2 py-1 text-[8px] text-white sm:text-[10px] md:text-xs lg:px-3 lg:text-sm"
+            >
               0 available
-            </span>
-            <div className="ml-auto flex items-center gap-1 sm:ml-0">
+            </motion.span>
+            <motion.div variants={itemVariants} className="flex items-center gap-1 sm:ml-0">
               <BiFilterAlt
                 className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 lg:h-5 lg:w-5 xl:h-6 xl:w-6"
                 color="black"
@@ -123,15 +257,25 @@ const Dashboard = () => {
               <span className="text-[8px] text-black uppercase sm:text-[10px] md:text-xs lg:text-sm">
                 filter
               </span>
-            </div>
-          </div>
-          <div className="flex h-fit w-full flex-col items-start gap-6 lg:hidden">
-            <div>
+            </motion.div>
+          </motion.div>
+
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            viewport={{ once: true, amount: 0.1 }}
+            variants={sectionVariants.section1}
+            className="flex h-fit w-full flex-col items-start gap-6 lg:hidden"
+          >
+            <motion.div variants={itemVariants}>
               <span className="rounded-2xl bg-[#fad246] px-3 py-2 font-medium text-[#00253b] shadow-[3px_3px_0px_0px_rgba(0,0,0,0.1)] shadow-[#00253b] max-md:text-[8px]">
                 + POST A JOB
               </span>
-            </div>
-            <div className="flex w-fit flex-col items-center gap-4 rounded-lg bg-[#00253b] px-6 py-8">
+            </motion.div>
+            <motion.div
+              variants={itemVariants}
+              className="flex w-fit flex-col items-center gap-4 rounded-lg bg-[#00253b] px-6 py-8"
+            >
               <span className="text-lg text-white lg:text-xl">Your stats</span>
               <div className="flex flex-wrap gap-4 text-white">
                 <div className="flex flex-col items-center">
@@ -147,8 +291,11 @@ const Dashboard = () => {
                   <span className="text-lg md:text-xl lg:text-3xl">4</span>
                 </div>
               </div>
-            </div>
-            <div className="flex h-full w-full flex-col items-start gap-3">
+            </motion.div>
+            <motion.div
+              variants={itemVariants}
+              className="flex h-full w-full flex-col items-start gap-3"
+            >
               <span className="pb- w-full text-lg font-bold text-[#00253b]">
                 Recent top candidates
               </span>
@@ -182,14 +329,25 @@ const Dashboard = () => {
                 </div>
                 <span className="h-1/12 text-xs text-[#7a7a25] underline sm:text-sm">see more</span>
               </div>
-            </div>
-          </div>
-          <div className="flex h-fit w-full flex-col items-start gap-4 rounded-2xl bg-white px-4 py-4 shadow-xs shadow-gray-500/30 lg:py-8 lg:pb-10">
-            <div className="flex items-center justify-center gap-2">
+            </motion.div>
+          </motion.div>
+
+          <motion.div
+            style={{ scale: scaleEffect }}
+            initial="hidden"
+            animate="visible"
+            viewport={{ once: true, amount: 0.1, margin: '-100px 0px -100px 0px' }}
+            variants={sectionVariants.section2}
+            className="section-2 flex h-fit w-full flex-col items-start gap-4 rounded-2xl bg-white px-4 py-4 shadow-xs shadow-gray-500/30 lg:py-8 lg:pb-10"
+          >
+            <motion.div variants={itemVariants} className="flex items-center justify-center gap-2">
               <IoIosArrowDown color="#757575" opacity={0.7} className="h-3 w-3 lg:h-5 lg:w-5" />
               <span className="text-[10px] text-[#00253b] lg:text-xs">Data</span>
-            </div>
-            <div className="flex justify-between rounded-xl border-2 border-[#e5e7eb] px-2 py-3 md:w-5/8">
+            </motion.div>
+            <motion.div
+              variants={itemVariants}
+              className="flex justify-between rounded-xl border-2 border-[#e5e7eb] px-2 py-3 md:w-5/8"
+            >
               <div className="flex w-8/12 flex-col gap-1">
                 <span className="text-xs font-bold text-[#00253b] md:text-lg">
                   Maxchine Learning Engineer
@@ -206,14 +364,25 @@ const Dashboard = () => {
                   Under review
                 </span>
               </div>
-            </div>
-          </div>
-          <div className="flex h-fit w-full flex-col items-start gap-4 rounded-2xl bg-white px-4 py-4 shadow-xs shadow-gray-500/30 lg:py-8 lg:pb-10">
-            <div className="flex items-center justify-center gap-2">
+            </motion.div>
+          </motion.div>
+
+          <motion.div
+            style={{ scale: scaleEffect }}
+            initial="hidden"
+            animate="visible"
+            viewport={{ once: true, amount: 0.1, margin: '-100px 0px -100px 0px' }}
+            variants={sectionVariants.section3}
+            className="section-3 flex h-fit w-full flex-col items-start gap-4 rounded-2xl bg-white px-4 py-4 shadow-xs shadow-gray-500/30 lg:py-8 lg:pb-10"
+          >
+            <motion.div variants={itemVariants} className="flex items-center justify-center gap-2">
               <IoIosArrowDown color="#757575" opacity={0.7} className="h-3 w-3 lg:h-5 lg:w-5" />
               <span className="text-[10px] text-[#00253b] lg:text-xs">Other Engineering</span>
-            </div>
-            <div className="flex justify-between rounded-xl border-2 border-[#e5e7eb] px-2 py-3 md:w-5/8">
+            </motion.div>
+            <motion.div
+              variants={itemVariants}
+              className="flex justify-between rounded-xl border-2 border-[#e5e7eb] px-2 py-3 md:w-5/8"
+            >
               <div className="flex w-8/12 flex-col gap-1">
                 <span className="text-xs font-bold text-[#00253b] md:text-lg">
                   AI Engineer SYTAC
@@ -229,14 +398,25 @@ const Dashboard = () => {
                   Archived
                 </span>
               </div>
-            </div>
-          </div>
-          <div className="flex h-fit w-full flex-col items-start gap-4 rounded-2xl bg-white px-4 py-4 shadow-xs shadow-gray-500/30 lg:py-8 lg:pb-10">
-            <div className="flex items-center justify-center gap-2">
+            </motion.div>
+          </motion.div>
+
+          <motion.div
+            style={{ scale: scaleEffect }}
+            initial="hidden"
+            animate="visible"
+            viewport={{ once: true, amount: 0.1, margin: '-100px 0px -100px 0px' }}
+            variants={sectionVariants.section4}
+            className="section-4 flex h-fit w-full flex-col items-start gap-4 rounded-2xl bg-white px-4 py-4 shadow-xs shadow-gray-500/30 lg:py-8 lg:pb-10"
+          >
+            <motion.div variants={itemVariants} className="flex items-center justify-center gap-2">
               <IoIosArrowDown color="#757575" opacity={0.7} className="h-3 w-3 lg:h-5 lg:w-5" />
               <span className="text-[10px] text-[#00253b] lg:text-xs">Software Engineering</span>
-            </div>
-            <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
+            </motion.div>
+            <motion.div
+              variants={itemVariants}
+              className="grid grid-cols-1 items-start gap-4 md:grid-cols-2"
+            >
               <div className="flex justify-between rounded-xl border-2 border-[#e5e7eb] px-2 py-3">
                 <div className="flex w-8/12 flex-col gap-1">
                   <span className="text-xs font-bold text-[#00253b] md:text-lg">
@@ -322,16 +502,26 @@ const Dashboard = () => {
                   </span>
                 </div>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
-        <div className="hidden h-full w-2/5 flex-col items-end gap-10 lg:flex">
-          <div>
+
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          viewport={{ once: true, amount: 0.1 }}
+          variants={sectionVariants.section5}
+          className="section-5 hidden h-full w-2/5 flex-col items-end gap-10 lg:flex"
+        >
+          <motion.div variants={itemVariants}>
             <span className="rounded-2xl bg-[#fad246] px-4 py-2 font-medium text-[#00253b] shadow-[3px_3px_0px_0px_rgba(0,0,0,0.1)] shadow-[#00253b]">
               + POST A JOB
             </span>
-          </div>
-          <div className="flex w-fit flex-col items-center gap-4 rounded-lg bg-[#00253b] px-6 py-8">
+          </motion.div>
+          <motion.div
+            variants={itemVariants}
+            className="flex w-fit flex-col items-center gap-4 rounded-lg bg-[#00253b] px-6 py-8"
+          >
             <span className="text-lg text-white lg:text-xl">Your stats</span>
             <div className="flex gap-4 text-white">
               <div className="flex flex-col items-center">
@@ -347,8 +537,8 @@ const Dashboard = () => {
                 <span className="text-lg md:text-xl lg:text-3xl">4</span>
               </div>
             </div>
-          </div>
-          <div className="flex w-full flex-col items-end gap-3">
+          </motion.div>
+          <motion.div variants={itemVariants} className="flex w-full flex-col items-end gap-3">
             <span className="w-7/8 pb-4 text-lg font-bold text-[#00253b]">
               Recent top candidates
             </span>
@@ -376,8 +566,8 @@ const Dashboard = () => {
               </div>
               <span className="text-[#7a7a25] underline">see more</span>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
