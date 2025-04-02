@@ -1,77 +1,44 @@
 'use client';
 
-import Image from 'next/image';
 import { Tabs } from '../ui/tabs';
+import Dashboard from './Dashboard';
+
 
 export function TabsDemo() {
   const tabs = [
     {
-      title: 'Product',
-      value: 'product',
-      content: (
-        <div className="relative h-full w-full overflow-hidden rounded-2xl bg-gradient-to-br from-purple-700 to-violet-900 p-10 text-xl font-bold text-white md:text-4xl">
-          <p>Product Tab</p>
-          <DummyContent />
-        </div>
-      ),
+      title: 'Dashboard',
+      value: 'dashboard',
+      content: <Dashboard />,
     },
     {
       title: 'Services',
       value: 'services',
-      content: (
-        <div className="relative h-full w-full overflow-hidden rounded-2xl bg-gradient-to-br from-purple-700 to-violet-900 p-10 text-xl font-bold text-white md:text-4xl">
-          <p>Services tab</p>
-          <DummyContent />
-        </div>
-      ),
+      content: <Dashboard />,
     },
     {
       title: 'Playground',
       value: 'playground',
-      content: (
-        <div className="relative h-full w-full overflow-hidden rounded-2xl bg-gradient-to-br from-purple-700 to-violet-900 p-10 text-xl font-bold text-white md:text-4xl">
-          <p>Playground tab</p>
-          <DummyContent />
-        </div>
-      ),
+      content: <Dashboard />,
     },
     {
       title: 'Content',
       value: 'content',
-      content: (
-        <div className="relative h-full w-full overflow-hidden rounded-2xl bg-gradient-to-br from-purple-700 to-violet-900 p-10 text-xl font-bold text-white md:text-4xl">
-          <p>Content tab</p>
-          <DummyContent />
-        </div>
-      ),
+      content: <Dashboard />,
     },
     {
       title: 'Random',
       value: 'random',
-      content: (
-        <div className="relative h-full w-full overflow-hidden rounded-2xl bg-gradient-to-br from-purple-700 to-violet-900 p-10 text-xl font-bold text-white md:text-4xl">
-          <p>Random tab</p>
-          <DummyContent />
-        </div>
-      ),
+      content: <Dashboard />,
     },
   ];
 
   return (
-    <div className="b relative mx-auto my-40 flex h-[20rem] w-full max-w-5xl flex-col items-start justify-start [perspective:1000px] md:h-[40rem]">
-      <Tabs tabs={tabs} />
+    <div className="relative flex items-center bg-transparent">
+      <div className="mx-auto flex h-[45rem] w-full flex-col items-start justify-start [perspective:1000px] not-sm:container sm:mt-20 2xl:h-[90vh]">
+        <Tabs tabs={tabs} />
+      </div>
     </div>
   );
 }
 
-const DummyContent = () => {
-  return (
-    <Image
-      src="/linear.webp"
-      alt="dummy image"
-      width="1000"
-      height="1000"
-      className="absolute inset-x-0 -bottom-10 mx-auto h-[60%] w-[90%] rounded-xl object-cover object-left-top md:h-[90%]"
-    />
-  );
-};

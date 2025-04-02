@@ -6,18 +6,13 @@ import { motion } from 'framer-motion';
 
 export function SpotlightPreview() {
   return (
-    <div className="relative z-0 flex h-screen w-full items-center overflow-hidden antialiased transition-colors duration-300 sm:h-[60rem] md:justify-center dark:bg-[var(--neutral-50)]">
+    <div className="relative z-0 flex h-screen w-full items-center overflow-hidden antialiased transition-colors duration-300 sm:h-[60rem] md:justify-center">
       <div className="absolute inset-0 z-0 bg-gradient-to-b from-transparent to-gray-50/30 transition-colors duration-300 dark:from-transparent dark:to-[var(--primary-dark)]/20" />
 
       <Spotlight
         className="-top-20 -left-10 sm:-top-30 sm:left-0 md:-top-20 md:left-1/4"
         fill="rgba(59, 130, 246, 0.15)"
         darkModeFill="rgba(58, 168, 236, 0.25)"
-      />
-      <Spotlight
-        className="-top-10 -right-10 sm:top-0 sm:right-0 md:top-60 md:right-1/4"
-        fill="rgba(234, 179, 8, 0.15)"
-        darkModeFill="rgba(142, 85, 255, 0.22)"
       />
 
       <motion.div
@@ -51,8 +46,14 @@ export function SpotlightPreview() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 1 }}
-          className="mt-8 flex justify-center gap-4"
+          className="mt-8 flex flex-col justify-center gap-4 px-4 sm:flex-row"
         >
+          <motion.input
+            type="email"
+            placeholder="Enter your email"
+            className="w-full rounded-full border border-neutral-300 bg-transparent px-4 py-3 text-sm font-medium text-neutral-900 shadow-sm transition-all duration-300 focus:border-[var(--primary-gold)] focus:ring-[var(--primary-gold)] focus:outline-none sm:hidden dark:text-white dark:focus:border-[var(--primary-gold)] dark:focus:ring-[var(--primary-gold)]"
+          ></motion.input>
+
           <motion.button
             whileHover={{ scale: 1.05 }}
             className="group relative rounded-full border border-transparent bg-[var(--primary-gold)] px-8 py-3 text-xs font-medium text-[var(--primary-dark-blue)] transition-all duration-300 ease-in-out hover:border-transparent hover:shadow-lg focus:ring-2 focus:ring-[var(--primary-gold)] focus:ring-offset-2 focus:outline-none sm:text-sm dark:text-[var(--primary-dark)] dark:hover:shadow-[0_0_15px_rgba(240,180,41,0.4)]"
