@@ -205,6 +205,15 @@ body {
 .custom-cursor [role="button"],
 .custom-cursor .interactive {
   cursor: none !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Subtle hover effect for interactive elements with custom cursor */
+.custom-cursor a:hover, 
+.custom-cursor button:hover,
+.custom-cursor [role="button"]:hover,
+.custom-cursor .interactive:hover {
+  transform: translateY(-1px);
 }
 
 @media (max-width: 1023px) {
