@@ -114,6 +114,15 @@
   background-color: var(--primary-gold);
 }
 
+html,
+body {
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   padding: 0;

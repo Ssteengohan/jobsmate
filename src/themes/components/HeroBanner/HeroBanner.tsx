@@ -1,25 +1,17 @@
 'use client';
 
 import React from 'react';
-import { Spotlight } from '../ui/Spotlight';
 import { motion } from 'framer-motion';
 
 export function SpotlightPreview() {
   return (
     <div className="relative z-0 flex h-screen w-full items-center overflow-hidden antialiased transition-colors duration-300 sm:h-[60rem] md:justify-center">
       <div className="absolute inset-0 z-0 bg-gradient-to-b from-transparent to-gray-50/30 transition-colors duration-300 dark:from-transparent dark:to-[var(--primary-dark)]/20" />
-
-      <Spotlight
-        className="-top-20 -left-10 sm:-top-30 sm:left-0 md:-top-20 md:left-1/4"
-        fill="rgba(59, 130, 246, 0.15)"
-        darkModeFill="rgba(58, 168, 236, 0.25)"
-      />
-
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
-        className="relative z-10 container mx-auto w-full max-w-7xl rounded-md p-4 pt-20 md:pt-0"
+        className="relative z-10 w-full mx-auto sm:max-w-7xl pt-20 md:pt-0"
       >
         <motion.h1
           initial={{ y: 20, opacity: 0 }}
