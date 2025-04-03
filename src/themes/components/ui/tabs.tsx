@@ -40,7 +40,7 @@ export const Tabs = ({
     <>
       <div
         className={cn(
-          'no-visible-scrollbar relative flex w-full max-w-full flex-wrap items-center justify-center gap-1 overflow-auto [perspective:1000px] sm:flex-row sm:gap-4 sm:overflow-visible',
+          'no-visible-scrollbar relative max-sm:grid grid-cols-3 sm:grid-cols-3 md:flex md:flex-wrap w-full max-w-full items-start sm:items-center justify-center overflow-auto [perspective:1000px] gap-y-1 sm:flex-row sm:gap-4 sm:overflow-visible',
           containerClassName,
         )}
       >
@@ -53,7 +53,7 @@ export const Tabs = ({
             onMouseEnter={() => setHovering(true)}
             onMouseLeave={() => setHovering(false)}
             className={cn(
-              'relative rounded-full cursor-pointer px-4 py-2 hover:bg-[#f3f4f6] dark:hover:bg-[var(--neutral-200)]',
+              'relative rounded-full cursor-pointer text-nowrap max-md:text-[10px] px-1 py-1 md:px-4 md:py-2 hover:bg-[#f3f4f6] dark:hover:bg-[var(--neutral-200)]',
               tabClassName,
             )}
             style={{

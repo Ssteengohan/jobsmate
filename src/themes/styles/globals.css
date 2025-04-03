@@ -114,6 +114,15 @@
   background-color: var(--primary-gold);
 }
 
+html,
+body {
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -157,7 +166,6 @@ body {
   width: 100%;
 }
 
-
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -177,6 +185,35 @@ body {
     opacity: 1;
     transform: translate(-50%, -40%) scale(1);
     filter: blur(0px);
+  }
+}
+
+/* Custom cursor styles */
+.custom-cursor {
+  cursor: none !important;
+}
+
+.custom-cursor * {
+  cursor: none !important;
+}
+
+.custom-cursor a, 
+.custom-cursor button,
+.custom-cursor input,
+.custom-cursor select,
+.custom-cursor textarea,
+.custom-cursor [role="button"],
+.custom-cursor .interactive {
+  cursor: none !important;
+}
+
+@media (max-width: 1023px) {
+  .custom-cursor {
+    cursor: auto !important;
+  }
+  
+  .custom-cursor * {
+    cursor: auto !important;
   }
 }
 

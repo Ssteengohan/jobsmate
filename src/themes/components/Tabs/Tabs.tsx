@@ -2,6 +2,7 @@
 
 import { Tabs } from '../ui/tabs';
 import Dashboard from './Dashboard';
+import MatchandRank from './MatchandRank';
 
 export function TabsDemo() {
   const tabs = [
@@ -11,24 +12,24 @@ export function TabsDemo() {
       content: <Dashboard />,
     },
     {
-      title: 'Services',
-      value: 'services',
+      title: 'Job posting',
+      value: 'jobposting',
       content: <Dashboard />,
     },
     {
-      title: 'Playground',
-      value: 'playground',
+      title: 'Costum assessments',
+      value: 'costumassessments',
       content: <Dashboard />,
     },
     {
-      title: 'Content',
-      value: 'content',
+      title: 'Anti-cheating monitor',
+      value: 'anticheatingmonitor',
       content: <Dashboard />,
     },
     {
-      title: 'Random',
-      value: 'random',
-      content: <Dashboard />,
+      title: 'Match and Rank',
+      value: 'matchandrank',
+      content: <MatchandRank />,
     },
   ];
 

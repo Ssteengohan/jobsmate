@@ -25,7 +25,7 @@ const Dashboard = () => {
         if (!element) return;
         const start = element.scrollTop;
         const target = element.scrollHeight;
-        const duration = 6000;
+        const duration = window.innerWidth < 768 ? 12000 : 6000;
         let startTime: number | null = null;
         const animateScroll = (currentTime: number) => {
           if (!element) return;
@@ -47,10 +47,17 @@ const Dashboard = () => {
   useEffect(() => {
     if (contentScrollRef.current) {
       const element = contentScrollRef.current;
-      const preventScroll = (e: WheelEvent) => e.preventDefault();
+      const preventScroll = (e: Event) => e.preventDefault();
       element.addEventListener('wheel', preventScroll, { passive: false });
+      // Disable touch scroll on mobile devices
+      if (window.innerWidth < 768) {
+        element.addEventListener('touchmove', preventScroll, { passive: false });
+      }
       return () => {
         element.removeEventListener('wheel', preventScroll);
+        if (window.innerWidth < 768) {
+          element.removeEventListener('touchmove', preventScroll);
+        }
       };
     }
   }, []);
@@ -92,7 +99,7 @@ const Dashboard = () => {
         opacity: 1,
         transition: {
           staggerChildren: 0.005,
-          delayChildren: 2.4,
+          delayChildren: 2.0,
         },
       },
     },
@@ -102,7 +109,7 @@ const Dashboard = () => {
         opacity: 1,
         transition: {
           staggerChildren: 0.005,
-          delayChildren: 3.0,
+          delayChildren: 2.8,
         },
       },
     },
@@ -359,8 +366,8 @@ const Dashboard = () => {
                   processes within a dynamic, data-driven team.
                 </span>
               </div>
-              <div className="flex h-full w-fit items-start justify-center pr-1">
-                <span className="rounded-lg bg-[#38b6ff] px-4 py-1 text-[6px] text-white md:text-sm">
+              <div className="flex h-full w-fit items-start justify-center">
+                <span className="rounded-lg bg-[#38b6ff] px-2 py-1 text-[6px] text-white sm:px-4 md:text-sm">
                   Under review
                 </span>
               </div>
@@ -393,7 +400,7 @@ const Dashboard = () => {
                   using AWS
                 </span>
               </div>
-              <div className="flex h-full w-auto items-start justify-end pr-1">
+              <div className="flex h-full w-auto items-start justify-end">
                 <span className="rounded-lg bg-[#fad246] px-4 py-1 text-[8px] text-white md:text-sm">
                   Archived
                 </span>
@@ -428,7 +435,7 @@ const Dashboard = () => {
                     using AWS
                   </span>
                 </div>
-                <div className="flex h-full w-auto items-start justify-end pr-1">
+                <div className="flex h-full w-auto items-start justify-end">
                   <span className="rounded-lg bg-[#fad246] px-4 py-1 text-[8px] text-white md:text-sm">
                     Archived
                   </span>
@@ -445,7 +452,7 @@ const Dashboard = () => {
                     using AWS
                   </span>
                 </div>
-                <div className="flex h-full w-auto items-start justify-end pr-1">
+                <div className="flex h-full w-auto items-start justify-end">
                   <span className="rounded-lg bg-[#fad246] px-4 py-1 text-[8px] text-white md:text-sm">
                     Archived
                   </span>
@@ -462,7 +469,7 @@ const Dashboard = () => {
                     using AWS
                   </span>
                 </div>
-                <div className="flex h-full w-auto items-start justify-end pr-1">
+                <div className="flex h-full w-auto items-start justify-end">
                   <span className="rounded-lg bg-[#fad246] px-4 py-1 text-[8px] text-white md:text-sm">
                     Archived
                   </span>
@@ -479,7 +486,7 @@ const Dashboard = () => {
                     using AWS
                   </span>
                 </div>
-                <div className="flex h-full w-auto items-start justify-end pr-1">
+                <div className="flex h-full w-auto items-start justify-end">
                   <span className="rounded-lg bg-[#fad246] px-4 py-1 text-[8px] text-white md:text-sm">
                     Archived
                   </span>
@@ -496,7 +503,7 @@ const Dashboard = () => {
                     using AWS
                   </span>
                 </div>
-                <div className="flex h-full w-auto items-start justify-end pr-1">
+                <div className="flex h-full w-auto items-start justify-end">
                   <span className="rounded-lg bg-[#fad246] px-4 py-1 text-[8px] text-white md:text-sm">
                     Archived
                   </span>
