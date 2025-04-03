@@ -9,7 +9,6 @@ import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 
 const MatchandRank = () => {
   const [activeTab, setActiveTab] = useState('assessment');
-  const [animationPhase, setAnimationPhase] = useState(1); // Track animation phase
   const scrollRef = useRef<HTMLDivElement>(null);
   const contentScrollRef = useRef<HTMLDivElement>(null);
   const favoriteTabRef = useRef<HTMLDivElement>(null);
@@ -75,7 +74,7 @@ const MatchandRank = () => {
           } else {
             setTimeout(() => {
               scrollToTop();
-            }, 2000); 
+            }, 2000);
           }
         };
 
@@ -88,7 +87,7 @@ const MatchandRank = () => {
 
       const start = element.scrollTop;
       const target = 0;
-      const duration = 3000; 
+      const duration = 3000;
 
       let startTime: number | null = null;
 
@@ -107,15 +106,13 @@ const MatchandRank = () => {
           requestAnimationFrame(animateScrollUp);
         } else {
           setTimeout(() => {
-            setAnimationPhase(2); 
             if (favoriteTabRef.current) {
-              favoriteTabRef.current.click(); 
+              favoriteTabRef.current.click();
             }
             setTimeout(() => {
-              setAnimationPhase(3); 
               scrollDownAgain();
-            }, 2000); 
-          }, 1000); 
+            }, 2000);
+          }, 1000);
         }
       };
 
@@ -127,7 +124,7 @@ const MatchandRank = () => {
 
       const start = element.scrollTop;
       const target = element.scrollHeight;
-      const duration = window.innerWidth < 768 ? 8000 : 4000; 
+      const duration = window.innerWidth < 768 ? 8000 : 4000;
 
       let startTime: number | null = null;
 
@@ -150,10 +147,8 @@ const MatchandRank = () => {
       requestAnimationFrame(animateScrollDownAgain);
     };
 
-
     initialScrollDown();
   }, []);
-
 
   const sectionVariants = {
     header: {
@@ -368,7 +363,7 @@ const MatchandRank = () => {
 
         <AnimatePresence mode="wait">
           <motion.div
-            key={activeTab} 
+            key={activeTab}
             initial="hidden"
             animate="visible"
             exit={{ opacity: 0, y: 20 }}

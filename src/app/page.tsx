@@ -4,10 +4,12 @@ import Navbar from '@/themes/components/Navbar/Navbar';
 import { SpotlightPreview } from '@/themes/components/HeroBanner/HeroBanner';
 import { TabsDemo } from '@/themes/components/Tabs/Tabs';
 import { Spotlight } from '@/themes/components/ui/Spotlight';
+import CustomCursor from '@/themes/components/ui/CustomCursor';
 
 export default function Home() {
   return (
     <main className="mx-auto min-h-screen overflow-hidden bg-white transition-colors duration-300 dark:bg-[var(--neutral-50)]">
+      <CustomCursor />
       <Navbar />
       <div className="relative container">
         <div className="absolute inset-0 z-0 bg-gradient-to-b from-transparent to-gray-50/30 transition-colors duration-300 dark:from-transparent dark:to-[var(--primary-dark)]/20" />
