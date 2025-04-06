@@ -168,7 +168,7 @@ const Slider = () => {
   return (
     <div ref={containerRef} className="relative -top-0 z-0 min-h-[140vh] w-full">
       {/* Dotted background using design system colors */}
-      <div className="absolute inset-0 z-5 overflow-hidden">
+      <div className="absolute inset-0 z-0 overflow-hidden">
         {/* Gradient base layer */}
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary-medium-blue)]/5 via-transparent to-[var(--primary-gold)]/5"></div>
 
@@ -197,7 +197,7 @@ const Slider = () => {
           display: displayStyle,
           pointerEvents: 'none',
         }}
-        className="fixed top-[30vh] left-0 z-5 h-auto w-full items-center justify-center to-transparent transition-all duration-500 dark:from-[var(--neutral-50)]/80 dark:via-[var(--neutral-50)]/30 dark:to-transparent"
+        className="fixed top-[30vh] left-0 z-0 h-auto w-full items-center justify-center to-transparent transition-all duration-500 dark:from-[var(--neutral-50)]/80 dark:via-[var(--neutral-50)]/30 dark:to-transparent"
       >
         <motion.div
           ref={textRef}

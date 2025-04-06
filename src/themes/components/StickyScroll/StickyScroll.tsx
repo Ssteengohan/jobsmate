@@ -58,7 +58,7 @@ const content = [
 
 export function StickyScrollRevealDemo() {
   return (
-    <div className="relative z-20 w-full">
+    <div className="relative z-0 w-full">
       <StickyScroll content={content} />
     </div>
   );

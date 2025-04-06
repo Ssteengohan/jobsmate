@@ -5,13 +5,13 @@ import { motion } from 'framer-motion';
 
 export function SpotlightPreview() {
   return (
-    <div className="relative z-0 flex h-screen w-full items-center overflow-hidden antialiased transition-colors duration-300 sm:h-[55rem] md:justify-center">
+    <div className="relative z-100 flex h-screen w-full items-center overflow-hidden antialiased transition-colors duration-300 sm:h-[55rem] md:justify-center">
       <div className="absolute inset-0 z-0 bg-gradient-to-b from-transparent to-gray-50/30 transition-colors duration-300 dark:from-transparent dark:to-[var(--primary-dark)]/20" />
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
-        className="relative z-10 w-full mx-auto sm:max-w-7xl pt-20 md:pt-0"
+        className="relative z-10 mx-auto w-full pt-20 sm:max-w-7xl md:pt-0"
       >
         <motion.h1
           initial={{ y: 20, opacity: 0 }}
