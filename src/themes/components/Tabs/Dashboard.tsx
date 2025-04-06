@@ -5,18 +5,17 @@ import { RiSettings3Line } from 'react-icons/ri';
 import { CiMail } from 'react-icons/ci';
 import { BiFilterAlt } from 'react-icons/bi';
 import { IoIosArrowDown } from 'react-icons/io';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll } from 'framer-motion';
 import { useRef, useEffect } from 'react';
 
 const Dashboard = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const contentScrollRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
+
+  useScroll({
     target: scrollRef,
     offset: ['start start', 'end end'],
   });
-
-  const scaleEffect = useTransform(scrollYProgress, [0, 1], [1, 0.9]);
 
   useEffect(() => {
     if (contentScrollRef.current) {
@@ -41,24 +40,6 @@ const Dashboard = () => {
         };
         requestAnimationFrame(animateScroll);
       }, 4000);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (contentScrollRef.current) {
-      const element = contentScrollRef.current;
-      const preventScroll = (e: Event) => e.preventDefault();
-      element.addEventListener('wheel', preventScroll, { passive: false });
-      // Disable touch scroll on mobile devices
-      if (window.innerWidth < 768) {
-        element.addEventListener('touchmove', preventScroll, { passive: false });
-      }
-      return () => {
-        element.removeEventListener('wheel', preventScroll);
-        if (window.innerWidth < 768) {
-          element.removeEventListener('touchmove', preventScroll);
-        }
-      };
     }
   }, []);
 
@@ -229,7 +210,7 @@ const Dashboard = () => {
       <div className="flex h-full w-full gap-12 rounded-r-2xl bg-[#f9f9f9] pt-3 pl-3 sm:px-4 sm:pt-6 md:px-7">
         <div
           ref={contentScrollRef}
-          className="scrollbar-hide flex max-h-full w-full flex-col items-start gap-4 overflow-y-auto sm:gap-8"
+          className="scrollbar-hide pointer-events-none relative flex max-h-full w-full flex-col items-start gap-4 overflow-y-auto sm:gap-8"
         >
           <motion.div
             initial="hidden"
@@ -340,7 +321,6 @@ const Dashboard = () => {
           </motion.div>
 
           <motion.div
-            style={{ scale: scaleEffect }}
             initial="hidden"
             animate="visible"
             viewport={{ once: true, amount: 0.1, margin: '-100px 0px -100px 0px' }}
@@ -375,7 +355,6 @@ const Dashboard = () => {
           </motion.div>
 
           <motion.div
-            style={{ scale: scaleEffect }}
             initial="hidden"
             animate="visible"
             viewport={{ once: true, amount: 0.1, margin: '-100px 0px -100px 0px' }}
@@ -409,7 +388,6 @@ const Dashboard = () => {
           </motion.div>
 
           <motion.div
-            style={{ scale: scaleEffect }}
             initial="hidden"
             animate="visible"
             viewport={{ once: true, amount: 0.1, margin: '-100px 0px -100px 0px' }}

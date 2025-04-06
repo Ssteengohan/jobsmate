@@ -5,7 +5,7 @@ import { TbUsers } from 'react-icons/tb';
 import { RiSettings3Line } from 'react-icons/ri';
 import { CiMail } from 'react-icons/ci';
 import { BiFilterAlt } from 'react-icons/bi';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, AnimatePresence } from 'framer-motion';
 
 const MatchandRank = () => {
   const [activeTab, setActiveTab] = useState('assessment');
@@ -13,33 +13,11 @@ const MatchandRank = () => {
   const contentScrollRef = useRef<HTMLDivElement>(null);
   const favoriteTabRef = useRef<HTMLDivElement>(null);
 
-  const { scrollYProgress } = useScroll({
+  // Call useScroll without storing the return value since we don't use it
+  useScroll({
     target: scrollRef,
     offset: ['start start', 'end end'],
   });
-
-  const scaleEffect = useTransform(scrollYProgress, [0, 1], [1, 0.9]);
-
-  // Prevent manual scrolling
-  useEffect(() => {
-    if (contentScrollRef.current) {
-      const element = contentScrollRef.current;
-      const preventScroll = (e: Event) => e.preventDefault();
-      element.addEventListener('wheel', preventScroll, { passive: false });
-
-      // Disable touch scroll on mobile devices
-      if (window.innerWidth < 768) {
-        element.addEventListener('touchmove', preventScroll, { passive: false });
-      }
-
-      return () => {
-        element.removeEventListener('wheel', preventScroll);
-        if (window.innerWidth < 768) {
-          element.removeEventListener('touchmove', preventScroll);
-        }
-      };
-    }
-  }, []);
 
   // Multi-phase animation sequence
   useEffect(() => {
@@ -289,7 +267,10 @@ const MatchandRank = () => {
           </span>
         </div>
       </div>
-      <div ref={contentScrollRef} className="scrollbar-hide flex w-full flex-col overflow-y-auto">
+      <div
+        ref={contentScrollRef}
+        className="scrollbar-hide pointer-events-none relative flex w-full flex-col overflow-y-auto"
+      >
         <motion.div
           initial="hidden"
           animate="visible"
@@ -305,7 +286,7 @@ const MatchandRank = () => {
             </motion.span>
             <motion.span
               variants={itemVariants}
-              className="rounded-lg bg-[#00253b] px-1 py-1 text-[8px] font-bold md:px-3 md:py-2 md:text-xs"
+              className="rounded-lg bg-[#00253b] px-1 py-1 text-[8px] font-bold text-white md:px-3 md:py-2 md:text-xs"
             >
               Published
             </motion.span>
@@ -368,7 +349,6 @@ const MatchandRank = () => {
             animate="visible"
             exit={{ opacity: 0, y: 20 }}
             variants={sectionVariants.candidates}
-            style={{ scale: scaleEffect }}
             className="candidates-container"
           >
             {Array.from({ length: activeTab === 'favorite' ? 2 : 10 }).map((_, idx) => (

@@ -1,0 +1,211 @@
+'use client';
+import { useEffect, useCallback, useState, useRef } from 'react';
+import { motion, stagger, useAnimate, MotionValue } from 'motion/react';
+import { cn } from '../../lib/utils';
+
+export const TextGenerateEffect = ({
+  words,
+  className,
+  filter = true,
+  duration = 0.5,
+  html = false,
+  animate = true,
+  scrollProgress, // New prop to control animation based on scroll
+}: {
+  words: string;
+  className?: string;
+  filter?: boolean;
+  duration?: number;
+  html?: boolean;
+  animate?: boolean;
+  scrollProgress?: MotionValue<number>;
+}) => {
+  const [scope, animateFunc] = useAnimate();
+  const [isReady, setIsReady] = useState(false);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const elementsRef = useRef<NodeListOf<Element> | null>(null);
+  const wordsArray = words.split(' ');
+
+  // Initialize animation when component is ready
+  useEffect(() => {
+    setIsReady(true);
+  }, []);
+
+  // Handle scroll-based word animation
+  useEffect(() => {
+    if (!isReady || !animate || !scrollProgress) return;
+
+    // Get all word elements
+    if (html && scope.current) {
+      elementsRef.current = scope.current.querySelectorAll('.text-word');
+    }
+
+    // Setup scroll progress listener
+    const unsubscribe = scrollProgress.on('change', (progress) => {
+      if (!elementsRef.current) return;
+
+      const totalWords = elementsRef.current.length;
+
+      // Calculate how many words should be visible based on scroll progress
+      const visibleWordCount = Math.ceil(progress * totalWords);
+
+      // Update each word's visibility
+      elementsRef.current.forEach((element, index) => {
+        if (index < visibleWordCount) {
+          // Word should be visible
+          (element as HTMLElement).style.opacity = '1';
+          (element as HTMLElement).style.filter = filter ? 'blur(0px)' : 'none';
+          (element as HTMLElement).style.transform = 'translateY(0)';
+        } else {
+          // Word should be hidden
+          (element as HTMLElement).style.opacity = '0';
+          (element as HTMLElement).style.filter = filter ? 'blur(4px)' : 'none';
+          (element as HTMLElement).style.transform = 'translateY(10px)';
+        }
+      });
+    });
+
+    return () => unsubscribe();
+  }, [isReady, animate, scrollProgress, filter]);
+
+  // Legacy animation effect for non-scroll scenarios
+  const startAnimation = useCallback(() => {
+    if (!isReady || !animate || hasAnimated || scrollProgress) return;
+
+    setTimeout(() => {
+      try {
+        if (html) {
+          if (scope.current) {
+            scope.current.style.opacity = '1';
+          }
+
+          const elements = scope.current?.querySelectorAll('.text-word');
+          elementsRef.current = elements;
+
+          if (elements?.length > 0) {
+            animateFunc(
+              elements,
+              {
+                opacity: 1,
+                filter: filter ? 'blur(0px)' : 'none',
+                transform: 'translateY(0)',
+              },
+              {
+                duration: duration || 1,
+                delay: stagger(0.2),
+              },
+            );
+            setHasAnimated(true);
+          }
+        } else {
+          animateFunc(
+            'span',
+            {
+              opacity: 1,
+              filter: filter ? 'blur(0px)' : 'none',
+            },
+            {
+              duration: duration || 1,
+              delay: stagger(0.2),
+            },
+          );
+          setHasAnimated(true);
+        }
+      } catch (error) {
+        console.error('Animation error:', error);
+      }
+    }, 100);
+  }, [animateFunc, duration, filter, html, scope, isReady, animate, hasAnimated, scrollProgress]);
+
+  useEffect(() => {
+    if (isReady && animate && !scrollProgress) {
+      startAnimation();
+    }
+
+    if (!animate) {
+      setHasAnimated(false);
+    }
+  }, [isReady, animate, startAnimation, scrollProgress]);
+
+  // Improved HTML rendering with transition properties for smooth animation
+  const renderHTML = () => {
+    return (
+      <div ref={scope} className="text-black dark:text-white" style={{ opacity: 1 }}>
+        <span
+          className="text-word"
+          style={{
+            opacity: 0,
+            transition: 'opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease',
+            transform: 'translateY(10px)',
+          }}
+        >
+          Integration
+        </span>{' '}
+        <span
+          className="text-word"
+          style={{
+            opacity: 0,
+            transition: 'opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease',
+            transform: 'translateY(10px)',
+          }}
+        >
+          with
+        </span>{' '}
+        <span
+          className="text-word text-[var(--primary-gold)]"
+          style={{
+            opacity: 0,
+            transition: 'opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease',
+            transform: 'translateY(10px)',
+          }}
+        >
+          15+
+        </span>{' '}
+        <span
+          className="text-word text-[var(--primary-gold)]"
+          style={{
+            opacity: 0,
+            transition: 'opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease',
+            transform: 'translateY(10px)',
+          }}
+        >
+          ATS
+        </span>
+      </div>
+    );
+  };
+
+  const renderWords = () => {
+    if (html) {
+      return renderHTML();
+    }
+
+    return (
+      <motion.div ref={scope}>
+        {wordsArray.map((word: string, idx: number) => {
+          return (
+            <motion.span
+              key={word + idx}
+              className="text-black opacity-0 dark:text-white"
+              style={{
+                filter: filter ? 'blur(10px)' : 'none',
+              }}
+            >
+              {word}{' '}
+            </motion.span>
+          );
+        })}
+      </motion.div>
+    );
+  };
+
+  return (
+    <div className={cn('', className)}>
+      <div className="mt-4">
+        <div className="leading-snug tracking-wide text-2xl text-black md:text-5xl 2xl:text-7xl dark:text-white">
+          {renderWords()}
+        </div>
+      </div>
+    </div>
+  );
+};
