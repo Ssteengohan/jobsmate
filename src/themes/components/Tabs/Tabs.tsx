@@ -28,7 +28,7 @@ export function TabsDemo() {
   ];
 
   return (
-    <div className="relative z-1 flex min-h-[100vh] items-start bg-none border-none ">
+    <div className="relative z-10 flex min-h-[100vh] items-start bg-none border-none ">
       <div
         ref={tabsRef}
         className="sticky top-0 z-10 container mx-auto flex w-full flex-col items-start justify-start gap-4 bg-white/95 py-4 backdrop-blur-sm transition-all duration-300 sm:mt-0 md:gap-12 dark:bg-[var(--neutral-50)]/95"

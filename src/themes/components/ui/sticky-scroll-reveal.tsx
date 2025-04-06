@@ -127,15 +127,15 @@ export const StickyScroll = ({
         animate={{
           background: [
             `linear-gradient(145deg, var(--primary-dark) 0%, var(--primary-dark-blue) 40%, var(--primary-medium-blue) 80%, var(--primary-light-blue) 100%)`,
-            `linear-gradient(145deg, var(--primary-dark-blue) 0%, var(--primary-dark-blue) 30%, var(--accent-purple) 60%, var(--primary-medium-blue) 100%)`,
-            `linear-gradient(145deg, var(--primary-dark) 0%, var(--primary-dark-blue) 40%, var(--primary-medium-blue) 80%, var(--primary-gold) 120%)`,
+            `linear-gradient(145deg, var(--primary-dark-blue) 0%, var(--primary-dark-blue) 30%, var(--primary-medium-blue) 60%, var(--primary-medium-blue) 100%)`,
+            `linear-gradient(145deg, var(--primary-dark) 0%, var(--primary-dark-blue) 40%, var(--primary-medium-blue) 85%, var(--primary-gold) 140%)`,
           ][activeCard],
         }}
         transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
       />
 
       {/* Subtle overlay with very light colors rather than white opacity */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#fafbfd]/10 via-[#f9f9f9] to-[var(--primary-gold)]/5 backdrop-blur-[1px] dark:bg-gradient-to-b dark:from-transparent dark:via-black/30 dark:to-black/60 dark:backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#fafbfd]/10 via-[#f9f9f9] to-[var(--primary-gold)]/1 backdrop-blur-[1px] dark:bg-gradient-to-b dark:from-transparent dark:via-black/30 dark:to-black/60 dark:backdrop-blur-sm" />
 
       {/* Abstract subtle pattern for light mode with color tints from variables */}
       <div className="absolute inset-0 mix-blend-soft-light dark:opacity-20 dark:mix-blend-overlay">

@@ -88,7 +88,7 @@ const defaultTiers: PricingTier[] = [
 
 const PricingCard: React.FC<PricingCardProps> = ({ tiers = defaultTiers }) => {
   return (
-    <div className="relative z-20 container flex min-h-[100vh] items-center justify-center bg-white px-4 py-8 sm:px-6 md:py-12 lg:px-8 dark:bg-[var(--primary-dark)]">
+    <div className="relative z-30 container flex min-h-[100vh] items-center justify-center bg-[#f9f9f9] px-4 py-8 sm:px-6 md:py-12 lg:px-8 dark:bg-[var(--primary-dark)]">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 py-12 md:gap-12 md:pt-0">
         <div className="mb-8 text-center md:mb-12">
           <motion.h2

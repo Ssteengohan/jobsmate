@@ -12,10 +12,10 @@ import PricingCard from '@/themes/components/PricingCard/PricingCard';
 
 export default function Home() {
   return (
-    <main className="mx-auto min-h-screen overflow-hidden bg-white transition-colors duration-300 dark:bg-[var(--neutral-50)]">
+    <main className="mx-auto min-h-screen overflow-hidden bg-gradient-to-b from-white via-[#f9f9f9] to-[var(--primary-gold)]/5 transition-colors duration-300 dark:bg-[var(--neutral-50)] dark:bg-none">
       <CustomCursor />
       <Navbar />
-      <div className="relative z-10 container">
+      <div className="relative z-20 container">
         <div className="absolute inset-0 z-0 bg-gradient-to-b from-transparent to-gray-50/30 transition-colors duration-300 dark:from-transparent dark:to-[var(--primary-dark)]/20" />
         <div className="absolute inset-y-0 left-[1%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]"></div>
         <div className="absolute inset-y-0 left-[99%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]"></div>
@@ -34,16 +34,16 @@ export default function Home() {
 
         <SpotlightPreview />
       </div>
-      <div className="relative z-1 container">
+      <div className="relative z-10 container">
         <div className="absolute inset-y-0 left-[1%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]"></div>
         <div className="absolute inset-y-0 left-[99%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]"></div>
 
         <TabsDemo />
-        <Slider />
       </div>
-      <div className="relative z-10 container">
+      <div className="relative z-5 container">
         <div className="absolute inset-y-0 left-[1%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]"></div>
         <div className="absolute inset-y-0 left-[99%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]"></div>
+        <Slider />
 
         <TimelineDemo />
         <StickyScrollRevealDemo />
