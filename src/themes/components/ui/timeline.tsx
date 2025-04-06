@@ -11,6 +11,22 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
   const ref = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Check if we're on a mobile device
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    // Initial check
+    checkMobile();
+
+    // Add resize listener
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     if (ref.current) {
@@ -21,13 +37,17 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ['start 0.4', 'end 0.9'], // Adjusted for better timing
+    offset: isMobile
+      ? ['start 0.2', 'end 1'] // Tighter offset for mobile
+      : ['start 0.4', 'end 0.9'], // Original offset for desktop
   });
 
   const heightTransform = useTransform(
     scrollYProgress,
-    [0, 0.11, 0.9, 1], // Add more control points
-    [0, height * 0.1, height * 0.9, height], // Matching scroll positions to height
+    [0, 0.11, 0.9, 1], // Control points
+    isMobile
+      ? [0, height * 0.1, height * 0.8, height * 1] // Scale down final height on mobile
+      : [0, height * 0.1, height * 0.9, height], // Original values for desktop
   );
 
   // Smooth opacity transition
@@ -54,7 +74,7 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
         </p>
       </div>
 
-      <div ref={ref} className="relative flex flex-col mx-auto max-w-7xl  pb-20">
+      <div ref={ref} className="relative mx-auto flex max-w-7xl flex-col pb-20">
         {data.map((item, index) => (
           <div key={index} className="flex justify-start pt-10 md:gap-10 md:pt-40">
             <div className="sticky top-40 z-40 flex max-w-xs flex-col items-center self-start md:w-full md:flex-row lg:max-w-sm">
@@ -77,6 +97,8 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
         <div
           style={{
             height: height + 'px',
+            // Add max-height constraint for mobile
+            maxHeight: isMobile ? 'calc(100vh * 1.5)' : 'none',
           }}
           className="absolute top-0 left-8 w-[2px] overflow-hidden bg-[linear-gradient(to_bottom,var(--tw-gradient-stops))] from-transparent from-[0%] via-[var(--neutral-200)] to-transparent to-[99%] transition-colors duration-300 [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)] md:left-8 dark:via-[var(--neutral-200)]"
         >
@@ -84,6 +106,8 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
             style={{
               height: heightTransform,
               opacity: opacityTransform,
+              // Add max-height for mobile
+              maxHeight: isMobile ? '100%' : 'none',
             }}
             className="absolute inset-x-0 top-0 w-[2px] rounded-full bg-gradient-to-t from-[var(--primary-gold)] from-[0%] via-[var(--primary-light-blue)] via-[10%] to-transparent"
           />

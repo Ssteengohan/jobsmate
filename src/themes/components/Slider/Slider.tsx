@@ -97,14 +97,14 @@ const Slider = () => {
   const y = useTransform(scrollYProgress, [0.2, 0.3], [30, 0]);
 
   const combinedOpacity = useTransform(scrollYProgress, (latest) => {
-    // Only check lower bound - content stays visible after appearing
-    if (latest < 0.15) return 0;
-    return 1; // Stay visible once it appears
+    // Add upper bound - content hides when scrolled out of view
+    if (latest < 0.15 || latest > 1) return 0;
+    return 1; // Only visible within the specified range
   });
 
   const displayStyle = useTransform(scrollYProgress, (latest) => {
-    // Only check lower bound - content stays visible after appearing
-    if (latest < 0.1) return 'none';
+    // Add upper bound - content disappears when scrolled out of view
+    if (latest < 0.1 || latest > 1) return 'none';
     return 'flex';
   });
 
@@ -166,9 +166,9 @@ const Slider = () => {
   ];
 
   return (
-    <div ref={containerRef} className="relative -top-0 z-0 min-h-[140vh] w-full">
+    <div ref={containerRef} className="relative -top-0 -z-50 min-h-[140vh] w-full">
       {/* Dotted background using design system colors */}
-      <div className="absolute inset-0 z-5 overflow-hidden">
+      <div className="absolute inset-0 -z-50 overflow-hidden">
         {/* Gradient base layer */}
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary-medium-blue)]/5 via-transparent to-[var(--primary-gold)]/5"></div>
 
@@ -184,7 +184,7 @@ const Slider = () => {
 
       {/* Interactive dots layer that fades with scroll */}
       <motion.div
-        className="absolute inset-0 z-5 [background-image:radial-gradient(var(--primary-light-blue)_2px,transparent_2px)] [background-size:20px_20px] dark:[background-image:radial-gradient(var(--accent-purple)_1.8px,transparent_1.8px)]"
+        className="absolute inset-0 -z-50 [background-image:radial-gradient(var(--primary-light-blue)_2px,transparent_2px)] [background-size:20px_20px] dark:[background-image:radial-gradient(var(--accent-purple)_1.8px,transparent_1.8px)]"
         style={{
           opacity: useTransform(scrollYProgress, [0, 0.1, 0.5, 0.7], [0.6, 0.4, 0.2, 0]),
         }}
@@ -197,7 +197,7 @@ const Slider = () => {
           display: displayStyle,
           pointerEvents: 'none',
         }}
-        className="fixed top-[30vh] left-0 z-5 h-auto w-full items-center justify-center to-transparent transition-all duration-500 dark:from-[var(--neutral-50)]/80 dark:via-[var(--neutral-50)]/30 dark:to-transparent"
+        className="fixed top-[30vh] left-0 -z-50 h-auto w-full items-center justify-center to-transparent transition-all duration-500 dark:from-[var(--neutral-50)]/80 dark:via-[var(--neutral-50)]/30 dark:to-transparent"
       >
         <motion.div
           ref={textRef}

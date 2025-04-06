@@ -46,7 +46,7 @@ export function TimelineDemo() {
               opacity: firstItemProgress,
               y: useTransform(firstItemProgress, [0, 1], [30, 0]), // More dramatic movement
             }}
-            className="mb-8 text-xs font-normal text-neutral-800 md:text-lg dark:text-neutral-200"
+            className="mb-8 text-xs font-normal text-[var(--primary-dark-blue)] md:text-lg dark:text-neutral-200"
           >
             🔍 Beyond our elite tech candidate pool, we rigorously screen every applicant with our
             advanced Anti-cheat monitor, ensuring integrity and authenticity in your hiring process.
@@ -83,7 +83,7 @@ export function TimelineDemo() {
               opacity: secondItemProgress,
               y: useTransform(secondItemProgress, [0, 1], [10, 0]),
             }}
-            className="mt-4 mb-12 text-xs font-normal text-neutral-800 md:text-lg dark:text-neutral-200"
+            className="mt-4 mb-12 text-xs font-normal text-[var(--primary-dark-blue)] md:text-lg dark:text-neutral-200"
           >
             💻 Watch candidates code in real-time! We meticulously track every line of code,
             providing you with deep insights into their problem-solving abilities and coding style.
@@ -129,7 +129,7 @@ export function TimelineDemo() {
               opacity: thirdItemProgress,
               y: useTransform(thirdItemProgress, [0, 1], [30, 0]), // More dramatic movement
             }}
-            className="mb-4 text-xs font-normal text-neutral-800 md:text-lg dark:text-neutral-200"
+            className="mb-4 text-xs font-normal text-[var(--primary-dark-blue)] md:text-lg dark:text-neutral-200"
           >
             ✅ Streamline your hiring workflow with our automated candidate management system. Boost
             response rates and save time with one-click reviews, personalized messaging, and
