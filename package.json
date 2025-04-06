@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "start": "next start"
   },
   "dependencies": {
     "@tabler/icons-react": "^3.31.0",
@@ -37,6 +37,6 @@
     "typescript": "^5"
   },
   "overrides": {
-    "react-syntax-highlighter": "15.0.0"
+    "react-syntax-highlighter": "^15.6.1"
   }
 }
