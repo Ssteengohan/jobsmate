@@ -100,6 +100,7 @@ export function TimelineDemo() {
             }}
             className="flex h-full w-full flex-col-reverse gap-4 md:gap-8"
           >
+            <CodeBlockDemo />
             <video
               ref={videoRef}
               className="h-full w-full rounded-2xl object-cover object-top"
@@ -113,7 +114,6 @@ export function TimelineDemo() {
             >
               Your browser does not support the video tag.
             </video>
-            <CodeBlockDemo />
           </motion.div>
         </div>
       ),
@@ -165,7 +165,7 @@ export function TimelineDemo() {
   ];
 
   return (
-    <div ref={containerRef} className="relative h-full z-20 w-full">
+    <div ref={containerRef} className="relative z-20 h-full w-full">
       <Timeline data={data} />
     </div>
   );
