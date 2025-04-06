@@ -72,9 +72,9 @@ export const StickyScroll = ({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.2 }}
-        className="absolute top-0 sm:top-[15vh] right-0 left-0 z-5 py-3 text-center text-lg font-medium dark:from-white/5 dark:via-white/10 dark:to-white/5 dark:text-white/90"
+        className="absolute top-0 right-0 left-0 z-5 py-3 text-center text-lg font-medium sm:top-[15vh] dark:from-white/5 dark:via-white/10 dark:to-white/5 dark:text-white/90"
       >
-        <h3 className="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-gold)] bg-clip-text text-4xl lg:text-7xl font-bold text-transparent drop-shadow-[0_0_5px_rgba(0,0,0,0.1)] dark:drop-shadow-[0_0_8px_rgba(42,151,219,0.3)]">
+        <h3 className="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-gold)] bg-clip-text text-4xl font-bold text-transparent drop-shadow-[0_0_5px_rgba(0,0,0,0.1)] lg:text-7xl dark:drop-shadow-[0_0_8px_rgba(42,151,219,0.3)]">
           We care about our
           <br />{' '}
           <motion.span
@@ -101,7 +101,7 @@ export const StickyScroll = ({
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.7 }}
-          className="mt-2 inline-block font-medium text-neutral-600 italic dark:text-white/70 pt-2 sm:pt-0" 
+          className="mt-2 inline-block pt-2 font-medium text-neutral-600 italic sm:pt-0 dark:text-white/70"
         >
           Not just a data-bank or recruitment agency.
         </motion.span>
@@ -126,10 +126,9 @@ export const StickyScroll = ({
         className="absolute inset-0 z-0 hidden transition-all duration-700 dark:block"
         animate={{
           background: [
-            `linear-gradient(145deg, var(--primary-dark) 0%, var(--primary-medium-blue) 50%, var(--primary-light-blue) 100%)`,
-            `linear-gradient(145deg, var(--primary-dark-blue) 0%, var(--accent-purple) 100%, var(--accent-rose) 100%)`,
-            `linear-gradient(145deg, var(--primary-dark) 0%, var(--primary-dark-blue) 70%, var(--primary-gold) 100%)`,
-            `linear-gradient(145deg, var(--accent-teal) 0%, var(--primary-medium-blue) 50%, var(--primary-light-blue) 100%)`,
+            `linear-gradient(145deg, var(--primary-dark) 0%, var(--primary-dark-blue) 40%, var(--primary-medium-blue) 80%, var(--primary-light-blue) 100%)`,
+            `linear-gradient(145deg, var(--primary-dark-blue) 0%, var(--primary-dark-blue) 30%, var(--accent-purple) 60%, var(--primary-medium-blue) 100%)`,
+            `linear-gradient(145deg, var(--primary-dark) 0%, var(--primary-dark-blue) 40%, var(--primary-medium-blue) 80%, var(--primary-gold) 120%)`,
           ][activeCard],
         }}
         transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
@@ -175,7 +174,7 @@ export const StickyScroll = ({
                     ease: [0.22, 1, 0.36, 1],
                   }}
                 >
-                  <h2 className="mb-6 text-3xl font-bold text-neutral-800 md:text-5xl dark:text-white">
+                  <h2 className="mb-6 text-3xl font-bold text-[var(--primary-dark-blue)] md:text-5xl dark:text-white">
                     {item.title}
                   </h2>
                   <p className="text-lg text-neutral-600 md:text-xl dark:text-white/80">
