@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { motion, useInView, AnimatePresence, MotionValue } from 'framer-motion';
 import { CodeBlock } from '../ui/code-block';
 
 // Initial code template for the applicant tracker component
@@ -19,13 +19,18 @@ const INITIAL_CODE = `const ApplicantTracker = () => {
   );
 };`;
 
-export function CodeBlockDemo() {
+interface CodeBlockDemoProps {
+  scrollProgress?: MotionValue<number>;
+}
+
+export function CodeBlockDemo({ scrollProgress }: CodeBlockDemoProps) {
   const codeRef = useRef(null);
-  const isInView = useInView(codeRef, { once: false, amount: 0.5 });
+  const isInView = useInView(codeRef, { once: false, amount: 0.2 });
   const [codeContent, setCodeContent] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [currentOperation, setCurrentOperation] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const animationStarted = useRef(false);
 
   // Check for mobile viewport on mount and resize
   useEffect(() => {
@@ -69,31 +74,32 @@ export function CodeBlockDemo() {
     [],
   );
 
-  // Modify initial code to have responsive text sizes for mobile
+  // Set initial code content
   useEffect(() => {
-    const mobileAdjustedCode = INITIAL_CODE.replace(
-      'className="text-xs sm:text-xl font-bold mb-4"',
-      'className="text-xs sm:text-xl font-bold mb-4"',
-    );
-    setCodeContent(isInView ? mobileAdjustedCode : '');
-  }, [isInView, isMobile]);
+    setCodeContent(INITIAL_CODE);
+  }, []);
 
-  // Reset and start animation when component comes into view
+  // Start animation when component comes into view
   useEffect(() => {
-    if (isInView) {
-      setCodeContent(INITIAL_CODE);
-      setCurrentOperation(null);
+    // Only run animation when element is in view and animation hasn't started yet
+    if (isInView && !animationStarted.current) {
+      animationStarted.current = true;
 
       const timer = setTimeout(() => {
         setIsTyping(true);
         setCurrentOperation(0);
-      }, 1000);
+      }, 800);
 
       return () => clearTimeout(timer);
-    } else {
+    }
+
+    // Reset animation when completely out of view
+    if (!isInView && !scrollProgress) {
+      animationStarted.current = false;
+      setCurrentOperation(null);
       setIsTyping(false);
     }
-  }, [isInView]);
+  }, [isInView, scrollProgress]);
 
   // Handle the typing animation based on current operation
   useEffect(() => {
@@ -140,20 +146,18 @@ export function CodeBlockDemo() {
   const lineHeight = isMobile ? 20 : 24;
 
   return (
-    <div className="h-full w-full" ref={codeRef}>
+    <div className="w-full" ref={codeRef}>
       <motion.div
-        className="h-full w-full overflow-hidden rounded-2xl shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
-        initial={{ opacity: 0.7, y: 20 }}
-        animate={
-          isInView ? { opacity: 1, y: 0, transition: { duration: 0.5 } } : { opacity: 0.7, y: 20 }
-        }
+        className="w-full overflow-hidden rounded-2xl shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+        initial={{ opacity: 0.7 }}
+        animate={{ opacity: 1, transition: { duration: 0.5 } }}
       >
         <div className="relative max-sm:h-[330px]">
           <div
-            className={`code-block-container ${isMobile ? 'origin-top-left scale-[0.7]' : ''} transition-all duration-300`}
+            className="code-block-container transition-all duration-300"
             style={{
-              fontSize: isMobile ? '10px' : '14px',
-              width: isMobile ? '140%' : '100%', // Expand container to allow scaling
+              fontSize: isMobile ? '12px' : '14px',
+              width: '100%',
               overflow: 'hidden',
             }}
           >
@@ -171,8 +175,8 @@ export function CodeBlockDemo() {
               <motion.div
                 className="pointer-events-none absolute right-0 left-0 bg-blue-500/5"
                 style={{
-                  top: `calc(${editOperations()[Math.min(currentOperation, editOperations().length - 1)].line * (isMobile ? lineHeight * 0.7 : lineHeight)}px + ${isMobile ? '6px' : '8px'})`,
-                  height: `${isMobile ? lineHeight * 0.7 : lineHeight}px`,
+                  top: `calc(${editOperations()[Math.min(currentOperation, editOperations().length - 1)].line * lineHeight}px + 8px)`,
+                  height: `${lineHeight}px`,
                 }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
