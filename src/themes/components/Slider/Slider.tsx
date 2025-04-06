@@ -97,14 +97,14 @@ const Slider = () => {
   const y = useTransform(scrollYProgress, [0.2, 0.3], [30, 0]);
 
   const combinedOpacity = useTransform(scrollYProgress, (latest) => {
-    // Only check lower bound - content stays visible after appearing
-    if (latest < 0.15) return 0;
-    return 1; // Stay visible once it appears
+    // Add upper bound - content hides when scrolled out of view
+    if (latest < 0.15 || latest > 1) return 0;
+    return 1; // Only visible within the specified range
   });
 
   const displayStyle = useTransform(scrollYProgress, (latest) => {
-    // Only check lower bound - content stays visible after appearing
-    if (latest < 0.1) return 'none';
+    // Add upper bound - content disappears when scrolled out of view
+    if (latest < 0.1 || latest > 1) return 'none';
     return 'flex';
   });
 
