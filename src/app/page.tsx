@@ -7,7 +7,6 @@ import { Spotlight } from '@/themes/components/ui/Spotlight';
 import CustomCursor from '@/themes/components/ui/CustomCursor';
 import Slider from '@/themes/components/Slider/Slider';
 import { TimelineDemo } from '@/themes/components/TimeLine/TimeLine';
-import { StickyScrollRevealDemo } from '@/themes/components/StickyScroll/StickyScroll';
 
 export default function Home() {
   return (
@@ -38,7 +37,6 @@ export default function Home() {
           <Slider />
         </div>
         <TimelineDemo />
-        <StickyScrollRevealDemo />
       </div>
     </main>
   );
