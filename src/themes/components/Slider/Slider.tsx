@@ -166,7 +166,7 @@ const Slider = () => {
   ];
 
   return (
-    <div ref={containerRef} className="relative -top-10 z-0 min-h-[140vh] w-full">
+    <div ref={containerRef} className="relative -top-0 z-0 min-h-[140vh] w-full">
       {/* Dotted background using design system colors */}
       <div className="absolute inset-0 z-5 overflow-hidden">
         {/* Gradient base layer */}
