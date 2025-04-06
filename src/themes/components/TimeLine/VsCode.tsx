@@ -10,7 +10,7 @@ const INITIAL_CODE = `const ApplicantTracker = () => {
 
   return (
     <div className="p-4 border rounded-lg">
-      <h2 className="text-xl font-bold mb-4">Applicant Tracker</h2>
+      <h2 className="text-xs sm:text-xl font-bold mb-4">Applicant Tracker</h2>
       <p className="mb-2">Loading applicant data...</p>
       <button className="px-4 py-2 bg-gray-200 text-gray-500 rounded cursor-not-allowed">
         Track New Applicant
@@ -25,6 +25,23 @@ export function CodeBlockDemo() {
   const [codeContent, setCodeContent] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [currentOperation, setCurrentOperation] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check for mobile viewport on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    // Initial check
+    checkMobile();
+
+    // Set up event listener for window resize
+    window.addEventListener('resize', checkMobile);
+
+    // Clean up
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const editOperations = useCallback(
     () => [
@@ -51,6 +68,15 @@ export function CodeBlockDemo() {
     ],
     [],
   );
+
+  // Modify initial code to have responsive text sizes for mobile
+  useEffect(() => {
+    const mobileAdjustedCode = INITIAL_CODE.replace(
+      'className="text-xs sm:text-xl font-bold mb-4"',
+      'className="text-xs sm:text-xl font-bold mb-4"',
+    );
+    setCodeContent(isInView ? mobileAdjustedCode : '');
+  }, [isInView, isMobile]);
 
   // Reset and start animation when component comes into view
   useEffect(() => {
@@ -110,6 +136,9 @@ export function CodeBlockDemo() {
     return [operations[currentOperation].line];
   }, [currentOperation, isTyping, editOperations]);
 
+  // Calculate line height based on mobile or desktop
+  const lineHeight = isMobile ? 20 : 24;
+
   return (
     <div className="h-full w-full" ref={codeRef}>
       <motion.div
@@ -119,13 +148,22 @@ export function CodeBlockDemo() {
           isInView ? { opacity: 1, y: 0, transition: { duration: 0.5 } } : { opacity: 0.7, y: 20 }
         }
       >
-        <div className="relative">
-          <CodeBlock
-            language="jsx"
-            filename="ApplicantTracker.jsx"
-            highlightLines={getHighlightLines()}
-            code={codeContent}
-          />
+        <div className="relative max-sm:h-[330px]">
+          <div
+            className={`code-block-container ${isMobile ? 'origin-top-left scale-[0.7]' : ''} transition-all duration-300`}
+            style={{
+              fontSize: isMobile ? '10px' : '14px',
+              width: isMobile ? '140%' : '100%', // Expand container to allow scaling
+              overflow: 'hidden',
+            }}
+          >
+            <CodeBlock
+              language="jsx"
+              filename="ApplicantTracker.jsx"
+              highlightLines={getHighlightLines()}
+              code={codeContent}
+            />
+          </div>
 
           {/* Active editor effect: blinking cursor line */}
           <AnimatePresence>
@@ -133,8 +171,8 @@ export function CodeBlockDemo() {
               <motion.div
                 className="pointer-events-none absolute right-0 left-0 bg-blue-500/5"
                 style={{
-                  top: `calc(${editOperations()[Math.min(currentOperation, editOperations().length - 1)].line * 24}px + 8px)`,
-                  height: '24px',
+                  top: `calc(${editOperations()[Math.min(currentOperation, editOperations().length - 1)].line * (isMobile ? lineHeight * 0.7 : lineHeight)}px + ${isMobile ? '6px' : '8px'})`,
+                  height: `${isMobile ? lineHeight * 0.7 : lineHeight}px`,
                 }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
