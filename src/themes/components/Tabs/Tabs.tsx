@@ -1,10 +1,15 @@
 'use client';
 
+import { useRef } from 'react';
 import { Tabs } from '../ui/tabs';
 import Dashboard from './Dashboard';
 import MatchandRank from './MatchandRank';
+import JobPosting from './JobPosting';
+import CustomAssessments from './CustomAssessments';
 
 export function TabsDemo() {
+  const tabsRef = useRef(null);
+
   const tabs = [
     {
       title: 'Dashboard',
@@ -14,12 +19,12 @@ export function TabsDemo() {
     {
       title: 'Job posting',
       value: 'jobposting',
-      content: <Dashboard />,
+      content: <JobPosting />,
     },
     {
-      title: 'Costum assessments',
-      value: 'costumassessments',
-      content: <Dashboard />,
+      title: 'Custom assessments',
+      value: 'customassessments',
+      content: <CustomAssessments />,
     },
     {
       title: 'Anti-cheating monitor',
@@ -34,8 +39,11 @@ export function TabsDemo() {
   ];
 
   return (
-    <div className="relative flex items-center bg-transparent">
-      <div className="mx-auto flex h-[45rem] w-full flex-col items-start justify-start [perspective:1000px] not-sm:container sm:mt-20 2xl:h-[90vh]">
+    <div className="relative z-20 flex min-h-[100vh] items-start bg-transparent" data-tabs-section>
+      <div
+        ref={tabsRef}
+        className="sticky top-0  container mx-auto flex w-full flex-col items-start justify-start gap-4 bg-white/95 py-4 backdrop-blur-sm transition-all duration-300 sm:mt-0 md:gap-12 dark:bg-[var(--neutral-50)]/95"
+      >
         <Tabs tabs={tabs} />
       </div>
     </div>

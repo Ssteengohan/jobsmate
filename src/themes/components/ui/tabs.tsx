@@ -40,7 +40,7 @@ export const Tabs = ({
     <>
       <div
         className={cn(
-          'no-visible-scrollbar relative max-sm:grid grid-cols-3 sm:grid-cols-3 md:flex md:flex-wrap w-full max-w-full items-start sm:items-center justify-center overflow-auto [perspective:1000px] gap-y-1 sm:flex-row sm:gap-4 sm:overflow-visible',
+          'no-visible-scrollbar relative max-sm:grid grid-cols-3 sm:grid-cols-3 md:flex md:flex-wrap w-full max-w-full items-start sm:items-center justify-center overflow-auto [perspective:1000px] gap-y-8 gap-x-1 pb-6 sm:pb-0 sm:flex-row sm:gap-4 sm:overflow-visible',
           containerClassName,
         )}
       >
@@ -115,7 +115,7 @@ export const FadeInDiv = ({
           animate={{
             y: isActive(tab) ? [0, 40, 0] : 0,
           }}
-          className={cn('absolute top-0 left-0 h-full w-full overflow-hidden', className)}
+          className={cn('absolute top-0 left-0 h-full w-full overflow-hidden rounded-2xl', className)}
         >
           {tab.content}
         </motion.div>

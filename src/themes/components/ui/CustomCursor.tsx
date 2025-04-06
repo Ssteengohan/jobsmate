@@ -7,8 +7,26 @@ const CustomCursor = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
+    const checkIfDesktop = () => {
+      const desktop = window.matchMedia('(min-width: 1024px)').matches;
+      setIsDesktop(desktop);
+
+      if (desktop) {
+        document.body.classList.add('custom-cursor');
+      } else {
+        document.body.classList.remove('custom-cursor');
+      }
+    };
+
+    // Check initially
+    checkIfDesktop();
+
+    // Update on resize
+    window.addEventListener('resize', checkIfDesktop);
+
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
 
@@ -34,23 +52,24 @@ const CustomCursor = () => {
       setIsVisible(false);
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseover', handleMouseOver);
-    document.addEventListener('mouseleave', handleMouseLeave);
-
-    // Only display custom cursor on desktop devices
-    const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+    // Only add event listeners if on desktop
     if (isDesktop) {
-      document.body.classList.add('custom-cursor');
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseover', handleMouseOver);
+      document.addEventListener('mouseleave', handleMouseLeave);
     }
 
     return () => {
+      window.removeEventListener('resize', checkIfDesktop);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseover', handleMouseOver);
       document.removeEventListener('mouseleave', handleMouseLeave);
       document.body.classList.remove('custom-cursor');
     };
-  }, [isVisible]);
+  }, [isVisible, isDesktop]);
+
+  // Don't render cursor elements if not on desktop
+  if (!isDesktop) return null;
 
   return (
     <>
