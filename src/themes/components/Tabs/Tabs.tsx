@@ -39,7 +39,7 @@ export function TabsDemo() {
   ];
 
   return (
-    <div className="relative z-10 flex min-h-[100vh] items-start bg-transparent" data-tabs-section>
+    <div className="relative z-20 flex min-h-[100vh] items-start bg-transparent" data-tabs-section>
       <div
         ref={tabsRef}
         className="sticky top-0  container mx-auto flex w-full flex-col items-start justify-start gap-4 bg-white/95 py-4 backdrop-blur-sm transition-all duration-300 sm:mt-0 md:gap-12 dark:bg-[var(--neutral-50)]/95"

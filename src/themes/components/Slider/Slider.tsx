@@ -6,7 +6,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import Image from 'next/image';
 import gsap from 'gsap';
 
-const words = `Integration with <span class="text-[var(--primary-gold)]">15+ ATS</span>`;
+const words = `<span class="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-dark-blue)] bg-clip-text text-transparent">Integration with</span> <span class="bg-gradient-to-r from-[var(--primary-gold)] to-[var(--primary-gold)]/80 bg-clip-text text-transparent font-bold">15+ ATS</span>`;
 
 // Logo component with GSAP-powered tilt effect
 const TiltLogo = ({ src, alt }: { src: string; alt: string }) => {
@@ -97,66 +97,62 @@ const Slider = () => {
   const y = useTransform(scrollYProgress, [0.2, 0.3], [30, 0]);
 
   const combinedOpacity = useTransform(scrollYProgress, (latest) => {
-    // Show content with minimal scrolling
+    // Only check lower bound - content stays visible after appearing
     if (latest < 0.15) return 0;
-    if (latest > 0.8) return 0;
-    if (latest >= 0.15 && latest <= 0.8) {
-      return 1;
-    }
-    return 0;
+    return 1; // Stay visible once it appears
   });
 
   const displayStyle = useTransform(scrollYProgress, (latest) => {
-    // Ensure display triggers earlier
-    if (latest > 0.85 || latest < 0.1) return 'none';
+    // Only check lower bound - content stays visible after appearing
+    if (latest < 0.1) return 'none';
     return 'flex';
   });
 
   // UNROLLED grid transform hooks for first row (3 items)
   const firstRowTrans0 = {
-    opacity: useTransform(firstRowAnimProgress, [0, 0.1], [0, 1]),
-    x: useTransform(firstRowAnimProgress, [0, 0.1], [-20, 0]),
-    filter: useTransform(firstRowAnimProgress, [0, 0.1], ['blur(8px)', 'blur(0px)']),
-    scale: useTransform(firstRowAnimProgress, [0, 0.1], [0.9, 1]),
+    opacity: useTransform(firstRowAnimProgress, [0, 0.08], [0, 1]),
+    x: useTransform(firstRowAnimProgress, [0, 0.08], [-20, 0]),
+    filter: useTransform(firstRowAnimProgress, [0, 0.08], ['blur(8px)', 'blur(0px)']),
+    scale: useTransform(firstRowAnimProgress, [0, 0.08], [0.9, 1]),
   };
   const firstRowTrans1 = {
-    opacity: useTransform(firstRowAnimProgress, [0.1, 0.2], [0, 1]),
-    x: useTransform(firstRowAnimProgress, [0.1, 0.2], [-20, 0]),
-    filter: useTransform(firstRowAnimProgress, [0.1, 0.2], ['blur(8px)', 'blur(0px)']),
-    scale: useTransform(firstRowAnimProgress, [0.1, 0.2], [0.9, 1]),
+    opacity: useTransform(firstRowAnimProgress, [0.25, 0.33], [0, 1]),
+    x: useTransform(firstRowAnimProgress, [0.25, 0.33], [-20, 0]),
+    filter: useTransform(firstRowAnimProgress, [0.25, 0.33], ['blur(8px)', 'blur(0px)']),
+    scale: useTransform(firstRowAnimProgress, [0.25, 0.33], [0.9, 1]),
   };
   const firstRowTrans2 = {
-    opacity: useTransform(firstRowAnimProgress, [0.2, 0.3], [0, 1]),
-    x: useTransform(firstRowAnimProgress, [0.2, 0.3], [-20, 0]),
-    filter: useTransform(firstRowAnimProgress, [0.2, 0.3], ['blur(8px)', 'blur(0px)']),
-    scale: useTransform(firstRowAnimProgress, [0.2, 0.3], [0.9, 1]),
+    opacity: useTransform(firstRowAnimProgress, [0.5, 0.58], [0, 1]),
+    x: useTransform(firstRowAnimProgress, [0.5, 0.58], [-20, 0]),
+    filter: useTransform(firstRowAnimProgress, [0.5, 0.58], ['blur(8px)', 'blur(0px)']),
+    scale: useTransform(firstRowAnimProgress, [0.5, 0.58], [0.9, 1]),
   };
   const firstRowTransforms = [firstRowTrans0, firstRowTrans1, firstRowTrans2];
 
   // UNROLLED grid transform hooks for second row (4 items for desktop)
   const secondRowTrans0 = {
-    opacity: useTransform(secondRowAnimProgress, [0, 0.2], [0, 1]),
-    x: useTransform(secondRowAnimProgress, [0, 0.2], [-20, 0]),
-    filter: useTransform(secondRowAnimProgress, [0, 0.2], ['blur(8px)', 'blur(0px)']),
-    scale: useTransform(secondRowAnimProgress, [0, 0.2], [0.9, 1]),
+    opacity: useTransform(secondRowAnimProgress, [0, 0.08], [0, 1]),
+    x: useTransform(secondRowAnimProgress, [0, 0.08], [-20, 0]),
+    filter: useTransform(secondRowAnimProgress, [0, 0.08], ['blur(8px)', 'blur(0px)']),
+    scale: useTransform(secondRowAnimProgress, [0, 0.08], [0.9, 1]),
   };
   const secondRowTrans1 = {
-    opacity: useTransform(secondRowAnimProgress, [0.2, 0.4], [0, 1]),
-    x: useTransform(secondRowAnimProgress, [0.2, 0.4], [-20, 0]),
-    filter: useTransform(secondRowAnimProgress, [0.2, 0.4], ['blur(8px)', 'blur(0px)']),
-    scale: useTransform(secondRowAnimProgress, [0.2, 0.4], [0.9, 1]),
+    opacity: useTransform(secondRowAnimProgress, [0.25, 0.33], [0, 1]),
+    x: useTransform(secondRowAnimProgress, [0.25, 0.33], [-20, 0]),
+    filter: useTransform(secondRowAnimProgress, [0.25, 0.33], ['blur(8px)', 'blur(0px)']),
+    scale: useTransform(secondRowAnimProgress, [0.25, 0.33], [0.9, 1]),
   };
   const secondRowTrans2 = {
-    opacity: useTransform(secondRowAnimProgress, [0.4, 0.6], [0, 1]),
-    x: useTransform(secondRowAnimProgress, [0.4, 0.6], [-20, 0]),
-    filter: useTransform(secondRowAnimProgress, [0.4, 0.6], ['blur(8px)', 'blur(0px)']),
-    scale: useTransform(secondRowAnimProgress, [0.4, 0.6], [0.9, 1]),
+    opacity: useTransform(secondRowAnimProgress, [0.5, 0.58], [0, 1]),
+    x: useTransform(secondRowAnimProgress, [0.5, 0.58], [-20, 0]),
+    filter: useTransform(secondRowAnimProgress, [0.5, 0.58], ['blur(8px)', 'blur(0px)']),
+    scale: useTransform(secondRowAnimProgress, [0.5, 0.58], [0.9, 1]),
   };
   const secondRowTrans3 = {
-    opacity: useTransform(secondRowAnimProgress, [0.6, 0.8], [0, 1]),
-    x: useTransform(secondRowAnimProgress, [0.6, 0.8], [-20, 0]),
-    filter: useTransform(secondRowAnimProgress, [0.6, 0.8], ['blur(8px)', 'blur(0px)']),
-    scale: useTransform(secondRowAnimProgress, [0.6, 0.8], [0.9, 1]),
+    opacity: useTransform(secondRowAnimProgress, [0.75, 0.83], [0, 1]),
+    x: useTransform(secondRowAnimProgress, [0.75, 0.83], [-20, 0]),
+    filter: useTransform(secondRowAnimProgress, [0.75, 0.83], ['blur(8px)', 'blur(0px)']),
+    scale: useTransform(secondRowAnimProgress, [0.75, 0.83], [0.9, 1]),
   };
 
   // For mobile/tablet: only use first 3 transforms (6 logos total)
@@ -170,9 +166,9 @@ const Slider = () => {
   ];
 
   return (
-    <div ref={containerRef} className="relative -top-10 z-0 min-h-[180vh] w-full">
+    <div ref={containerRef} className="relative -top-10 z-0 min-h-[140vh] w-full">
       {/* Dotted background using design system colors */}
-      <div className="absolute inset-0 z-10 overflow-hidden">
+      <div className="absolute inset-0 z-5 overflow-hidden">
         {/* Gradient base layer */}
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary-medium-blue)]/5 via-transparent to-[var(--primary-gold)]/5"></div>
 
@@ -188,7 +184,7 @@ const Slider = () => {
 
       {/* Interactive dots layer that fades with scroll */}
       <motion.div
-        className="absolute inset-0 z-10 [background-image:radial-gradient(var(--primary-light-blue)_2px,transparent_2px)] [background-size:20px_20px] dark:[background-image:radial-gradient(var(--accent-purple)_1.8px,transparent_1.8px)]"
+        className="absolute inset-0 z-5 [background-image:radial-gradient(var(--primary-light-blue)_2px,transparent_2px)] [background-size:20px_20px] dark:[background-image:radial-gradient(var(--accent-purple)_1.8px,transparent_1.8px)]"
         style={{
           opacity: useTransform(scrollYProgress, [0, 0.1, 0.5, 0.7], [0.6, 0.4, 0.2, 0]),
         }}
@@ -201,7 +197,7 @@ const Slider = () => {
           display: displayStyle,
           pointerEvents: 'none',
         }}
-        className="fixed top-[30vh] left-0 z-20 h-auto w-full items-center justify-center to-transparent transition-all duration-500 dark:from-[var(--neutral-50)]/80 dark:via-[var(--neutral-50)]/30 dark:to-transparent"
+        className="fixed top-[30vh] left-0 z-5 h-auto w-full items-center justify-center to-transparent transition-all duration-500 dark:from-[var(--neutral-50)]/80 dark:via-[var(--neutral-50)]/30 dark:to-transparent"
       >
         <motion.div
           ref={textRef}
@@ -216,6 +212,7 @@ const Slider = () => {
               className="flex w-full items-center justify-center font-bold text-nowrap"
               animate={true}
               scrollProgress={wordProgress}
+              tag="h2"
             />
           </div>
 
