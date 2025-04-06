@@ -81,7 +81,7 @@ export function TimelineDemo() {
           <motion.p
             style={{
               opacity: secondItemProgress,
-              y: useTransform(secondItemProgress, [0, 1], [10, 0]), // More dramatic movement
+              y: useTransform(secondItemProgress, [0, 1], [10, 0]),
             }}
             className="mt-4 mb-12 text-xs font-normal text-neutral-800 md:text-lg dark:text-neutral-200"
           >
@@ -91,16 +91,18 @@ export function TimelineDemo() {
           <motion.div
             style={{
               opacity: secondItemProgress,
-              scale: useTransform(secondItemProgress, [0, 1], [0.5, 1]), // More dramatic scaling
+              scale: useTransform(secondItemProgress, [0, 1], [0.92, 1]), // Less extreme scaling
               filter: useTransform(
                 secondItemProgress,
-                [0, 0.8, 1], // Three-point transition for slower blur effect
-                ['blur(4px)', 'blur(1px)', 'blur(0px)'], // More pronounced initial blur
+                [0, 0.5, 1], // Smoother transition
+                ['blur(4px)', 'blur(5px)', 'blur(0px)'], // Less extreme blur
               ),
             }}
             className="flex h-full w-full flex-col-reverse gap-4 md:gap-8"
           >
-            <CodeBlockDemo />
+            <div className="w-full max-w-full overflow-hidden">
+              <CodeBlockDemo scrollProgress={secondItemProgress} />
+            </div>
             <video
               ref={videoRef}
               className="h-full w-full rounded-2xl object-cover object-top"
@@ -140,7 +142,7 @@ export function TimelineDemo() {
               filter: useTransform(
                 thirdItemProgress,
                 [0, 0.1, 1], // Three-point transition for slower blur effect
-                ['blur(4px)', 'blur(2px)', 'blur(0px)'], // More pronounced initial blur
+                ['blur(14px)', 'blur(5px)', 'blur(0px)'], // More pronounced initial blur
               ),
             }}
             className="flex h-full w-full flex-col-reverse gap-4 md:gap-8"
