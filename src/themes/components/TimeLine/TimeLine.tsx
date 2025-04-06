@@ -165,7 +165,7 @@ export function TimelineDemo() {
   ];
 
   return (
-    <div ref={containerRef} className="relative -top-20 z-20 w-full">
+    <div ref={containerRef} className="relative h-full z-20 w-full">
       <Timeline data={data} />
     </div>
   );
