@@ -40,10 +40,10 @@ const Loading = () => {
 
   return (
     <section className="relative z-20 flex h-full w-full items-center justify-center">
-      <div className="relative flex h-60 w-60 items-center justify-center rounded-full bg-[#02253b]">
-        <div className="relative flex h-60 w-60 items-center justify-center rounded-full">
+      <div className="relative flex aspect-square w-full max-w-[160px] items-center justify-center rounded-full bg-[#02253b] sm:max-w-[15rem] md:max-w-[240px]">
+        <div className="relative flex h-full w-full items-center justify-center rounded-full">
           {/* Background circle (non-animated) */}
-          <svg className="absolute h-60 w-60">
+          <svg className="absolute h-full w-full" viewBox="0 0 240 240">
             <circle
               cx="120"
               cy="120"
@@ -56,7 +56,7 @@ const Loading = () => {
           </svg>
 
           {/* SVG for circular progress */}
-          <motion.svg className="absolute h-60 w-60">
+          <motion.svg className="absolute h-full w-full" viewBox="0 0 240 240">
             <motion.circle
               cx="120"
               cy="120"
@@ -71,7 +71,7 @@ const Loading = () => {
               animate={controls}
             />
           </motion.svg>
-          <span className="z-20 flex h-40 w-40 items-center justify-center rounded-full bg-[#f9f9f9] text-xl font-semibold text-[#0a0a0a]">
+          <span className="z-20 flex aspect-square h-2/3 w-2/3 items-center justify-center rounded-full bg-[#f9f9f9] text-base font-semibold text-[#0a0a0a] sm:text-lg md:text-xl">
             {progress}%
           </span>
         </div>

@@ -13,14 +13,19 @@ const JobPosting = () => {
   }, []);
 
   return (
-    <motion.section className="flex items-center justify-center overflow-hidden rounded-2xl">
-      {' '}
+    <motion.section className="relative flex items-center justify-center overflow-hidden rounded-2xl">
+      {/* Transparent overlay to capture touch events */}
+      <div className="absolute inset-0 z-10" aria-hidden="true"></div>
       <video
         ref={videoRef}
         className="h-full w-full rounded-2xl object-cover object-top"
         src="/CleanShot 2025-04-04 at 18.37.34.mp4"
         muted
         loop
+        playsInline
+        disablePictureInPicture
+        controlsList="nodownload nofullscreen noremoteplayback"
+        style={{ pointerEvents: 'none' }}
         preload="auto"
       >
         Your browser does not support the video tag.

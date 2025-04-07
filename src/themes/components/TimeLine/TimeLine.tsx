@@ -9,7 +9,7 @@ export function TimelineDemo() {
   const videoRef2 = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Scroll progress tracking
+  // Simplified scroll progress tracking
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start end', 'end start'],
@@ -31,10 +31,10 @@ export function TimelineDemo() {
     });
   }, []);
 
-  // Create scroll-triggered animation progress values with wider ranges for slower transitions
+  // Adjust item progress timing - bring the third item forward and rebalance all items
   const firstItemProgress = useTransform(scrollYProgress, [0.05, 0.25], [0, 1]);
   const secondItemProgress = useTransform(scrollYProgress, [0.3, 0.5], [0, 1]);
-  const thirdItemProgress = useTransform(scrollYProgress, [0.55, 0.75], [0, 1]);
+  const thirdItemProgress = useTransform(scrollYProgress, [0.25, 0.85], [0, 1]); // Show earlier
 
   const data = [
     {
@@ -42,9 +42,13 @@ export function TimelineDemo() {
       content: (
         <div>
           <motion.p
+            transition={{
+              duration: 0.1, // Shorter duration for more immediate response
+              ease: 'linear', // Linear easing for smooth scrolling
+            }}
             style={{
               opacity: firstItemProgress,
-              y: useTransform(firstItemProgress, [0, 1], [30, 0]), // More dramatic movement
+              y: useTransform(firstItemProgress, [0, 0.3, 1], [30, 15, 0]),
             }}
             className="mb-8 text-xs font-normal text-[var(--primary-dark-blue)] md:text-lg dark:text-neutral-200"
           >
@@ -52,13 +56,17 @@ export function TimelineDemo() {
             advanced Anti-cheat monitor, ensuring integrity and authenticity in your hiring process.
           </motion.p>
           <motion.div
+            transition={{
+              duration: 0.1, // Shorter duration for more immediate response
+              ease: 'linear', // Linear easing for smooth scrolling
+            }}
             style={{
               opacity: firstItemProgress,
-              scale: useTransform(firstItemProgress, [0, 1], [0.92, 1]), // More dramatic scaling
+              scale: useTransform(firstItemProgress, [0, 0.3, 1], [0.92, 0.96, 1]),
               filter: useTransform(
                 firstItemProgress,
-                [0, 0.4, 1], // Three-point transition for slower blur effect
-                ['blur(15px)', 'blur(8px)', 'blur(0px)'], // More pronounced initial blur
+                [0, 0.3, 0.7, 1],
+                ['blur(6px)', 'blur(2px)', 'blur(1px)', 'blur(0px)'],
               ),
             }}
             className="flex h-full w-full gap-4"
@@ -68,7 +76,7 @@ export function TimelineDemo() {
               alt="startup template"
               width={700}
               height={700}
-              className="h-full w-full rounded-lg shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+              className="h-full w-full rounded-lg border-1 border-zinc-300 shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
             />
           </motion.div>
         </div>
@@ -79,9 +87,13 @@ export function TimelineDemo() {
       content: (
         <div>
           <motion.p
+            transition={{
+              duration: 0.1, // Shorter duration for more immediate response
+              ease: 'linear', // Linear easing for smooth scrolling
+            }}
             style={{
               opacity: secondItemProgress,
-              y: useTransform(secondItemProgress, [0, 1], [10, 0]),
+              y: useTransform(secondItemProgress, [0, 0.3, 1], [10, 5, 0]),
             }}
             className="mt-4 mb-12 text-xs font-normal text-[var(--primary-dark-blue)] md:text-lg dark:text-neutral-200"
           >
@@ -89,23 +101,27 @@ export function TimelineDemo() {
             providing you with deep insights into their problem-solving abilities and coding style.
           </motion.p>
           <motion.div
+            transition={{
+              duration: 0.1, // Shorter duration for more immediate response
+              ease: 'linear', // Linear easing for smooth scrolling
+            }}
             style={{
               opacity: secondItemProgress,
-              scale: useTransform(secondItemProgress, [0, 1], [0.92, 1]), // Less extreme scaling
+              scale: useTransform(secondItemProgress, [0, 0.3, 1], [0.92, 0.96, 1]),
               filter: useTransform(
                 secondItemProgress,
-                [0, 0.5, 1], // Smoother transition
-                ['blur(4px)', 'blur(5px)', 'blur(0px)'], // Less extreme blur
+                [0, 0.3, 0.7, 1],
+                ['blur(3px)', 'blur(1px)', 'blur(0px)', 'blur(0px)'],
               ),
             }}
-            className="flex h-full w-full flex-col-reverse gap-4 md:gap-8"
+            className="flex h-full w-full flex-col-reverse gap-4 md:gap-12"
           >
             <div className="w-full max-w-full overflow-hidden">
               <CodeBlockDemo scrollProgress={secondItemProgress} />
             </div>
             <video
               ref={videoRef}
-              className="h-full w-full rounded-2xl object-cover object-top"
+              className="h-full w-full rounded-2xl border-1 border-zinc-300 object-cover object-top shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
               src="/anti-cheat.mp4"
               muted
               loop
@@ -125,31 +141,39 @@ export function TimelineDemo() {
       content: (
         <div>
           <motion.p
+            transition={{
+              duration: 0.1, // Shorter duration for more immediate response
+              ease: 'linear', // Linear easing for smooth scrolling
+            }}
             style={{
               opacity: thirdItemProgress,
-              y: useTransform(thirdItemProgress, [0, 1], [30, 0]), // More dramatic movement
+              y: useTransform(thirdItemProgress, [0, 0.3, 1], [30, 15, 0]),
             }}
-            className="mb-4 text-xs font-normal text-[var(--primary-dark-blue)] md:text-lg dark:text-neutral-200"
+            className="mb-4 text-xs font-normal text-[var(--primary-dark-blue)] md:mb-8 md:text-lg dark:text-neutral-200"
           >
             ✅ Streamline your hiring workflow with our automated candidate management system. Boost
             response rates and save time with one-click reviews, personalized messaging, and
             professional rejections.
           </motion.p>
           <motion.div
+            transition={{
+              duration: 0.01, // Shorter duration for more immediate response
+              ease: 'linear', // Linear easing for smooth scrolling
+            }}
             style={{
               opacity: thirdItemProgress,
-              scale: useTransform(thirdItemProgress, [0, 0.92], [1, 1]), // More dramatic scaling
+              scale: useTransform(thirdItemProgress, [0, 0.3, 1], [0.92, 0.95, 1]), // Subtler scaling
               filter: useTransform(
                 thirdItemProgress,
-                [0, 0.1, 1], // Three-point transition for slower blur effect
-                ['blur(14px)', 'blur(5px)', 'blur(0px)'], // More pronounced initial blur
+                [0, 0.1, 0.2, 1],
+                ['blur(6px)', 'blur40px)', 'blur(2px)', 'blur(0px)'],
               ),
             }}
             className="flex h-full w-full flex-col-reverse gap-4 md:gap-8"
           >
             <video
               ref={videoRef2}
-              className="h-full w-full rounded-2xl object-cover object-top"
+              className="h-full w-full rounded-2xl border-1 border-zinc-300 object-cover object-top shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
               src="/review.mp4"
               muted
               loop
