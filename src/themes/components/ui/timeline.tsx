@@ -38,7 +38,7 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: isMobile
-      ? ['start 0.2', 'end 1'] // Tighter offset for mobile
+      ? ['start 0.2', 'end 0.2'] // Tighter offset for mobile
       : ['start 0.4', 'end 0.9'], // Original offset for desktop
   });
 
@@ -59,7 +59,7 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
       ref={containerRef}
     >
       <div className="mx-auto max-w-7xl px-4 py-20 md:px-8 lg:px-10">
-        <h2 className="mb-4 max-w-4xl text-lg font-bold transition-colors duration-300 md:text-4xl">
+        <h2 className="mb-4 max-w-4xl text-3xl font-bold transition-colors duration-300 md:text-5xl">
           <span className="text-[var(--primary-dark-blue)] dark:text-[var(--primary-white)]">
             A Tech Platform{' '}
           </span>

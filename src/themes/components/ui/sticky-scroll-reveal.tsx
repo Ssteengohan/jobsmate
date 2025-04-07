@@ -72,9 +72,9 @@ export const StickyScroll = ({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.2 }}
-        className="absolute top-0 right-0 left-0 z-5 py-3 text-center text-lg font-medium sm:top-[15vh] dark:from-white/5 dark:via-white/10 dark:to-white/5 dark:text-white/90"
+        className="absolute top-[1vh] right-0 left-0 z-5 py-3 text-center text-lg font-medium sm:top-[15vh] dark:from-white/5 dark:via-white/10 dark:to-white/5 dark:text-white/90"
       >
-        <h3 className="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-gold)] bg-clip-text text-4xl font-bold text-transparent drop-shadow-[0_0_5px_rgba(0,0,0,0.1)] lg:text-7xl dark:drop-shadow-[0_0_8px_rgba(42,151,219,0.3)]">
+        <h3 className="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-gold)] bg-clip-text text-4xl font-bold text-transparent drop-shadow-[0_0_5px_rgba(0,0,0,0.1)] lg:text-6xl dark:drop-shadow-[0_0_8px_rgba(42,151,219,0.3)]">
           We care about our
           <br />{' '}
           <motion.span

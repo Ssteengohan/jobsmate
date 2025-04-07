@@ -40,7 +40,7 @@ export const Tabs = ({
     <>
       <div
         className={cn(
-          'no-visible-scrollbar relative max-sm:grid grid-cols-3 sm:grid-cols-3 md:flex md:flex-wrap w-full max-w-full items-start sm:items-center justify-center overflow-auto [perspective:1000px] gap-y-8 gap-x-1 pb-6 sm:pb-0 sm:flex-row sm:gap-4 sm:overflow-visible',
+          'no-visible-scrollbar relative flex w-full max-w-full items-center justify-between gap-x-1 gap-y-8 overflow-auto pb-6 [perspective:1000px] sm:flex-row sm:justify-center sm:gap-4 sm:overflow-visible sm:pb-0 md:flex-wrap',
           containerClassName,
         )}
       >
@@ -53,7 +53,7 @@ export const Tabs = ({
             onMouseEnter={() => setHovering(true)}
             onMouseLeave={() => setHovering(false)}
             className={cn(
-              'relative rounded-full cursor-pointer text-nowrap max-md:text-[10px] px-1 py-1 md:px-4 md:py-2 hover:bg-[#f3f4f6] dark:hover:bg-[var(--neutral-200)]',
+              'relative cursor-pointer rounded-full px-1 py-1 text-2xl text-nowrap hover:bg-[#f3f4f6] max-md:text-xs md:px-4 md:py-2 dark:hover:bg-[var(--neutral-200)]',
               tabClassName,
             )}
             style={{
@@ -64,14 +64,11 @@ export const Tabs = ({
               <motion.div
                 layoutId="clickedbutton"
                 transition={{ type: 'spring', bounce: 0.3, duration: 0.6 }}
-                className={cn(
-                  'absolute inset-0 rounded-full',
-                  activeTabClassName,
-                )}
+                className={cn('absolute inset-0 rounded-full', activeTabClassName)}
               />
             )}
 
-            <span className="relative block text-black dark:text-white">{tab.title}</span>
+            <span className="relative block text-[#00253b] dark:text-white">{tab.title}</span>
           </button>
         ))}
       </div>

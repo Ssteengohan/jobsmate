@@ -88,14 +88,14 @@ const defaultTiers: PricingTier[] = [
 
 const PricingCard: React.FC<PricingCardProps> = ({ tiers = defaultTiers }) => {
   return (
-    <div className="relative z-30 container flex min-h-[100vh] items-center justify-center bg-[#f9f9f9] px-4 py-8 sm:px-6 md:py-12 lg:px-8 dark:bg-[var(--primary-dark)]">
+    <div className="relative z-30 container flex min-h-[100vh] items-center justify-center bg-[#fdfbf9] px-4 py-8 sm:px-6 md:py-12 lg:px-8 dark:bg-[var(--primary-dark)]">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 py-12 md:gap-12 md:pt-0">
         <div className="mb-8 text-center md:mb-12">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-gold)] bg-clip-text pb-2 text-center text-2xl leading-relaxed font-bold tracking-tight text-transparent sm:text-4xl md:text-5xl"
+            className="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-gold)] bg-clip-text pb-2 text-center text-2xl leading-relaxed font-bold tracking-tight text-transparent sm:text-4xl md:text-6xl"
           >
             Simple, transparent pricing
           </motion.h2>
