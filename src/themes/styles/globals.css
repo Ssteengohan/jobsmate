@@ -171,6 +171,13 @@ body {
   padding: 0 var(--spacing-sm);
 }
 
+/* Mobile-specific container padding */
+@media (max-width: 640px) {
+  .container {
+    padding: 0 10px;
+  }
+}
+
 /* Section spacing */
 .section {
   padding: var(--spacing-lg) 0;

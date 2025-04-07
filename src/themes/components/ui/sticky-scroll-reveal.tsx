@@ -112,10 +112,9 @@ export const StickyScroll = ({
         className="absolute inset-0 z-0 transition-all duration-700"
         animate={{
           background: [
-            `linear-gradient(145deg, #fcfdff 100%, #f0f8fe 100%, #e8f4fc 100%)`,
-            `linear-gradient(145deg, #fdfcff 100%, #f8f0ff 100%, #f2eafb 100%)`,
-            `linear-gradient(145deg, #fffdf8 100%, #fcf9f0 100%, #faf6e8 100%)`,
-            `linear-gradient(145deg, #f4fdfb 100%, #f0fbfa 100%, #e8f8f6 100%)`,
+            `linear-gradient(145deg, #f9ebd1 10%, #f9ebd1 10%, #f9ebd1 10%)`,
+            `linear-gradient(145deg, #f9ebd1 50%, #f8f0ff 100%, #f9ebd1 100%)`,
+            `linear-gradient(145deg, #f9ebd1 5%, #fcf9f0 100%, #faf6e8 100%)`,
           ][activeCard],
         }}
         transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
@@ -126,16 +125,16 @@ export const StickyScroll = ({
         className="absolute inset-0 z-0 hidden transition-all duration-700 dark:block"
         animate={{
           background: [
+            `linear-gradient(145deg, var(--primary-dark) 0%, var(--primary-dark-blue) 40%, var(--primary-medium-blue) 125%, var(--primary-gold) 100%)`,
             `linear-gradient(145deg, var(--primary-dark) 0%, var(--primary-dark-blue) 40%, var(--primary-medium-blue) 80%, var(--primary-light-blue) 100%)`,
             `linear-gradient(145deg, var(--primary-dark-blue) 0%, var(--primary-dark-blue) 30%, var(--primary-medium-blue) 60%, var(--primary-medium-blue) 100%)`,
-            `linear-gradient(145deg, var(--primary-dark) 0%, var(--primary-dark-blue) 40%, var(--primary-medium-blue) 85%, var(--primary-gold) 140%)`,
           ][activeCard],
         }}
         transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
       />
 
       {/* Subtle overlay with very light colors rather than white opacity */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#fafbfd]/10 via-[#f9f9f9] to-[var(--primary-gold)]/1 backdrop-blur-[1px] dark:bg-gradient-to-b dark:from-transparent dark:via-black/30 dark:to-black/60 dark:backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#f9f9f9] via-[#f9ebd1]/20 to-[var(--primary-gold)]/10 backdrop-blur-[1px] dark:bg-gradient-to-b dark:from-transparent dark:via-black/30 dark:to-black/60 dark:backdrop-blur-sm" />
 
       {/* Abstract subtle pattern for light mode with color tints from variables */}
       <div className="absolute inset-0 mix-blend-soft-light dark:opacity-20 dark:mix-blend-overlay">
@@ -177,7 +176,7 @@ export const StickyScroll = ({
                   <h2 className="mb-6 text-3xl font-bold text-[var(--primary-dark-blue)] md:text-5xl dark:text-white">
                     {item.title}
                   </h2>
-                  <p className="text-lg text-neutral-600 md:text-xl dark:text-white/80">
+                  <p className="text-sm text-neutral-600 md:text-xl dark:text-white/80">
                     {item.description}
                   </p>
                 </motion.div>
@@ -186,7 +185,7 @@ export const StickyScroll = ({
           </div>
 
           {/* Image column with hover effects and better transitions */}
-          <div className="relative mt-10 h-[300px] w-full overflow-visible md:mt-0 md:h-[550px] md:w-5/12">
+          <div className="relative mt-10 h-[200px] w-4/5 overflow-visible md:mt-0 md:h-[450px] md:w-4/12">
             {content.map((item, index) => (
               <motion.div
                 key={`content-${index}`}

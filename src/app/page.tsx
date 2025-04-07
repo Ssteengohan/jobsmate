@@ -9,10 +9,11 @@ import Slider from '@/themes/components/Slider/Slider';
 import { TimelineDemo } from '@/themes/components/TimeLine/TimeLine';
 import { StickyScrollRevealDemo } from '@/themes/components/StickyScroll/StickyScroll';
 import PricingCard from '@/themes/components/PricingCard/PricingCard';
+import Footer from '@/themes/components/Footer/Footer';
 
 export default function Home() {
   return (
-    <main className="mx-auto min-h-screen overflow-hidden bg-gradient-to-b from-white via-[#f9f9f9] to-[var(--primary-gold)]/5 transition-colors duration-300 dark:bg-[var(--neutral-50)] dark:bg-none">
+    <main className="mx-auto min-h-screen overflow-hidden bg-gradient-to-b from-white via-[#f9f9f9] to-[var(--primary-gold)]/15 transition-colors duration-300 dark:bg-[var(--neutral-50)] dark:bg-none">
       <CustomCursor />
       <Navbar />
       <div className="relative z-20 container">
@@ -49,6 +50,7 @@ export default function Home() {
         <StickyScrollRevealDemo />
         <PricingCard />
       </div>
+      <Footer />
     </main>
   );
 }

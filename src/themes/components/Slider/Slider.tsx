@@ -209,7 +209,7 @@ const Slider = () => {
               words={words}
               html={true}
               duration={0.5}
-              className="flex w-full items-center justify-center font-bold text-nowrap"
+              className="flex w-full items-center justify-center font-bold text-center lg:text-start px-4 lg:px-0"
               animate={true}
               scrollProgress={wordProgress}
               tag="h2"

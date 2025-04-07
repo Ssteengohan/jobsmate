@@ -1,5 +1,5 @@
 'use client';
-import { useScroll, useTransform, motion } from 'motion/react';
+import { useScroll, useTransform, motion } from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
 
 interface TimelineEntry {
@@ -38,20 +38,15 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: isMobile
-      ? ['start 0.2', 'end 0.2'] // Tighter offset for mobile
-      : ['start 0.4', 'end 0.9'], // Original offset for desktop
+      ? ['start 10%', 'end 60%'] // Simpler offset for mobile
+      : ['start 10%', 'end 50%'], // Simpler offset for desktop like in the example
   });
 
-  const heightTransform = useTransform(
-    scrollYProgress,
-    [0, 0.11, 0.9, 1], // Control points
-    isMobile
-      ? [0, height * 0.1, height * 0.8, height * 1] // Scale down final height on mobile
-      : [0, height * 0.1, height * 0.9, height], // Original values for desktop
-  );
+  // Simplify transforms with fewer control points for smoother animation
+  const heightTransform = useTransform(scrollYProgress, [0, 1], [0, height]);
 
-  // Smooth opacity transition
-  const opacityTransform = useTransform(scrollYProgress, [0, 0.05, 0.95, 1], [0, 1, 1, 0.8]);
+  // Simpler opacity transform with fewer control points
+  const opacityTransform = useTransform(scrollYProgress, [0, 0.1, 0.9, 1], [0, 1, 1, 0.9]);
 
   return (
     <div
@@ -103,6 +98,10 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
           className="absolute top-0 left-8 w-[2px] overflow-hidden bg-[linear-gradient(to_bottom,var(--tw-gradient-stops))] from-transparent from-[0%] via-[var(--neutral-200)] to-transparent to-[99%] transition-colors duration-300 [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)] md:left-8 dark:via-[var(--neutral-200)]"
         >
           <motion.div
+            transition={{
+              duration: 0.1, // Shorter duration for more immediate response
+              ease: 'linear', // Linear easing for smooth scrolling
+            }}
             style={{
               height: heightTransform,
               opacity: opacityTransform,

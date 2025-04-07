@@ -88,14 +88,14 @@ const defaultTiers: PricingTier[] = [
 
 const PricingCard: React.FC<PricingCardProps> = ({ tiers = defaultTiers }) => {
   return (
-    <div className="relative z-30 container flex min-h-[100vh] items-center justify-center bg-[#fdfbf9] px-4 py-8 sm:px-6 md:py-12 lg:px-8 dark:bg-[var(--primary-dark)]">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 py-12 md:gap-12 md:pt-0">
-        <div className="mb-8 text-center md:mb-12">
+    <div className="relative container flex min-h-[90vh] items-center justify-center bg-gradient-to-b from-[#f9efd7] to-[#f9f5ec] px-2 py-4 sm:min-h-[100vh] sm:px-6 md:py-12 lg:px-8 dark:bg-[var(--primary-dark)] dark:bg-none">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 py-6 md:gap-12 md:py-12 md:pt-0">
+        <div className="mb-4 text-center md:mb-12">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-gold)] bg-clip-text pb-2 text-center text-2xl leading-relaxed font-bold tracking-tight text-transparent sm:text-4xl md:text-6xl"
+            className="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-gold)] bg-clip-text pb-1 text-center text-3xl leading-tight font-bold tracking-tight text-transparent sm:pb-2 sm:leading-relaxed md:text-6xl"
           >
             Simple, transparent pricing
           </motion.h2>
@@ -103,13 +103,13 @@ const PricingCard: React.FC<PricingCardProps> = ({ tiers = defaultTiers }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-3 text-base text-neutral-500 md:mt-4 md:text-lg dark:text-neutral-300"
+            className="mt-2 text-sm text-neutral-500 md:mt-4 md:text-lg dark:text-neutral-300"
           >
             Choose the plan that&apos;s right for your business
           </motion.p>
         </div>
 
-        <div className="mt-8 grid w-full grid-cols-1 gap-6 sm:gap-8 md:mt-12 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-4 grid w-full grid-cols-1 gap-4 sm:mt-8 sm:gap-6 md:mt-12 md:grid-cols-2 lg:grid-cols-3">
           {tiers.map((tier, index) => (
             <motion.div
               key={tier.name}
@@ -117,47 +117,47 @@ const PricingCard: React.FC<PricingCardProps> = ({ tiers = defaultTiers }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 * (index + 1) }}
               whileHover={{
-                y: [-8, -8],
+                y: -4,
                 boxShadow: tier.highlighted
-                  ? '0 25px 50px -12px rgba(240, 180, 41, 0.25)'
-                  : '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                  ? '0 15px 30px -12px rgba(240, 180, 41, 0.25)'
+                  : '0 15px 30px -12px rgba(0, 0, 0, 0.25)',
               }}
-              className={`flex flex-col overflow-hidden rounded-2xl ${
+              className={`flex flex-col overflow-hidden rounded-xl sm:rounded-2xl ${
                 tier.highlighted
-                  ? 'z-10 border-2 border-[var(--primary-gold)] shadow-xl lg:-mt-8 lg:h-[600px] dark:border-[var(--primary-gold)]'
-                  : 'border border-neutral-200 shadow-lg dark:border-neutral-700'
+                  ? 'z-10 border-2 border-[var(--primary-gold)] shadow-lg md:h-auto lg:-mt-8 lg:h-[600px] lg:shadow-xl dark:border-[var(--primary-gold)]'
+                  : 'border border-neutral-200 shadow-md sm:shadow-lg dark:border-neutral-700'
               } bg-white transition-all duration-300 dark:bg-[var(--neutral-50)]`}
             >
               <div
-                className={`px-4 py-6 sm:px-6 sm:py-8 ${tier.highlighted ? 'bg-[var(--primary-gold)]/10 dark:bg-[var(--primary-gold)]/20' : ''}`}
+                className={`px-3 py-4 sm:px-6 sm:py-8 ${tier.highlighted ? 'bg-[var(--primary-gold)]/10 dark:bg-[var(--primary-gold)]/20' : ''}`}
               >
-                <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">
+                <h3 className="text-base font-semibold text-neutral-900 sm:text-lg dark:text-white">
                   {tier.name}
                 </h3>
-                <div className="mt-3 flex items-baseline md:mt-4">
-                  <span className="text-3xl font-bold tracking-tight text-[var(--primary-dark-blue)] md:text-4xl dark:text-[var(--primary-light-blue)]">
+                <div className="mt-2 flex items-baseline md:mt-4">
+                  <span className="text-2xl font-bold tracking-tight text-[var(--primary-dark-blue)] md:text-4xl dark:text-[var(--primary-light-blue)]">
                     {tier.price}
                   </span>
-                  <span className="ml-1 text-base font-medium text-neutral-500 md:text-lg dark:text-neutral-300">
+                  <span className="ml-1 text-xs font-medium text-neutral-500 sm:text-base md:text-lg dark:text-neutral-300">
                     /month
                   </span>
                 </div>
-                <p className="mt-4 text-xs text-neutral-500 sm:text-sm dark:text-neutral-400">
+                <p className="text-2xs mt-2 text-xs text-neutral-500 sm:mt-4 sm:text-sm dark:text-neutral-400">
                   {tier.description}
                 </p>
               </div>
 
-              <div className="flex flex-1 flex-col justify-between px-4 pt-4 pb-6 sm:px-6 sm:pt-6 sm:pb-8">
-                <div className="space-y-3 sm:space-y-4">
+              <div className="flex flex-1 flex-col justify-between px-3 pt-3 pb-4 sm:px-6 sm:pt-6 sm:pb-8">
+                <div className="space-y-2 sm:space-y-4">
                   {tier.features.map((feature, featureIdx) => (
                     <div key={featureIdx} className="flex items-start">
                       <div
                         className={`flex-shrink-0 ${feature.included ? 'text-[var(--primary-light-blue)]' : 'text-neutral-400'}`}
                       >
-                        <CheckIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+                        <CheckIcon className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5" />
                       </div>
                       <p
-                        className={`ml-2 text-xs sm:ml-3 sm:text-sm ${feature.included ? 'text-neutral-700 dark:text-neutral-200' : 'text-neutral-400 line-through dark:text-neutral-500'}`}
+                        className={`text-2xs ml-1.5 sm:ml-3 sm:text-xs md:text-sm ${feature.included ? 'text-neutral-700 dark:text-neutral-200' : 'text-neutral-400 line-through dark:text-neutral-500'}`}
                       >
                         {feature.text}
                       </p>
@@ -165,11 +165,11 @@ const PricingCard: React.FC<PricingCardProps> = ({ tiers = defaultTiers }) => {
                   ))}
                 </div>
 
-                <div className="mt-6 sm:mt-8">
+                <div className="mt-4 sm:mt-6 md:mt-8">
                   {tier.highlighted ? (
                     <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      className="group relative w-full rounded-full border border-transparent bg-[var(--primary-gold)] px-4 py-2 text-center text-xs font-medium text-[var(--primary-dark-blue)] transition-all duration-300 ease-in-out hover:shadow-lg focus:ring-2 focus:ring-[var(--primary-gold)] focus:ring-offset-2 focus:outline-none sm:px-6 sm:py-3 sm:text-sm dark:text-[var(--primary-dark)] dark:hover:shadow-[0_0_15px_rgba(240,180,41,0.4)]"
+                      whileHover={{ scale: 1.03 }}
+                      className="group text-2xs relative w-full rounded-full border border-transparent bg-[var(--primary-gold)] px-3 py-1.5 text-center font-medium text-[var(--primary-dark-blue)] transition-all duration-300 ease-in-out hover:shadow-lg focus:ring-2 focus:ring-[var(--primary-gold)] focus:ring-offset-2 focus:outline-none sm:px-4 sm:py-2 sm:text-xs md:px-6 md:py-3 md:text-sm dark:text-[var(--primary-dark)] dark:hover:shadow-[0_0_15px_rgba(240,180,41,0.4)]"
                     >
                       <div className="via-primary-light-blue absolute inset-x-0 -top-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent to-transparent opacity-70 shadow-sm transition-all duration-300 group-hover:w-3/4 group-hover:opacity-100 group-hover:shadow-md" />
                       <div className="via-primary-gold absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent to-transparent opacity-0 shadow-sm transition-all duration-300 group-hover:w-3/4 group-hover:opacity-100" />
@@ -183,7 +183,7 @@ const PricingCard: React.FC<PricingCardProps> = ({ tiers = defaultTiers }) => {
                       className="group relative inline-flex w-full justify-center overflow-hidden rounded-full p-[1px] shadow-sm transition-all duration-300 ease-in-out hover:shadow-xl focus:ring-2 focus:ring-[var(--primary-light-blue)] focus:ring-offset-2 focus:outline-none dark:hover:shadow-[0_0_20px_rgba(42,151,219,0.4)]"
                     >
                       <span className="absolute inset-[-1000%] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,var(--primary-light-blue)_0%,var(--primary-medium-blue)_40%,var(--primary-gold)_70%,var(--primary-dark)_100%)] opacity-80 transition-all duration-300 ease-in-out group-hover:animate-[spin_3s_linear_infinite] group-hover:opacity-100" />
-                      <span className="relative z-10 inline-flex h-full w-full items-center justify-center rounded-full bg-white px-4 py-2 text-xs font-medium text-[var(--primary-light-blue)] backdrop-blur-3xl transition-all duration-300 ease-in-out group-hover:bg-[var(--primary-light-blue)] group-hover:text-white group-hover:shadow-inner sm:px-6 sm:py-3 sm:text-sm dark:bg-[var(--neutral-50)] dark:text-[var(--primary-medium-blue)] dark:group-hover:bg-[var(--primary-dark-blue)] dark:group-hover:text-white dark:group-hover:shadow-[inset_0_2px_8px_rgba(0,0,0,0.3)]">
+                      <span className="text-2xs relative z-10 inline-flex h-full w-full items-center justify-center rounded-full bg-white px-3 py-1.5 font-medium text-[var(--primary-light-blue)] backdrop-blur-3xl transition-all duration-300 ease-in-out group-hover:bg-[var(--primary-light-blue)] group-hover:text-white group-hover:shadow-inner sm:px-4 sm:py-2 sm:text-xs md:px-6 md:py-3 md:text-sm dark:bg-[var(--neutral-50)] dark:text-[var(--primary-medium-blue)] dark:group-hover:bg-[var(--primary-dark-blue)] dark:group-hover:text-white dark:group-hover:shadow-[inset_0_2px_8px_rgba(0,0,0,0.3)]">
                         {tier.buttonText}
                       </span>
                     </motion.button>
