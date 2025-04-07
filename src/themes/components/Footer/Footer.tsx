@@ -1,13 +1,15 @@
-import React from 'react'
+import React from 'react';
+import { SparklesPreview } from './Sparkles';
 
 const Footer = () => {
   return (
-    <section className="relative z-10 flex h-[50vh] w-full items-center justify-center bg-[#f9f5eb]">
+    <section className="relative z-10 flex h-[50vh] w-full items-center justify-center border-t-1 border-neutral-300 bg-[#f9f5eb] dark:border-[#f0b429]/30 dark:bg-[#1a2637]">
       <div>
-        <h3>Join our tech community</h3>
+        <SparklesPreview />
       </div>
+      <div></div>
     </section>
   );
-}
+};
 
-export default Footer
+export default Footer;

@@ -72,7 +72,7 @@ export const StickyScroll = ({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.2 }}
-        className="absolute top-[1vh] right-0 left-0 z-5 py-3 text-center text-lg font-medium sm:top-[15vh] dark:from-white/5 dark:via-white/10 dark:to-white/5 dark:text-white/90"
+        className="absolute top-[1vh] right-0 left-0 z-5 py-3 text-center text-lg font-medium sm:top-[10vh] dark:from-white/5 dark:via-white/10 dark:to-white/5 dark:text-white/90"
       >
         <h3 className="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-gold)] bg-clip-text text-4xl font-bold text-transparent drop-shadow-[0_0_5px_rgba(0,0,0,0.1)] lg:text-6xl dark:drop-shadow-[0_0_8px_rgba(42,151,219,0.3)]">
           We care about our
@@ -112,9 +112,9 @@ export const StickyScroll = ({
         className="absolute inset-0 z-0 transition-all duration-700"
         animate={{
           background: [
-            `linear-gradient(145deg, #f9ebd1 10%, #f9ebd1 10%, #f9ebd1 10%)`,
-            `linear-gradient(145deg, #f9ebd1 50%, #f8f0ff 100%, #f9ebd1 100%)`,
-            `linear-gradient(145deg, #f9ebd1 5%, #fcf9f0 100%, #faf6e8 100%)`,
+            `linear-gradient(145deg, #f9ebd1 , #f9ebd1 , ##fbf7f0)`,
+            `linear-gradient(145deg, ##fbf7f0, ##fbf7f0, #fbf7f0)`,
+            `linear-gradient(145deg, #fbf7f0, #fbf7f0, #fbf7f0)`,
           ][activeCard],
         }}
         transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
@@ -134,7 +134,7 @@ export const StickyScroll = ({
       />
 
       {/* Subtle overlay with very light colors rather than white opacity */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#f9f9f9] via-[#f9ebd1]/20 to-[var(--primary-gold)]/10 backdrop-blur-[1px] dark:bg-gradient-to-b dark:from-transparent dark:via-black/30 dark:to-black/60 dark:backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#f9f9f9] via-[#f9ebd1] to-[#faf3e5] backdrop-blur-[1px] dark:bg-gradient-to-b dark:from-transparent dark:via-black/30 dark:to-black/60 dark:backdrop-blur-sm" />
 
       {/* Abstract subtle pattern for light mode with color tints from variables */}
       <div className="absolute inset-0 mix-blend-soft-light dark:opacity-20 dark:mix-blend-overlay">

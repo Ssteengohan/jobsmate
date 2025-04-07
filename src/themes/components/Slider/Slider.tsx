@@ -173,10 +173,10 @@ const Slider = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary-medium-blue)]/5 via-transparent to-[var(--primary-gold)]/5"></div>
 
         {/* Primary dots layer with design system colors */}
-        <div className="absolute inset-0 [background-image:radial-gradient(var(--primary-medium-blue)_1.5px,transparent_1.5px)] [background-size:16px_16px]"></div>
+        <div className="absolute inset-0 [background-image:radial-gradient(var(--primary-medium-blue)_0.8px,transparent_0.8px)] [background-size:14px_14px]"></div>
 
         {/* Secondary dots layer with accent color */}
-        <div className="absolute inset-0 [background-image:radial-gradient(var(--primary-gold)_1px,transparent_1px)] [background-size:22px_22px]"></div>
+        <div className="absolute inset-0 [background-image:radial-gradient(var(--primary-gold)_0.8px,transparent_0.8px)] [background-size:18px_18px]"></div>
 
         {/* Radial gradient overlay with reduced opacity */}
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white/40 [mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)] dark:bg-[var(--neutral-50)]/30"></div>
@@ -184,7 +184,7 @@ const Slider = () => {
 
       {/* Interactive dots layer that fades with scroll */}
       <motion.div
-        className="absolute inset-0 -z-50 [background-image:radial-gradient(var(--primary-light-blue)_2px,transparent_2px)] [background-size:20px_20px] dark:[background-image:radial-gradient(var(--accent-purple)_1.8px,transparent_1.8px)]"
+        className="absolute inset-0 -z-50 [background-image:radial-gradient(var(--primary-light-blue)_1.5px,transparent_1.5px)] [background-size:18px_18px] dark:[background-image:radial-gradient(var(--accent-purple)_1.3px,transparent_1.3px)]"
         style={{
           opacity: useTransform(scrollYProgress, [0, 0.1, 0.5, 0.7], [0.6, 0.4, 0.2, 0]),
         }}
@@ -209,7 +209,7 @@ const Slider = () => {
               words={words}
               html={true}
               duration={0.5}
-              className="flex w-full items-center justify-center font-bold text-center lg:text-start px-4 lg:px-0"
+              className="flex w-full items-center justify-center px-4 text-center font-bold lg:px-0 lg:text-start"
               animate={true}
               scrollProgress={wordProgress}
               tag="h2"

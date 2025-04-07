@@ -31,10 +31,10 @@ export function TimelineDemo() {
     });
   }, []);
 
-  // Simplify transforms for smoother transitions between sections
-  const firstItemProgress = useTransform(scrollYProgress, [0.05, 0.3], [0, 1]);
-  const secondItemProgress = useTransform(scrollYProgress, [0.35, 0.6], [0, 1]);
-  const thirdItemProgress = useTransform(scrollYProgress, [0.65, 0.9], [0, 1]);
+  // Adjust item progress timing - bring the third item forward and rebalance all items
+  const firstItemProgress = useTransform(scrollYProgress, [0.05, 0.25], [0, 1]);
+  const secondItemProgress = useTransform(scrollYProgress, [0.3, 0.5], [0, 1]);
+  const thirdItemProgress = useTransform(scrollYProgress, [0.25, 0.85], [0, 1]); // Show earlier
 
   const data = [
     {
@@ -66,7 +66,7 @@ export function TimelineDemo() {
               filter: useTransform(
                 firstItemProgress,
                 [0, 0.3, 0.7, 1],
-                ['blur(15px)', 'blur(8px)', 'blur(3px)', 'blur(0px)'],
+                ['blur(6px)', 'blur(2px)', 'blur(1px)', 'blur(0px)'],
               ),
             }}
             className="flex h-full w-full gap-4"
@@ -76,7 +76,7 @@ export function TimelineDemo() {
               alt="startup template"
               width={700}
               height={700}
-              className="h-full w-full rounded-lg shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+              className="h-full w-full rounded-lg border-1 border-zinc-300 shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
             />
           </motion.div>
         </div>
@@ -111,7 +111,7 @@ export function TimelineDemo() {
               filter: useTransform(
                 secondItemProgress,
                 [0, 0.3, 0.7, 1],
-                ['blur(8px)', 'blur(5px)', 'blur(2px)', 'blur(0px)'],
+                ['blur(3px)', 'blur(1px)', 'blur(0px)', 'blur(0px)'],
               ),
             }}
             className="flex h-full w-full flex-col-reverse gap-4 md:gap-12"
@@ -121,7 +121,7 @@ export function TimelineDemo() {
             </div>
             <video
               ref={videoRef}
-              className="h-full w-full rounded-2xl object-cover object-top shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+              className="h-full w-full rounded-2xl border-1 border-zinc-300 object-cover object-top shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
               src="/anti-cheat.mp4"
               muted
               loop
@@ -157,23 +157,23 @@ export function TimelineDemo() {
           </motion.p>
           <motion.div
             transition={{
-              duration: 0.1, // Shorter duration for more immediate response
+              duration: 0.01, // Shorter duration for more immediate response
               ease: 'linear', // Linear easing for smooth scrolling
             }}
             style={{
               opacity: thirdItemProgress,
-              scale: useTransform(thirdItemProgress, [0, 0.3, 1], [0.94, 0.97, 1]), // Subtler scaling
+              scale: useTransform(thirdItemProgress, [0, 0.3, 1], [0.92, 0.95, 1]), // Subtler scaling
               filter: useTransform(
                 thirdItemProgress,
-                [0, 0.3, 0.7, 1],
-                ['blur(10px)', 'blur(6px)', 'blur(2px)', 'blur(0px)'],
+                [0, 0.1, 0.2, 1],
+                ['blur(6px)', 'blur40px)', 'blur(2px)', 'blur(0px)'],
               ),
             }}
             className="flex h-full w-full flex-col-reverse gap-4 md:gap-8"
           >
             <video
               ref={videoRef2}
-              className="h-full w-full rounded-2xl object-cover object-top shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+              className="h-full w-full rounded-2xl border-1 border-zinc-300 object-cover object-top shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
               src="/review.mp4"
               muted
               loop

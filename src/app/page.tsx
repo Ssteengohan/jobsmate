@@ -23,8 +23,13 @@ export default function Home() {
 
         <Spotlight
           className="-top-20 -left-10 z-25 sm:-top-30 sm:left-0 md:top-[10vh] md:left-1/3"
-          fill="rgba(59, 130, 246, 0.15)"
-          darkModeFill="rgba(58, 168, 236, 0.25)"
+          fill="rgba(59, 130, 246, 0.25)"
+          darkModeFill="rgba(58, 168, 236, 0.35)"
+        />
+        <Spotlight
+          className="-top-20 -left-10 z-25 sm:-top-30 sm:left-0 md:top-[10vh] md:left-1/4"
+          fill="rgba(59, 130, 246, 0.2)"
+          darkModeFill="rgba(58, 168, 236, 0.2)"
         />
 
         <Spotlight
