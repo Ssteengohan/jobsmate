@@ -54,7 +54,7 @@ export const Tabs = ({
             onMouseEnter={() => setHovering(true)}
             onMouseLeave={() => setHovering(false)}
             className={cn(
-              'relative cursor-pointer rounded-full border border-gray-300 px-3 py-2 text-lg text-nowrap transition-all duration-200 hover:bg-[#f3f4f6] max-md:text-xs md:px-4 md:py-2 dark:border-gray-700 dark:hover:bg-[var(--neutral-200)]',
+              'relative cursor-pointer rounded-full border border-gray-300 px-3 py-2 text-lg text-nowrap transition-all duration-200 hover:bg-[#f3f4f6] max-md:text-sm md:px-4 md:py-2 dark:border-gray-700 dark:hover:bg-[var(--neutral-200)]',
               active.value === tab.value ? 'border-blue-500 dark:border-blue-400' : '',
               tabClassName,
             )}
@@ -84,7 +84,7 @@ export const Tabs = ({
               {tab.icon && (
                 <span
                   className={cn(
-                    'text-sm sm:text-base lg:text-lg',
+                    'text-base sm:text-base lg:text-lg',
                     active.value === tab.value ? 'text-blue-500 dark:text-blue-400' : '',
                   )}
                 >
