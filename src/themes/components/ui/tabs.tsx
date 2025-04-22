@@ -84,7 +84,7 @@ export const Tabs = ({
               {tab.icon && (
                 <span
                   className={cn(
-                    'text-xs',
+                    'text-sm sm:text-base lg:text-lg',
                     active.value === tab.value ? 'text-blue-500 dark:text-blue-400' : '',
                   )}
                 >
