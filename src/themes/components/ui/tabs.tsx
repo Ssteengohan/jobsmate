@@ -8,6 +8,7 @@ type Tab = {
   title: string;
   value: string;
   content?: string | React.ReactNode;
+  icon?: React.ReactNode;
 };
 
 export const Tabs = ({
@@ -40,7 +41,7 @@ export const Tabs = ({
     <>
       <div
         className={cn(
-          'no-visible-scrollbar relative flex w-full max-w-full items-center justify-between gap-x-1 gap-y-8 overflow-auto pb-6 [perspective:1000px] sm:flex-row sm:justify-center sm:gap-4 sm:overflow-visible sm:pb-0 md:flex-wrap',
+          'no-visible-scrollbar relative flex w-full max-w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 overflow-auto [perspective:1000px] sm:flex-row sm:justify-center sm:gap-4 sm:gap-x-8 sm:overflow-visible sm:pb-0 md:flex-wrap',
           containerClassName,
         )}
       >
@@ -53,7 +54,8 @@ export const Tabs = ({
             onMouseEnter={() => setHovering(true)}
             onMouseLeave={() => setHovering(false)}
             className={cn(
-              'relative cursor-pointer rounded-full px-1 py-1 text-2xl text-nowrap hover:bg-[#f3f4f6] max-md:text-xs md:px-4 md:py-2 dark:hover:bg-[var(--neutral-200)]',
+              'relative cursor-pointer rounded-full border border-gray-300 px-3 py-2 text-lg text-nowrap transition-all duration-200 hover:bg-[#f3f4f6] max-md:text-xs md:px-4 md:py-2 dark:border-gray-700 dark:hover:bg-[var(--neutral-200)]',
+              active.value === tab.value ? 'border-blue-500 dark:border-blue-400' : '',
               tabClassName,
             )}
             style={{
@@ -64,11 +66,33 @@ export const Tabs = ({
               <motion.div
                 layoutId="clickedbutton"
                 transition={{ type: 'spring', bounce: 0.3, duration: 0.6 }}
-                className={cn('absolute inset-0 rounded-full', activeTabClassName)}
+                className={cn(
+                  'absolute inset-0 rounded-full bg-blue-50 dark:bg-blue-900/20',
+                  activeTabClassName,
+                )}
               />
             )}
 
-            <span className="relative block text-[#00253b] dark:text-white">{tab.title}</span>
+            <span
+              className={cn(
+                'relative flex items-center gap-2',
+                active.value === tab.value
+                  ? 'font-medium text-blue-600 dark:text-blue-400'
+                  : 'text-[#00253b] dark:text-white',
+              )}
+            >
+              {tab.icon && (
+                <span
+                  className={cn(
+                    'text-xs',
+                    active.value === tab.value ? 'text-blue-500 dark:text-blue-400' : '',
+                  )}
+                >
+                  {tab.icon}
+                </span>
+              )}
+              {tab.title}
+            </span>
           </button>
         ))}
       </div>
@@ -77,7 +101,7 @@ export const Tabs = ({
         active={active}
         key={active.value}
         hovering={hovering}
-        className={cn('mt-20 sm:mt-16', contentClassName)}
+        className={cn('mt-24 sm:mt-20', contentClassName)}
       />
     </>
   );
@@ -98,7 +122,7 @@ export const FadeInDiv = ({
     return tab.value === tabs[0].value;
   };
   return (
-    <div className="relative h-auto min-h-[50vh] w-full overflow-visible lg:min-h-[70vh]">
+    <div className="relative h-auto min-h-[50vh] sm:min-h-[80vh] w-full overflow-visible lg:aspect-video">
       {tabs.map((tab, idx) => (
         <motion.div
           key={tab.value}
@@ -113,7 +137,7 @@ export const FadeInDiv = ({
             y: isActive(tab) ? [0, 40, 0] : 0,
           }}
           className={cn(
-            'absolute top-0 left-0 h-full shadow-xl w-full overflow-hidden rounded-2xl border-1 border-neutral-300',
+            'absolute top-0 left-0 h-full w-full overflow-hidden rounded-2xl border-1 border-neutral-300 shadow-xl',
             className,
           )}
         >

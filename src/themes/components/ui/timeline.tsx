@@ -1,6 +1,7 @@
 'use client';
 import { useScroll, useTransform, motion } from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
+import Balancer from 'react-wrap-balancer';
 
 interface TimelineEntry {
   title: string;
@@ -38,7 +39,7 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: isMobile
-      ? ['start 10%', 'end 60%'] // Simpler offset for mobile
+      ? ['start 10%', 'end 10%'] // Simpler offset for mobile
       : ['start 10%', 'end 50%'], // Simpler offset for desktop like in the example
   });
 
@@ -55,12 +56,14 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
     >
       <div className="mx-auto max-w-7xl px-4 py-20 md:px-8 lg:px-10">
         <h2 className="mb-4 max-w-4xl text-3xl font-bold transition-colors duration-300 md:text-5xl">
-          <span className="text-[var(--primary-dark-blue)] dark:text-[var(--primary-white)]">
-            A Tech Platform{' '}
-          </span>
-          <span className="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-gold)] bg-clip-text text-transparent">
-            Created to Safe Time
-          </span>
+          <Balancer>
+            <span className="text-[var(--primary-dark-blue)] dark:text-[var(--primary-white)]">
+              A Tech Platform{' '}
+            </span>
+            <span className="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-gold)] bg-clip-text text-transparent">
+              Created to Safe Time
+            </span>
+          </Balancer>
         </h2>
         <p className="max-w-lg text-sm text-neutral-700 transition-colors duration-300 md:text-base dark:text-neutral-300">
           Jobsmate seamlessly connects with your ATS (Applicant Tracking System) to streamline your

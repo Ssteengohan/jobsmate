@@ -88,14 +88,14 @@ const defaultTiers: PricingTier[] = [
 
 const PricingCard: React.FC<PricingCardProps> = ({ tiers = defaultTiers }) => {
   return (
-    <div className="relative container flex min-h-[90vh] items-center justify-center bg-gradient-to-b from-[#faf3e6] to-[#fcf4e5] px-2 py-4 sm:min-h-[100vh] sm:px-6 md:py-12 lg:px-8 dark:bg-[var(--primary-dark)] dark:bg-none">
+    <div className="relative container flex min-h-[90vh] justify-center bg-gradient-to-b from-[#faf3e6] to-[#fcf4e5] px-2 py-4 sm:min-h-[90vh] sm:px-6 md:py-12 lg:px-8 dark:bg-[var(--primary-dark)] dark:bg-none">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 py-6 md:gap-12 md:py-12 md:pt-0">
         <div className="mb-4 text-center md:mb-12">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="pb-1 text-center text-3xl leading-tight font-bold tracking-tight sm:pb-2 sm:leading-relaxed md:text-6xl"
+            className="pt-12 pb-1 text-center text-3xl leading-tight font-bold tracking-tight sm:pb-2 sm:leading-relaxed md:text-6xl"
           >
             Simple, transparent{' '}
             <span className="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-gold)] bg-clip-text text-transparent">
@@ -112,24 +112,38 @@ const PricingCard: React.FC<PricingCardProps> = ({ tiers = defaultTiers }) => {
           </motion.p>
         </div>
 
-        <div className="mt-4 grid w-full grid-cols-1 gap-4 sm:mt-8 sm:gap-6 md:mt-12 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-4 grid w-full cursor-pointer grid-cols-1 gap-4 sm:mt-8 sm:gap-6 md:mt-12 md:grid-cols-2 lg:grid-cols-3">
           {tiers.map((tier, index) => (
             <motion.div
               key={tier.name}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 * (index + 1) }}
               whileHover={{
-                y: -4,
+                y: -6,
                 boxShadow: tier.highlighted
-                  ? '0 15px 30px -12px rgba(240, 180, 41, 0.25)'
-                  : '0 15px 30px -12px rgba(0, 0, 0, 0.25)',
+                  ? '0 20px 30px -10px rgba(240, 180, 41, 0.3)'
+                  : '0 20px 30px -10px rgba(0, 0, 0, 0.2)',
               }}
-              className={`flex flex-col overflow-hidden rounded-xl sm:rounded-2xl ${
+              transition={{
+                default: {
+                  type: 'tween',
+                  ease: 'easeOut',
+                  duration: 0.3,
+                },
+                opacity: {
+                  duration: 0.2,
+                  delay: 0.0 * (index + 1),
+                },
+                y: {
+                  duration: 0.2,
+                  delay: 0.0 * (index + 1),
+                },
+              }}
+              className={`flex transform-gpu flex-col overflow-hidden rounded-xl will-change-transform sm:rounded-2xl ${
                 tier.highlighted
                   ? 'z-10 border-2 border-[var(--primary-gold)] shadow-lg md:h-auto lg:-mt-8 lg:h-[600px] lg:shadow-xl dark:border-[var(--primary-gold)]'
                   : 'border border-neutral-200 shadow-md sm:shadow-lg dark:border-neutral-700'
-              } bg-white transition-all duration-300 dark:bg-[var(--neutral-50)]`}
+              } bg-white transition-all duration-300 ease-in-out dark:bg-[var(--neutral-50)]`}
             >
               <div
                 className={`px-3 py-4 sm:px-6 sm:py-8 ${tier.highlighted ? 'bg-[var(--primary-gold)]/10 dark:bg-[var(--primary-gold)]/20' : ''}`}
@@ -171,8 +185,16 @@ const PricingCard: React.FC<PricingCardProps> = ({ tiers = defaultTiers }) => {
                 <div className="mt-4 sm:mt-6 md:mt-8">
                   {tier.highlighted ? (
                     <motion.button
-                      whileHover={{ scale: 1.03 }}
-                      className="group text-2xs relative w-full rounded-full border border-transparent bg-[var(--primary-gold)] px-3 py-1.5 text-center font-medium text-[var(--primary-dark-blue)] transition-all duration-300 ease-in-out hover:shadow-lg focus:ring-2 focus:ring-[var(--primary-gold)] focus:ring-offset-2 focus:outline-none sm:px-4 sm:py-2 sm:text-xs md:px-6 md:py-3 md:text-sm dark:text-[var(--primary-dark)] dark:hover:shadow-[0_0_15px_rgba(240,180,41,0.4)]"
+                      whileHover={{
+                        scale: 1.03,
+                      }}
+                      whileTap={{ scale: 0.97 }}
+                      transition={{
+                        type: 'tween',
+                        ease: 'easeOut',
+                        duration: 0.2,
+                      }}
+                      className="group text-2xs relative w-full cursor-pointer rounded-full border border-transparent bg-[var(--primary-gold)] px-3 py-1.5 text-center font-medium text-[var(--primary-dark-blue)] transition-all duration-300 ease-in-out hover:shadow-lg focus:ring-2 focus:ring-[var(--primary-gold)] focus:ring-offset-2 focus:outline-none sm:px-4 sm:py-2 sm:text-xs md:px-6 md:py-3 md:text-sm dark:text-[var(--primary-dark)] dark:hover:shadow-[0_0_15px_rgba(240,180,41,0.4)]"
                     >
                       <div className="via-primary-light-blue absolute inset-x-0 -top-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent to-transparent opacity-70 shadow-sm transition-all duration-300 group-hover:w-3/4 group-hover:opacity-100 group-hover:shadow-md" />
                       <div className="via-primary-gold absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent to-transparent opacity-0 shadow-sm transition-all duration-300 group-hover:w-3/4 group-hover:opacity-100" />
@@ -182,8 +204,29 @@ const PricingCard: React.FC<PricingCardProps> = ({ tiers = defaultTiers }) => {
                     </motion.button>
                   ) : (
                     <motion.button
-                      whileHover={{ boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)' }}
-                      className="group relative inline-flex w-full justify-center overflow-hidden rounded-full p-[1px] shadow-sm transition-all duration-300 ease-in-out hover:shadow-xl focus:ring-2 focus:ring-[var(--primary-light-blue)] focus:ring-offset-2 focus:outline-none dark:hover:shadow-[0_0_20px_rgba(42,151,219,0.4)]"
+                      whileHover={{
+                        scale: 1.03,
+                        boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
+                      }}
+                      whileTap={{ scale: 0.97 }}
+                      transition={{
+                        default: {
+                          type: 'tween',
+                          ease: 'easeOut',
+                          duration: 0.2,
+                        },
+                        scale: {
+                          type: 'tween',
+                          ease: 'easeOut',
+                          duration: 0.2,
+                        },
+                        boxShadow: {
+                          type: 'tween',
+                          ease: 'easeOut',
+                          duration: 0.3,
+                        },
+                      }}
+                      className="group relative inline-flex w-full cursor-pointer justify-center overflow-hidden rounded-full p-[1px] shadow-sm transition-all duration-300 ease-in-out hover:shadow-xl focus:ring-2 focus:ring-[var(--primary-light-blue)] focus:ring-offset-2 focus:outline-none dark:hover:shadow-[0_0_20px_rgba(42,151,219,0.4)]"
                     >
                       <span className="absolute inset-[-1000%] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,var(--primary-light-blue)_0%,var(--primary-medium-blue)_40%,var(--primary-gold)_70%,var(--primary-dark)_100%)] opacity-80 transition-all duration-300 ease-in-out group-hover:animate-[spin_3s_linear_infinite] group-hover:opacity-100" />
                       <span className="text-2xs relative z-10 inline-flex h-full w-full items-center justify-center rounded-full bg-white px-3 py-1.5 font-medium text-[var(--primary-light-blue)] backdrop-blur-3xl transition-all duration-300 ease-in-out group-hover:bg-[var(--primary-light-blue)] group-hover:text-white group-hover:shadow-inner sm:px-4 sm:py-2 sm:text-xs md:px-6 md:py-3 md:text-sm dark:bg-[var(--neutral-50)] dark:text-[var(--primary-medium-blue)] dark:group-hover:bg-[var(--primary-dark-blue)] dark:group-hover:text-white dark:group-hover:shadow-[inset_0_2px_8px_rgba(0,0,0,0.3)]">
