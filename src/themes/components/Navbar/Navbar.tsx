@@ -2,15 +2,15 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [prevScrollPos, setPrevScrollPos] = useState(0);
-
-
+  const [activeItem, setActiveItem] = useState<number | null>(null);
+  const navRefs = useRef<(HTMLLIElement | null)[]>([]);
 
   useEffect(() => {
     setPrevScrollPos(window.scrollY);
@@ -81,8 +81,6 @@ const Navbar = () => {
     },
   };
 
-
-
   const navbarClasses = `fixed w-full transform ${
     isVisible ? 'translate-y-0' : '-translate-y-full'
   } z-50 border-b border-gray-200 bg-white px-4 py-4 shadow-md backdrop-blur-sm transition-transform duration-300 ease-in-out dark:border-[var(--neutral-200)] dark:bg-[var(--neutral-50)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.2)]`;
@@ -107,27 +105,70 @@ const Navbar = () => {
           </div>
 
           <nav className="hidden lg:block">
-            <ul className="flex items-center gap-3">
-              <li>
+            <ul className="relative flex items-center gap-3">
+              {activeItem !== null && (
+                <motion.div
+                  className="absolute z-0 rounded-xl bg-gradient-to-r from-blue-50 via-gray-100 to-blue-50 dark:from-[var(--neutral-200)] dark:via-[var(--neutral-100)] dark:to-[var(--neutral-200)]"
+                  initial={false}
+                  animate={{
+                    width: navRefs.current[activeItem]?.offsetWidth,
+                    height: navRefs.current[activeItem]?.offsetHeight,
+                    x: navRefs.current[activeItem]?.offsetLeft,
+                    scale: [0.95, 1.05, 1],
+                    opacity: 1,
+                  }}
+                  transition={{
+                    type: 'spring',
+                    stiffness: 400,
+                    damping: 25,
+                    mass: 1.2,
+                    times: [0, 0.6, 1],
+                  }}
+                  layoutId="navHover"
+                />
+              )}
+
+              <li
+                ref={(el) => {
+                  navRefs.current[0] = el;
+                }}
+                onMouseEnter={() => setActiveItem(0)}
+                onMouseLeave={() => setActiveItem(null)}
+                className="relative z-10"
+              >
                 <Link
                   href="/about"
-                  className="px-3 py-2 text-black transition-all duration-400 ease-in-out hover:rounded-xl hover:bg-[#f3f4f6] dark:text-[var(--primary-white)] dark:hover:bg-[var(--neutral-200)]"
+                  className="block px-3 py-2 text-black transition-all duration-400 ease-in-out dark:text-[var(--primary-white)]"
                 >
                   Features
                 </Link>
               </li>
-              <li>
+              <li
+                ref={(el) => {
+                  navRefs.current[1] = el;
+                }}
+                onMouseEnter={() => setActiveItem(1)}
+                onMouseLeave={() => setActiveItem(null)}
+                className="relative z-10"
+              >
                 <Link
                   href="/services"
-                  className="px-3 py-2 text-black transition-all duration-400 ease-in-out hover:rounded-xl hover:bg-[#f3f4f6] dark:text-[var(--primary-white)] dark:hover:bg-[var(--neutral-200)]"
+                  className="block px-3 py-2 text-black transition-all duration-400 ease-in-out dark:text-[var(--primary-white)]"
                 >
                   Price
                 </Link>
               </li>
-              <li>
+              <li
+                ref={(el) => {
+                  navRefs.current[2] = el;
+                }}
+                onMouseEnter={() => setActiveItem(2)}
+                onMouseLeave={() => setActiveItem(null)}
+                className="relative z-10"
+              >
                 <Link
                   href="/contact"
-                  className="px-3 py-2 text-black transition-all duration-400 ease-in-out hover:rounded-xl hover:bg-[#f3f4f6] dark:text-[var(--primary-white)] dark:hover:bg-[var(--neutral-200)]"
+                  className="block px-3 py-2 text-black transition-all duration-400 ease-in-out dark:text-[var(--primary-white)]"
                 >
                   About us
                 </Link>

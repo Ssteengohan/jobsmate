@@ -85,74 +85,77 @@ const Slider = () => {
   });
 
   // Create a sequential animation flow: text → first row → second row
-  const wordProgress = useTransform(scrollYProgress, [0.22, 0.28], [0, 1]);
+  // Delayed triggers - text appears later in the scroll
+  const wordProgress = useTransform(scrollYProgress, [0.25, 0.35], [0, 1]);
 
-  // First row starts after text is complete
-  const firstRowAnimProgress = useTransform(scrollYProgress, [0.3, 0.4], [0, 1]);
+  // First row starts only after text is complete, delayed
+  const firstRowAnimProgress = useTransform(scrollYProgress, [0.4, 0.55], [0, 1]);
 
-  // Second row starts after first row is complete
-  const secondRowAnimProgress = useTransform(scrollYProgress, [0.42, 0.52], [0, 1]);
+  // Second row starts after first row is complete, delayed
+  const secondRowAnimProgress = useTransform(scrollYProgress, [0.6, 0.75], [0, 1]);
 
-  const scale = useTransform(scrollYProgress, [0.2, 0.3], [0.9, 1]);
-  const y = useTransform(scrollYProgress, [0.2, 0.3], [30, 0]);
+  const scale = useTransform(scrollYProgress, [0.25, 0.35], [0.9, 1]);
+  const y = useTransform(scrollYProgress, [0.25, 0.35], [30, 0]);
 
   const combinedOpacity = useTransform(scrollYProgress, (latest) => {
-    // Add upper bound - content hides when scrolled out of view
-    if (latest < 0.15 || latest > 1) return 0;
+    // Delayed appearance
+    if (latest < 0.2 || latest > 1) return 0;
     return 1; // Only visible within the specified range
   });
 
   const displayStyle = useTransform(scrollYProgress, (latest) => {
-    // Add upper bound - content disappears when scrolled out of view
-    if (latest < 0.1 || latest > 1) return 'none';
+    // Delayed display
+    if (latest < 0.15 || latest > 1) return 'none';
     return 'flex';
   });
 
   // UNROLLED grid transform hooks for first row (3 items)
+  // Maintained the same relative spacing between items
   const firstRowTrans0 = {
-    opacity: useTransform(firstRowAnimProgress, [0, 0.08], [0, 1]),
-    x: useTransform(firstRowAnimProgress, [0, 0.08], [-20, 0]),
-    filter: useTransform(firstRowAnimProgress, [0, 0.08], ['blur(8px)', 'blur(0px)']),
-    scale: useTransform(firstRowAnimProgress, [0, 0.08], [0.9, 1]),
+    opacity: useTransform(firstRowAnimProgress, [0, 0.15], [0, 1]),
+    x: useTransform(firstRowAnimProgress, [0, 0.15], [-20, 0]),
+    filter: useTransform(firstRowAnimProgress, [0, 0.15], ['blur(8px)', 'blur(0px)']),
+    scale: useTransform(firstRowAnimProgress, [0, 0.15], [0.9, 1]),
   };
   const firstRowTrans1 = {
-    opacity: useTransform(firstRowAnimProgress, [0.25, 0.33], [0, 1]),
-    x: useTransform(firstRowAnimProgress, [0.25, 0.33], [-20, 0]),
-    filter: useTransform(firstRowAnimProgress, [0.25, 0.33], ['blur(8px)', 'blur(0px)']),
-    scale: useTransform(firstRowAnimProgress, [0.25, 0.33], [0.9, 1]),
+    opacity: useTransform(firstRowAnimProgress, [0.25, 0.4], [0, 1]),
+    x: useTransform(firstRowAnimProgress, [0.25, 0.4], [-20, 0]),
+    filter: useTransform(firstRowAnimProgress, [0.25, 0.4], ['blur(8px)', 'blur(0px)']),
+    scale: useTransform(firstRowAnimProgress, [0.25, 0.4], [0.9, 1]),
   };
   const firstRowTrans2 = {
-    opacity: useTransform(firstRowAnimProgress, [0.5, 0.58], [0, 1]),
-    x: useTransform(firstRowAnimProgress, [0.5, 0.58], [-20, 0]),
-    filter: useTransform(firstRowAnimProgress, [0.5, 0.58], ['blur(8px)', 'blur(0px)']),
-    scale: useTransform(firstRowAnimProgress, [0.5, 0.58], [0.9, 1]),
+    opacity: useTransform(firstRowAnimProgress, [0.5, 0.65], [0, 1]),
+    x: useTransform(firstRowAnimProgress, [0.5, 0.65], [-20, 0]),
+    filter: useTransform(firstRowAnimProgress, [0.5, 0.65], ['blur(8px)', 'blur(0px)']),
+    scale: useTransform(firstRowAnimProgress, [0.5, 0.65], [0.9, 1]),
   };
   const firstRowTransforms = [firstRowTrans0, firstRowTrans1, firstRowTrans2];
 
   // UNROLLED grid transform hooks for second row (4 items for desktop)
+  // Increased spacing between items for more pronounced sequential effect
   const secondRowTrans0 = {
-    opacity: useTransform(secondRowAnimProgress, [0, 0.08], [0, 1]),
-    x: useTransform(secondRowAnimProgress, [0, 0.08], [-20, 0]),
-    filter: useTransform(secondRowAnimProgress, [0, 0.08], ['blur(8px)', 'blur(0px)']),
-    scale: useTransform(secondRowAnimProgress, [0, 0.08], [0.9, 1]),
+    opacity: useTransform(secondRowAnimProgress, [0, 0.15], [0, 1]),
+    x: useTransform(secondRowAnimProgress, [0, 0.15], [-20, 0]),
+    filter: useTransform(secondRowAnimProgress, [0, 0.15], ['blur(8px)', 'blur(0px)']),
+    scale: useTransform(secondRowAnimProgress, [0, 0.15], [0.9, 1]),
   };
   const secondRowTrans1 = {
-    opacity: useTransform(secondRowAnimProgress, [0.25, 0.33], [0, 1]),
-    x: useTransform(secondRowAnimProgress, [0.25, 0.33], [-20, 0]),
-    filter: useTransform(secondRowAnimProgress, [0.25, 0.33], ['blur(8px)', 'blur(0px)']),
-    scale: useTransform(secondRowAnimProgress, [0.25, 0.33], [0.9, 1]),
+    opacity: useTransform(secondRowAnimProgress, [0.25, 0.4], [0, 1]),
+    x: useTransform(secondRowAnimProgress, [0.25, 0.4], [-20, 0]),
+    filter: useTransform(secondRowAnimProgress, [0.25, 0.4], ['blur(8px)', 'blur(0px)']),
+    scale: useTransform(secondRowAnimProgress, [0.25, 0.4], [0.9, 1]),
   };
   const secondRowTrans2 = {
-    opacity: useTransform(secondRowAnimProgress, [0.5, 0.58], [0, 1]),
-    x: useTransform(secondRowAnimProgress, [0.5, 0.58], [-20, 0]),
-    filter: useTransform(secondRowAnimProgress, [0.5, 0.58], ['blur(8px)', 'blur(0px)']),
-    scale: useTransform(secondRowAnimProgress, [0.5, 0.58], [0.9, 1]),
+    opacity: useTransform(secondRowAnimProgress, [0.5, 0.65], [0, 1]),
+    x: useTransform(secondRowAnimProgress, [0.5, 0.65], [-20, 0]),
+    filter: useTransform(secondRowAnimProgress, [0.5, 0.65], ['blur(8px)', 'blur(0px)']),
+    scale: useTransform(secondRowAnimProgress, [0.5, 0.65], [0.9, 1]),
   };
   const secondRowTrans3 = {
-    opacity: useTransform(secondRowAnimProgress, [0.75, 0.83], [0, 1]),
-    x: useTransform(secondRowAnimProgress, [0.75, 0.83], [-20, 0]),
-    filter: useTransform(secondRowAnimProgress, [0.75, 0.83], ['blur(8px)', 'blur(0px)']),
-    scale: useTransform(secondRowAnimProgress, [0.75, 0.83], [0.9, 1]),
+    opacity: useTransform(secondRowAnimProgress, [0.75, 0.9], [0, 1]),
+    x: useTransform(secondRowAnimProgress, [0.75, 0.9], [-20, 0]),
+    filter: useTransform(secondRowAnimProgress, [0.75, 0.9], ['blur(8px)', 'blur(0px)']),
+    scale: useTransform(secondRowAnimProgress, [0.75, 0.9], [0.9, 1]),
   };
 
   // For mobile/tablet: only use first 3 transforms (6 logos total)
@@ -166,7 +169,7 @@ const Slider = () => {
   ];
 
   return (
-    <div ref={containerRef} className="relative -top-0 -z-50 min-h-[140vh] w-full">
+    <div ref={containerRef} className="relative -top-0 -z-50 min-h-[90vh] w-full">
       {/* Dotted background using design system colors */}
       <div className="absolute inset-0 -z-50 overflow-hidden">
         {/* Gradient base layer */}
@@ -186,7 +189,7 @@ const Slider = () => {
       <motion.div
         className="absolute inset-0 -z-50 [background-image:radial-gradient(var(--primary-light-blue)_1.5px,transparent_1.5px)] [background-size:18px_18px] dark:[background-image:radial-gradient(var(--accent-purple)_1.3px,transparent_1.3px)]"
         style={{
-          opacity: useTransform(scrollYProgress, [0, 0.1, 0.5, 0.7], [0.6, 0.4, 0.2, 0]),
+          opacity: useTransform(scrollYProgress, [0, 0.2, 0.6, 0.8], [0.6, 0.4, 0.2, 0]),
         }}
       />
 
@@ -197,12 +200,12 @@ const Slider = () => {
           display: displayStyle,
           pointerEvents: 'none',
         }}
-        className="fixed top-[30vh] left-0 -z-50 h-auto w-full items-center justify-center to-transparent transition-all duration-500 dark:from-[var(--neutral-50)]/80 dark:via-[var(--neutral-50)]/30 dark:to-transparent"
+        className="fixed top-[15vh] left-0 -z-50 flex h-auto w-full items-center justify-start to-transparent transition-all duration-500 dark:from-[var(--neutral-50)]/80 dark:via-[var(--neutral-50)]/30 dark:to-transparent"
       >
         <motion.div
           ref={textRef}
           style={{ scale, y }}
-          className="container flex h-full w-full flex-col items-center justify-normal"
+          className="container flex h-full w-full flex-col items-center justify-start"
         >
           <div className="">
             <TextGenerateEffect
@@ -277,7 +280,7 @@ const Slider = () => {
       </motion.section>
 
       {/* Extra space for scrolling */}
-      <div className="h-[220vh] w-full"></div>
+      <div className="h-[250vh] sm:h-[200vh] w-full"></div>
     </div>
   );
 };

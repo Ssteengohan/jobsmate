@@ -13,7 +13,7 @@ const JobPosting = () => {
   }, []);
 
   return (
-    <motion.section className="relative flex items-center justify-center overflow-hidden rounded-2xl">
+    <motion.section className="relative flex items-center h-full justify-center overflow-hidden rounded-2xl">
       {/* Transparent overlay to capture touch events */}
       <div className="absolute inset-0 z-10" aria-hidden="true"></div>
       <video

@@ -4,22 +4,19 @@ import Navbar from '@/themes/components/Navbar/Navbar';
 import { SpotlightPreview } from '@/themes/components/HeroBanner/HeroBanner';
 import { TabsDemo } from '@/themes/components/Tabs/Tabs';
 import { Spotlight } from '@/themes/components/ui/Spotlight';
-import CustomCursor from '@/themes/components/ui/CustomCursor';
 import Slider from '@/themes/components/Slider/Slider';
 import { TimelineDemo } from '@/themes/components/TimeLine/TimeLine';
-import { StickyScrollRevealDemo } from '@/themes/components/StickyScroll/StickyScroll';
 import PricingCard from '@/themes/components/PricingCard/PricingCard';
 import Footer from '@/themes/components/Footer/Footer';
 
 export default function Home() {
   return (
     <main className="mx-auto min-h-screen overflow-hidden bg-gradient-to-b from-white via-[#f9f9f9] to-[var(--primary-gold)]/15 transition-colors duration-300 dark:bg-[var(--neutral-50)] dark:bg-none">
-      <CustomCursor />
       <Navbar />
       <div className="relative z-20 container">
         <div className="absolute inset-0 z-0 bg-gradient-to-b from-transparent to-gray-50/30 transition-colors duration-300 dark:from-transparent dark:to-[var(--primary-dark)]/20" />
-        <div className="absolute inset-y-0 left-[1%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]"></div>
-        <div className="absolute inset-y-0 left-[99%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]"></div>
+        <div className="absolute inset-y-0 left-[1%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]/80"></div>
+        <div className="absolute inset-y-0 left-[99%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]/80"></div>
 
         <Spotlight
           className="-top-20 -left-10 z-25 sm:-top-30 sm:left-0 md:top-[10vh] md:left-1/3"
@@ -47,12 +44,11 @@ export default function Home() {
         <TabsDemo />
       </div>
       <div className="relative z-5 container">
-        <div className="absolute inset-y-0 left-[1%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]"></div>
-        <div className="absolute inset-y-0 left-[99%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]"></div>
+        <div className="absolute inset-y-0 left-[1%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]/90"></div>
+        <div className="absolute inset-y-0 left-[99%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]/90"></div>
         <Slider />
 
         <TimelineDemo />
-        <StickyScrollRevealDemo />
         <PricingCard />
       </div>
       <Footer />

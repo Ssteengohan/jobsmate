@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+
+@theme {
+  --breakpoint-3xl: 107rem;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #05253c;
@@ -67,6 +72,8 @@
 
   }
 }
+
+
 
 @theme inline {
   --color-background: var(--background);
