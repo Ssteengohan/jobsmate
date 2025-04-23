@@ -82,7 +82,17 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
       direction: number;
       velocity: number;
     }) => {
-      // Clear existing timeout to debounce frequent updates
+      // For upward scrolls, update immediately - more responsive navbar appearance
+      if (direction < 0) {
+        setScrollData({
+          scroll,
+          direction,
+          isScrolling: Math.abs(velocity) > 0.01,
+        });
+        return;
+      }
+
+      // For other scroll events, debounce to reduce render frequency
       if (updateTimeoutRef.current) {
         clearTimeout(updateTimeoutRef.current);
       }
@@ -94,7 +104,7 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
           direction,
           isScrolling: Math.abs(velocity) > 0.01,
         });
-      }, 16); // Approximately matches 60fps for smoother updates
+      }, 8); // Reduced from 16ms to 8ms for smoother updates
     };
 
     lenis.on('scroll', onScroll);

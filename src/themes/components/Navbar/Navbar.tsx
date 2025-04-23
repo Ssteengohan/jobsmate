@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useScrollData } from '@/themes/lib/lenis';
 
@@ -12,27 +12,73 @@ const Navbar = () => {
   const [lastScroll, setLastScroll] = useState(0);
   const [activeItem, setActiveItem] = useState<number | null>(null);
   const navRefs = useRef<(HTMLLIElement | null)[]>([]);
+  const scrollDebounceRef = useRef<NodeJS.Timeout | null>(null);
+  const scrollDirectionBufferRef = useRef(0);
 
   // Get scroll data from Lenis context
   const { scroll, direction } = useScrollData();
 
-  useEffect(() => {
-    // Hide navbar when scrolling down, show when scrolling up
-    if (scroll > 100) {
-      if (direction === 1 && scroll > lastScroll) {
-        // Scrolling down
-        setIsVisible(false);
-      } else if (direction === -1) {
-        // Scrolling up
-        setIsVisible(true);
+  // Debounced scroll handler with more robust direction detection
+  const handleScroll = useCallback(
+    (scrollPosition: number, scrollDirection: number) => {
+      // Clear any existing timeout to debounce frequent updates
+      if (scrollDebounceRef.current) {
+        clearTimeout(scrollDebounceRef.current);
       }
-    } else {
-      // Always show at top of page
-      setIsVisible(true);
-    }
 
-    setLastScroll(scroll);
-  }, [scroll, direction, lastScroll]);
+      scrollDebounceRef.current = setTimeout(() => {
+        // Force show navbar on ANY upward motion when it's currently hidden
+        if (!isVisible && scrollDirection < 0) {
+          setIsVisible(true);
+          return;
+        }
+
+        // Make direction detection more sensitive for upward scrolls
+        // Negative direction means scrolling up
+        if (scrollDirection < 0) {
+          scrollDirectionBufferRef.current -= 2; // Increase sensitivity for upward scrolls
+        } else {
+          scrollDirectionBufferRef.current += scrollDirection;
+        }
+
+        // Apply a threshold to direction detection - more sensitive to upward scrolls
+        const effectiveDirection =
+          scrollDirectionBufferRef.current > 3 ? 1 : scrollDirectionBufferRef.current < -1 ? -1 : 0; // More sensitive for -1
+
+        if (scrollPosition > 100) {
+          // Reduced threshold from 150 to 100
+          if (effectiveDirection > 0 && scrollPosition - lastScroll > 10) {
+            // Scrolling down significantly
+            setIsVisible(false);
+            scrollDirectionBufferRef.current = 0;
+          } else if (effectiveDirection < 0) {
+            // Any effective upward motion should show the navbar
+            // Removed the minimum scroll distance for upward motion
+            setIsVisible(true);
+            scrollDirectionBufferRef.current = 0;
+          }
+        } else {
+          // Always show at top of page
+          setIsVisible(true);
+        }
+
+        setLastScroll(scrollPosition);
+      }, 5); // Reduced debounce from 10ms to 5ms for faster response
+    },
+    [lastScroll, isVisible], // Added isVisible to dependencies
+  );
+
+  useEffect(() => {
+    // Apply the improved scroll handler
+    handleScroll(scroll, direction);
+
+    // Cleanup
+    return () => {
+      if (scrollDebounceRef.current) {
+        clearTimeout(scrollDebounceRef.current);
+      }
+    };
+  }, [scroll, direction, handleScroll]);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);

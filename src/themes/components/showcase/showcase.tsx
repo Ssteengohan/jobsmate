@@ -18,7 +18,6 @@ const ShowCase = () => {
     if (!sectionRef.current || typeof window === 'undefined') return;
 
     // Check if dark mode is enabled
-    const isDarkMode = document.documentElement.classList.contains('dark');
 
     // Create a timeline for the section animations
     const tl = gsap.timeline({
@@ -31,15 +30,6 @@ const ShowCase = () => {
     });
 
     // Background color animation (subtle shift) - different colors based on mode
-    tl.to(
-      sectionRef.current,
-      {
-        backgroundColor: isDarkMode ? '#1a2230' : '#f5f5f5', // Dark blue for dark mode, light gray for light mode
-        duration: 1,
-        ease: 'power1.inOut',
-      },
-      0,
-    );
 
     // Clean up
     return () => {
@@ -109,12 +99,13 @@ const ShowCase = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative z-50 mx-auto flex h-screen w-full flex-col items-center gap-4 bg-white dark:bg-[#1e2635]"
+      className="relative z-10 container mx-auto flex h-[500vh] w-full flex-col gap-20 bg-white dark:bg-[#1e2635]"
+      style={{ isolation: 'isolate' }}
     >
-      <div className="flex flex-col gap-4 pt-10 mx-auto max-w-7xl px-4 sm:px-8 lg:px-10">
+      <div className="flex max-w-7xl flex-col gap-4 pt-10">
         <AnimatedHeading
           text="Talent, Unlocked."
-          className="text-3xl sm:text-6xl font-bold text-nowrap dark:text-white"
+          className="text-3xl font-bold text-nowrap sm:text-6xl"
           outlineColor="rgba(100,100,100,0.3)"
           fillColor="currentColor"
           strokeWidth={1.5}
@@ -122,7 +113,7 @@ const ShowCase = () => {
 
         <div
           ref={balancerRef}
-          className="sm:w-3/5 overflow-hidden text-lg sm:text-xl leading-relaxed whitespace-pre-wrap text-gray-700 dark:text-gray-300"
+          className="overflow-hidden text-lg leading-relaxed whitespace-pre-wrap text-gray-700 sm:w-3/5 sm:text-xl dark:text-gray-300"
         >
           Find the right fit, faster. Connect with top candidates, streamline hiring, and
           collaborate smarter — all in one powerful platform.
