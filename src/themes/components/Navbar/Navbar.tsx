@@ -4,29 +4,35 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useScrollData } from '@/themes/lib/lenis';
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const [prevScrollPos, setPrevScrollPos] = useState(0);
+  const [lastScroll, setLastScroll] = useState(0);
   const [activeItem, setActiveItem] = useState<number | null>(null);
   const navRefs = useRef<(HTMLLIElement | null)[]>([]);
 
+  // Get scroll data from Lenis context
+  const { scroll, direction } = useScrollData();
+
   useEffect(() => {
-    setPrevScrollPos(window.scrollY);
+    // Hide navbar when scrolling down, show when scrolling up
+    if (scroll > 100) {
+      if (direction === 1 && scroll > lastScroll) {
+        // Scrolling down
+        setIsVisible(false);
+      } else if (direction === -1) {
+        // Scrolling up
+        setIsVisible(true);
+      }
+    } else {
+      // Always show at top of page
+      setIsVisible(true);
+    }
 
-    const handleScroll = () => {
-      const currentScrollPos = window.scrollY;
-      const visible = prevScrollPos > currentScrollPos || currentScrollPos < 10;
-
-      setPrevScrollPos(currentScrollPos);
-      setIsVisible(visible);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [prevScrollPos]);
+    setLastScroll(scroll);
+  }, [scroll, direction, lastScroll]);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -114,7 +120,7 @@ const Navbar = () => {
                     width: navRefs.current[activeItem]?.offsetWidth,
                     height: navRefs.current[activeItem]?.offsetHeight,
                     x: navRefs.current[activeItem]?.offsetLeft,
-                    scale: [0.95, 1.05, 1],
+                    scale: 1, // Fixed: removed array of values to avoid the error
                     opacity: 1,
                   }}
                   transition={{
@@ -122,7 +128,6 @@ const Navbar = () => {
                     stiffness: 400,
                     damping: 25,
                     mass: 1.2,
-                    times: [0, 0.6, 1],
                   }}
                   layoutId="navHover"
                 />
