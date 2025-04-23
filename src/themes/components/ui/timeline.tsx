@@ -14,40 +14,55 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
   const [height, setHeight] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
-  useEffect(() => {
+  // Memoize resize handler to improve performance
+  const handleResize = React.useCallback(() => {
     // Check if we're on a mobile device
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
+    setIsMobile(window.innerWidth < 768);
 
-    // Initial check
-    checkMobile();
-
-    // Add resize listener
-    window.addEventListener('resize', checkMobile);
-
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  useEffect(() => {
+    // Update height measurement
     if (ref.current) {
       const rect = ref.current.getBoundingClientRect();
       setHeight(rect.height);
     }
-  }, [ref]);
+  }, []);
 
+  useEffect(() => {
+    // Initial check
+    handleResize();
+
+    // Optimize resize listener with debouncing
+    let resizeTimer: ReturnType<typeof setTimeout>;
+    const debouncedResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(handleResize, 100);
+    };
+
+    // Add optimized resize listener
+    window.addEventListener('resize', debouncedResize);
+
+    return () => {
+      clearTimeout(resizeTimer);
+      window.removeEventListener('resize', debouncedResize);
+    };
+  }, [handleResize]);
+
+  // Optimized scroll configuration
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: isMobile
-      ? ['start 10%', 'end 10%'] // Simpler offset for mobile
-      : ['start 10%', 'end 50%'], // Simpler offset for desktop like in the example
+      ? ['start 15%', 'end 15%'] // Adjusted for more predictable mobile scrolling
+      : ['start 15%', 'end 40%'], // Adjusted for smoother desktop scrolling
   });
 
-  // Simplify transforms with fewer control points for smoother animation
-  const heightTransform = useTransform(scrollYProgress, [0, 1], [0, height]);
+  // Optimize transforms to reduce calculation overhead
+  const heightTransform = useTransform(scrollYProgress, [0, 1], [0, height], {
+    clamp: false, // Remove clamp for smoother transitions
+  });
 
-  // Simpler opacity transform with fewer control points
-  const opacityTransform = useTransform(scrollYProgress, [0, 0.1, 0.9, 1], [0, 1, 1, 0.9]);
+  // Optimized opacity transform
+  const opacityTransform = useTransform(scrollYProgress, [0, 0.05, 0.95, 1], [0, 1, 1, 0], {
+    clamp: false, // Remove clamp for smoother transitions
+  });
 
   return (
     <div
@@ -95,21 +110,22 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
         <div
           style={{
             height: height + 'px',
-            // Add max-height constraint for mobile
             maxHeight: isMobile ? 'calc(100vh * 1.5)' : 'none',
           }}
           className="absolute top-0 left-8 w-[2px] overflow-hidden bg-[linear-gradient(to_bottom,var(--tw-gradient-stops))] from-transparent from-[0%] via-[var(--neutral-200)] to-transparent to-[99%] transition-colors duration-300 [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)] md:left-8 dark:via-[var(--neutral-200)]"
         >
           <motion.div
             transition={{
-              duration: 0.1, // Shorter duration for more immediate response
-              ease: 'linear', // Linear easing for smooth scrolling
+              duration: 0.05, // Reduced for better performance
+              ease: 'linear',
+              // Add hardware acceleration
+              type: 'tween',
             }}
             style={{
               height: heightTransform,
               opacity: opacityTransform,
-              // Add max-height for mobile
               maxHeight: isMobile ? '100%' : 'none',
+              willChange: 'transform, opacity', // Hint for browser optimization
             }}
             className="absolute inset-x-0 top-0 w-[2px] rounded-full bg-gradient-to-t from-[var(--primary-gold)] from-[0%] via-[var(--primary-light-blue)] via-[10%] to-transparent"
           />

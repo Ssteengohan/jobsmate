@@ -111,10 +111,10 @@ const ShowCase = () => {
       ref={sectionRef}
       className="relative z-50 mx-auto flex h-screen w-full flex-col items-center gap-4 bg-white dark:bg-[#1e2635]"
     >
-      <div className="flex flex-col gap-4 pt-20 *:justify-center">
+      <div className="flex flex-col gap-4 pt-10 mx-auto max-w-7xl px-4 sm:px-8 lg:px-10">
         <AnimatedHeading
           text="Talent, Unlocked."
-          className="text-6xl font-bold text-nowrap dark:text-white"
+          className="text-3xl sm:text-6xl font-bold text-nowrap dark:text-white"
           outlineColor="rgba(100,100,100,0.3)"
           fillColor="currentColor"
           strokeWidth={1.5}
@@ -122,7 +122,7 @@ const ShowCase = () => {
 
         <div
           ref={balancerRef}
-          className="w-3/5 overflow-hidden text-xl leading-relaxed whitespace-pre-wrap text-gray-700 dark:text-gray-300"
+          className="sm:w-3/5 overflow-hidden text-lg sm:text-xl leading-relaxed whitespace-pre-wrap text-gray-700 dark:text-gray-300"
         >
           Find the right fit, faster. Connect with top candidates, streamline hiring, and
           collaborate smarter — all in one powerful platform.

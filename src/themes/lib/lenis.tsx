@@ -21,39 +21,40 @@ export default function useLenis() {
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    // Initialize Lenis smooth scrolling with enhanced aesthetics
+    // Initialize Lenis smooth scrolling with performance-optimized settings
     const lenis = new Lenis({
-      duration: 2, // Slightly longer for smoother feel
+      duration: 1.2, // Reduced from 2 for better responsiveness on MacBook
       easing: (t: number) => {
-        return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+        // Simplified easing function for better performance
+        return 1 - Math.pow(1 - t, 3);
       },
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: 0.75, // Reduced for more subtle control
-      touchMultiplier: 1.8, // Adjusted for better touch response
+      wheelMultiplier: 0.8, // Slightly increased for better responsiveness
+      touchMultiplier: 1.5, // Reduced for better control on trackpads
       infinite: false,
-      lerp: 0.08, // Increased lerp for more fluid motion
+      lerp: 0.06, // Reduced for better performance on MacBook
+      syncTouch: true, // Synchronize touch movements for smoother feel
     });
 
     // Store the instance in the ref
     lenisRef.current = lenis;
 
     // Configure GSAP ScrollTrigger to work with Lenis
-    gsap.ticker.add((time) => {
-      lenis.raf(time * 1000);
-    });
-
-    // Create a custom Lenis animation frame that updates ScrollTrigger
-    lenis.on('scroll', () => {
+    // Use requestAnimationFrame for better performance
+    let frame: number;
+    const raf = (time: number) => {
+      lenis.raf(time);
       ScrollTrigger.update();
-    });
+      frame = requestAnimationFrame(raf);
+    };
 
-    // Clean up - using the local variable instead of the ref
+    frame = requestAnimationFrame(raf);
+
+    // Clean up
     return () => {
-      gsap.ticker.remove((time) => {
-        lenis.raf(time * 1000);
-      });
+      cancelAnimationFrame(frame);
       lenis.destroy();
     };
   }, []);
@@ -61,16 +62,17 @@ export default function useLenis() {
   return lenisRef;
 }
 
-// Provider component for Lenis
+// Provider component for Lenis with debounced scroll updates
 export function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
   const lenisRef = useLenis();
   const [scrollData, setScrollData] = useState({ scroll: 0, direction: 0, isScrolling: false });
+  const updateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const lenis = lenisRef.current;
     if (!lenis) return;
 
-    // Set up scroll listener for Lenis
+    // Optimized scroll handler with debounce for scroll state updates
     const onScroll = ({
       scroll,
       direction,
@@ -80,17 +82,27 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
       direction: number;
       velocity: number;
     }) => {
-      setScrollData({
-        scroll,
-        direction,
-        isScrolling: Math.abs(velocity) > 0.01,
-      });
+      // Clear existing timeout to debounce frequent updates
+      if (updateTimeoutRef.current) {
+        clearTimeout(updateTimeoutRef.current);
+      }
+
+      // Delay state updates to reduce render frequency
+      updateTimeoutRef.current = setTimeout(() => {
+        setScrollData({
+          scroll,
+          direction,
+          isScrolling: Math.abs(velocity) > 0.01,
+        });
+      }, 16); // Approximately matches 60fps for smoother updates
     };
 
     lenis.on('scroll', onScroll);
 
     return () => {
-      // Using the captured lenis instance
+      if (updateTimeoutRef.current) {
+        clearTimeout(updateTimeoutRef.current);
+      }
       lenis.off('scroll', onScroll);
     };
   }, [lenisRef]);
