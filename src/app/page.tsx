@@ -8,6 +8,7 @@ import Slider from '@/themes/components/Slider/Slider';
 import { TimelineDemo } from '@/themes/components/TimeLine/TimeLine';
 import PricingCard from '@/themes/components/PricingCard/PricingCard';
 import Footer from '@/themes/components/Footer/Footer';
+import ShowCase from '@/themes/components/ShowCase/ShowCase';
 
 export default function Home() {
   return (
@@ -47,6 +48,9 @@ export default function Home() {
         <div className="absolute inset-y-0 left-[1%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]/90"></div>
         <div className="absolute inset-y-0 left-[99%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]/90"></div>
         <Slider />
+        <div className='hidden lg:flex'>
+          <ShowCase />
+        </div>
 
         <TimelineDemo />
         <PricingCard />

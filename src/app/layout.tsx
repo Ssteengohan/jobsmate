@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import { Lexend } from 'next/font/google';
 import '@/themes/styles/globals.css';
+import { SmoothScrollProvider } from '@/themes/lib/lenis';
 
 const lexend = Lexend({
   variable: '--font-lexend',
   subsets: ['latin'],
-  weight: ['400', '600', '700'], 
+  weight: ['400', '600', '700'],
 });
 
 export const metadata: Metadata = {
@@ -24,7 +25,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${lexend.variable} antialiased`}>{children}</body>
+      <body className={`${lexend.variable} antialiased`}>
+        <SmoothScrollProvider>{children}</SmoothScrollProvider>
+      </body>
     </html>
   );
 }

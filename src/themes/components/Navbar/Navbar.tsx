@@ -2,31 +2,83 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useScrollData } from '@/themes/lib/lenis';
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const [prevScrollPos, setPrevScrollPos] = useState(0);
+  const [lastScroll, setLastScroll] = useState(0);
   const [activeItem, setActiveItem] = useState<number | null>(null);
   const navRefs = useRef<(HTMLLIElement | null)[]>([]);
+  const scrollDebounceRef = useRef<NodeJS.Timeout | null>(null);
+  const scrollDirectionBufferRef = useRef(0);
+
+  // Get scroll data from Lenis context
+  const { scroll, direction } = useScrollData();
+
+  // Debounced scroll handler with more robust direction detection
+  const handleScroll = useCallback(
+    (scrollPosition: number, scrollDirection: number) => {
+      // Clear any existing timeout to debounce frequent updates
+      if (scrollDebounceRef.current) {
+        clearTimeout(scrollDebounceRef.current);
+      }
+
+      scrollDebounceRef.current = setTimeout(() => {
+        // Force show navbar on ANY upward motion when it's currently hidden
+        if (!isVisible && scrollDirection < 0) {
+          setIsVisible(true);
+          return;
+        }
+
+        // Make direction detection more sensitive for upward scrolls
+        // Negative direction means scrolling up
+        if (scrollDirection < 0) {
+          scrollDirectionBufferRef.current -= 2; // Increase sensitivity for upward scrolls
+        } else {
+          scrollDirectionBufferRef.current += scrollDirection;
+        }
+
+        // Apply a threshold to direction detection - more sensitive to upward scrolls
+        const effectiveDirection =
+          scrollDirectionBufferRef.current > 3 ? 1 : scrollDirectionBufferRef.current < -1 ? -1 : 0; // More sensitive for -1
+
+        if (scrollPosition > 100) {
+          // Reduced threshold from 150 to 100
+          if (effectiveDirection > 0 && scrollPosition - lastScroll > 10) {
+            // Scrolling down significantly
+            setIsVisible(false);
+            scrollDirectionBufferRef.current = 0;
+          } else if (effectiveDirection < 0) {
+            // Any effective upward motion should show the navbar
+            // Removed the minimum scroll distance for upward motion
+            setIsVisible(true);
+            scrollDirectionBufferRef.current = 0;
+          }
+        } else {
+          // Always show at top of page
+          setIsVisible(true);
+        }
+
+        setLastScroll(scrollPosition);
+      }, 5); // Reduced debounce from 10ms to 5ms for faster response
+    },
+    [lastScroll, isVisible], // Added isVisible to dependencies
+  );
 
   useEffect(() => {
-    setPrevScrollPos(window.scrollY);
+    // Apply the improved scroll handler
+    handleScroll(scroll, direction);
 
-    const handleScroll = () => {
-      const currentScrollPos = window.scrollY;
-      const visible = prevScrollPos > currentScrollPos || currentScrollPos < 10;
-
-      setPrevScrollPos(currentScrollPos);
-      setIsVisible(visible);
+    // Cleanup
+    return () => {
+      if (scrollDebounceRef.current) {
+        clearTimeout(scrollDebounceRef.current);
+      }
     };
-
-    window.addEventListener('scroll', handleScroll);
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [prevScrollPos]);
+  }, [scroll, direction, handleScroll]);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -114,7 +166,7 @@ const Navbar = () => {
                     width: navRefs.current[activeItem]?.offsetWidth,
                     height: navRefs.current[activeItem]?.offsetHeight,
                     x: navRefs.current[activeItem]?.offsetLeft,
-                    scale: [0.95, 1.05, 1],
+                    scale: 1, // Fixed: removed array of values to avoid the error
                     opacity: 1,
                   }}
                   transition={{
@@ -122,7 +174,6 @@ const Navbar = () => {
                     stiffness: 400,
                     damping: 25,
                     mass: 1.2,
-                    times: [0, 0.6, 1],
                   }}
                   layoutId="navHover"
                 />

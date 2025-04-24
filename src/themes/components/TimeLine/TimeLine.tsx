@@ -9,32 +9,49 @@ export function TimelineDemo() {
   const videoRef2 = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Simplified scroll progress tracking
+  // Optimized scroll progress tracking
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start end', 'end start'],
   });
 
   useEffect(() => {
-    // Attempt to play the videos after component mounts
+    // Optimize video loading and playback
     const videoElements = [videoRef.current, videoRef2.current];
 
     videoElements.forEach((video) => {
       if (video) {
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-          playPromise.catch((error) => {
-            console.log('Autoplay was prevented:', error);
-          });
-        }
+        // Set playback attributes for better performance
+        video.muted = true;
+        video.playsInline = true;
+        video.preload = 'metadata'; // Only preload metadata initially
+
+        // Use requestAnimationFrame to delay playback for better initial rendering
+        requestAnimationFrame(() => {
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            playPromise.catch((error) => {
+              console.log('Autoplay was prevented:', error);
+            });
+          }
+        });
       }
     });
+
+    // Return cleanup function
+    return () => {
+      videoElements.forEach((video) => {
+        if (video && !video.paused) {
+          video.pause();
+        }
+      });
+    };
   }, []);
 
-  // Adjust item progress timing - bring the third item forward and rebalance all items
-  const firstItemProgress = useTransform(scrollYProgress, [0.05, 0.25], [0, 1]);
-  const secondItemProgress = useTransform(scrollYProgress, [0.3, 0.5], [0, 1]);
-  const thirdItemProgress = useTransform(scrollYProgress, [0.25, 0.85], [0, 1]); // Show earlier
+  // Optimized transform calculations with reduced control points
+  const firstItemProgress = useTransform(scrollYProgress, [0.05, 0.25], [0, 1], { clamp: false });
+  const secondItemProgress = useTransform(scrollYProgress, [0.3, 0.5], [0, 1], { clamp: false });
+  const thirdItemProgress = useTransform(scrollYProgress, [0.25, 0.65], [0, 1], { clamp: false });
 
   const data = [
     {
@@ -43,12 +60,14 @@ export function TimelineDemo() {
         <div>
           <motion.p
             transition={{
-              duration: 0.1, // Shorter duration for more immediate response
-              ease: 'linear', // Linear easing for smooth scrolling
+              duration: 0.05, // Reduced for better performance
+              ease: 'linear',
+              type: 'tween', // Specify type for better performance
             }}
             style={{
               opacity: firstItemProgress,
-              y: useTransform(firstItemProgress, [0, 0.3, 1], [30, 15, 0]),
+              y: useTransform(firstItemProgress, [0, 1], [20, 0], { clamp: false }), // Simplified
+              willChange: 'opacity, transform', // Performance hint
             }}
             className="mb-8 text-xs font-normal text-[var(--primary-dark-blue)] md:text-lg dark:text-neutral-200"
           >
@@ -57,17 +76,18 @@ export function TimelineDemo() {
           </motion.p>
           <motion.div
             transition={{
-              duration: 0.1, // Shorter duration for more immediate response
-              ease: 'linear', // Linear easing for smooth scrolling
+              duration: 0.05, // Reduced for better performance
+              ease: 'linear',
             }}
             style={{
               opacity: firstItemProgress,
-              scale: useTransform(firstItemProgress, [0, 0.3, 1], [0.92, 0.96, 1]),
+              scale: useTransform(firstItemProgress, [0, 1], [0.95, 1], { clamp: false }), // Simplified
               filter: useTransform(
                 firstItemProgress,
-                [0, 0.3, 0.7, 1],
-                ['blur(6px)', 'blur(2px)', 'blur(1px)', 'blur(0px)'],
+                [0, 0.5, 1],
+                ['blur(4px)', 'blur(1px)', 'blur(0px)'], // Reduced blur steps
               ),
+              willChange: 'opacity, transform, filter', // Performance hint
             }}
             className="flex h-full w-full gap-4"
           >
@@ -77,6 +97,8 @@ export function TimelineDemo() {
               width={700}
               height={700}
               className="h-full w-full rounded-lg border-1 border-zinc-300 shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+              loading="eager"
+              priority
             />
           </motion.div>
         </div>
@@ -88,12 +110,13 @@ export function TimelineDemo() {
         <div>
           <motion.p
             transition={{
-              duration: 0.1, // Shorter duration for more immediate response
-              ease: 'linear', // Linear easing for smooth scrolling
+              duration: 0.05, // Reduced for better performance
+              ease: 'linear',
             }}
             style={{
               opacity: secondItemProgress,
-              y: useTransform(secondItemProgress, [0, 0.3, 1], [10, 5, 0]),
+              y: useTransform(secondItemProgress, [0, 1], [10, 0], { clamp: false }), // Simplified
+              willChange: 'opacity, transform', // Performance hint
             }}
             className="mt-4 mb-12 text-xs font-normal text-[var(--primary-dark-blue)] md:text-lg dark:text-neutral-200"
           >
@@ -102,17 +125,18 @@ export function TimelineDemo() {
           </motion.p>
           <motion.div
             transition={{
-              duration: 0.1, // Shorter duration for more immediate response
-              ease: 'linear', // Linear easing for smooth scrolling
+              duration: 0.05, // Reduced for better performance
+              ease: 'linear',
             }}
             style={{
               opacity: secondItemProgress,
-              scale: useTransform(secondItemProgress, [0, 0.3, 1], [0.92, 0.96, 1]),
+              scale: useTransform(secondItemProgress, [0, 1], [0.95, 1], { clamp: false }), // Simplified
               filter: useTransform(
                 secondItemProgress,
-                [0, 0.3, 0.7, 1],
-                ['blur(3px)', 'blur(1px)', 'blur(0px)', 'blur(0px)'],
+                [0, 0.5, 1],
+                ['blur(3px)', 'blur(1px)', 'blur(0px)'], // Simplified
               ),
+              willChange: 'opacity, transform, filter', // Performance hint
             }}
             className="flex h-full w-full flex-col-reverse gap-4 md:gap-12"
           >
@@ -127,7 +151,7 @@ export function TimelineDemo() {
               loop
               autoPlay
               playsInline
-              preload="auto"
+              preload="metadata"
               controls={false}
             >
               Your browser does not support the video tag.
@@ -142,12 +166,13 @@ export function TimelineDemo() {
         <div>
           <motion.p
             transition={{
-              duration: 0.1, // Shorter duration for more immediate response
-              ease: 'linear', // Linear easing for smooth scrolling
+              duration: 0.05, // Reduced for better performance
+              ease: 'linear',
             }}
             style={{
               opacity: thirdItemProgress,
-              y: useTransform(thirdItemProgress, [0, 0.3, 1], [30, 15, 0]),
+              y: useTransform(thirdItemProgress, [0, 1], [20, 0], { clamp: false }), // Simplified
+              willChange: 'opacity, transform', // Performance hint
             }}
             className="mb-4 text-xs font-normal text-[var(--primary-dark-blue)] md:mb-8 md:text-lg dark:text-neutral-200"
           >
@@ -157,17 +182,18 @@ export function TimelineDemo() {
           </motion.p>
           <motion.div
             transition={{
-              duration: 0.01, // Shorter duration for more immediate response
-              ease: 'linear', // Linear easing for smooth scrolling
+              duration: 0.01,
+              ease: 'linear',
             }}
             style={{
               opacity: thirdItemProgress,
-              scale: useTransform(thirdItemProgress, [0, 0.3, 1], [0.92, 0.95, 1]), // Subtler scaling
+              scale: useTransform(thirdItemProgress, [0, 1], [0.95, 1], { clamp: false }), // Simplified
               filter: useTransform(
                 thirdItemProgress,
-                [0, 0.1, 0.2, 1],
-                ['blur(6px)', 'blur40px)', 'blur(2px)', 'blur(0px)'],
+                [0, 0.5, 1],
+                ['blur(4px)', 'blur(1px)', 'blur(0px)'], // Simplified
               ),
+              willChange: 'opacity, transform, filter', // Performance hint
             }}
             className="flex h-full w-full flex-col-reverse gap-4 md:gap-8"
           >
@@ -179,7 +205,7 @@ export function TimelineDemo() {
               loop
               autoPlay
               playsInline
-              preload="auto"
+              preload="metadata"
               controls={false}
             >
               Your browser does not support the video tag.

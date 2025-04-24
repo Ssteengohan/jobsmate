@@ -5,6 +5,7 @@ import { TextGenerateEffect } from '../ui/text-generate-effect';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Image from 'next/image';
 import gsap from 'gsap';
+import useLenis from '@/themes/lib/lenis';
 
 const words = `<span class="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-dark-blue)] bg-clip-text text-transparent">Integration with</span> <span class="bg-gradient-to-r from-[var(--primary-gold)] to-[var(--primary-gold)]/80 bg-clip-text text-transparent font-bold">15+ ATS</span>`;
 
@@ -78,6 +79,33 @@ const Slider = () => {
   const sliderRef = useRef(null);
   const containerRef = useRef(null);
   const textRef = useRef(null);
+
+  // Initialize Lenis smooth scrolling
+  const lenis = useLenis();
+
+  // Integrate Lenis with framer-motion scroll tracking
+  useEffect(() => {
+    // Register lenis scroll events with framer-motion
+    if (!lenis.current) return;
+
+    // Store reference to prevent stale closures in cleanup function
+    const lenisInstance = lenis.current;
+
+    const updateScrollValues = () => {
+      if (containerRef.current && lenisInstance) {
+        // Removed unused variables rect and scrollTop
+        // We keep the function as a placeholder for future scroll handling
+        // or remove it entirely if not needed
+      }
+    };
+
+    lenisInstance.on('scroll', updateScrollValues);
+
+    return () => {
+      // Use stored instance rather than potentially stale lenis.current
+      lenisInstance?.off('scroll', updateScrollValues);
+    };
+  }, [lenis]);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -280,7 +308,7 @@ const Slider = () => {
       </motion.section>
 
       {/* Extra space for scrolling */}
-      <div className="h-[250vh] sm:h-[200vh] w-full"></div>
+      <div className="h-[250vh] w-full sm:h-[200vh]"></div>
     </div>
   );
 };
