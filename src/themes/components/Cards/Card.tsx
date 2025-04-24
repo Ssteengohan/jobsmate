@@ -3,7 +3,6 @@ import React, { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useScrollData } from '@/themes/lib/lenis';
 
 // Register ScrollTrigger
 if (typeof window !== 'undefined') {
@@ -11,9 +10,6 @@ if (typeof window !== 'undefined') {
 }
 
 const Card = () => {
-  // Use scroll data from Lenis
-  const { isScrolling } = useScrollData();
-
   // Refs for animation targets
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -191,47 +187,6 @@ const Card = () => {
       }
     };
   }, []); // Run once on mount
-
-  // More efficient button hover animations
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Add subtle hover animations for buttons using event delegation
-      const handleMouseEnter = (e: Event) => {
-        if (isScrolling) return; // Skip hover animation while scrolling for better performance
-        const button = e.currentTarget;
-        gsap.to(button, {
-          y: -3,
-          duration: 0.15, // Faster animation
-          ease: 'power1.out', // Simpler easing
-        });
-      };
-
-      const handleMouseLeave = (e: Event) => {
-        const button = e.currentTarget;
-        gsap.to(button, {
-          y: 0,
-          duration: 0.2,
-          ease: 'power1.out',
-        });
-      };
-
-      // Set up event listeners
-      document.querySelectorAll('.card-button').forEach((button) => {
-        button.addEventListener('mouseenter', handleMouseEnter);
-        button.addEventListener('mouseleave', handleMouseLeave);
-      });
-
-      // Clean up function
-      return () => {
-        document.querySelectorAll('.card-button').forEach((button) => {
-          button.removeEventListener('mouseenter', handleMouseEnter);
-          button.removeEventListener('mouseleave', handleMouseLeave);
-        });
-      };
-    }, cardRef);
-
-    return () => ctx.revert();
-  }, [isScrolling]); // Depend on scroll state for performance
 
   return (
     <section

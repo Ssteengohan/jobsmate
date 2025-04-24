@@ -27,45 +27,28 @@ const Navbar = () => {
       }
 
       scrollDebounceRef.current = setTimeout(() => {
-        // Force show navbar on ANY upward motion when it's currently hidden
-        if (!isVisible && scrollDirection < 0) {
+        // Always show navbar immediately on ANY upward scroll
+        if (scrollDirection < 0) {
           setIsVisible(true);
+          scrollDirectionBufferRef.current = 0;
+          setLastScroll(scrollPosition);
           return;
         }
 
-        // Make direction detection more sensitive for upward scrolls
-        // Negative direction means scrolling up
-        if (scrollDirection < 0) {
-          scrollDirectionBufferRef.current -= 2; // Increase sensitivity for upward scrolls
-        } else {
-          scrollDirectionBufferRef.current += scrollDirection;
+        // Hide navbar on downward scroll after passing threshold
+        if (scrollPosition > 80 && scrollDirection > 0 && scrollPosition > lastScroll) {
+          setIsVisible(false);
         }
 
-        // Apply a threshold to direction detection - more sensitive to upward scrolls
-        const effectiveDirection =
-          scrollDirectionBufferRef.current > 3 ? 1 : scrollDirectionBufferRef.current < -1 ? -1 : 0; // More sensitive for -1
-
-        if (scrollPosition > 100) {
-          // Reduced threshold from 150 to 100
-          if (effectiveDirection > 0 && scrollPosition - lastScroll > 10) {
-            // Scrolling down significantly
-            setIsVisible(false);
-            scrollDirectionBufferRef.current = 0;
-          } else if (effectiveDirection < 0) {
-            // Any effective upward motion should show the navbar
-            // Removed the minimum scroll distance for upward motion
-            setIsVisible(true);
-            scrollDirectionBufferRef.current = 0;
-          }
-        } else {
-          // Always show at top of page
+        // Always show at top of page
+        if (scrollPosition <= 80) {
           setIsVisible(true);
         }
 
         setLastScroll(scrollPosition);
-      }, 5); // Reduced debounce from 10ms to 5ms for faster response
+      }, 10); // Small debounce for smoother transitions
     },
-    [lastScroll, isVisible], // Added isVisible to dependencies
+    [lastScroll],
   );
 
   useEffect(() => {

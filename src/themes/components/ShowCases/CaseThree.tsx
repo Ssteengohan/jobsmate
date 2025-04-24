@@ -283,7 +283,7 @@ const CaseThree = () => {
   }, [animationReady, createAnimationTimeline]);
 
   return (
-    <div className="relative z-40 mt-[380px]" ref={stickyWrapperRef} style={{ position: 'relative', top: 0 }}>
+    <div className="relative z-40 mt-[719px]" ref={stickyWrapperRef} style={{ position: 'relative', top: 0 }}>
       <div className="h-screen">
         <div
           ref={containerRef}
