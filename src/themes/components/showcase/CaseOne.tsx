@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import React, { ReactNode, useEffect, useRef } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import Balancer from 'react-wrap-balancer';
 import {
   ArrowRight,
@@ -70,6 +70,7 @@ const SliderItem = ({ icon, label, isActive = false, iconColor, iconBgColor }: S
 
 const CaseOne = () => {
   const { isScrolling } = useScrollData();
+  const [animationReady, setAnimationReady] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const stickyWrapperRef = useRef<HTMLDivElement>(null);
@@ -94,9 +95,26 @@ const CaseOne = () => {
   const arrowRef4 = useRef<SVGGElement>(null);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof document !== 'undefined') {
+      document.documentElement.classList.add('js-animation-ready');
+      const timer = setTimeout(() => setAnimationReady(true), 100);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !animationReady) return;
 
     const ctx = gsap.context(() => {
+      const mainTl = gsap.timeline({
+        paused: true,
+        smoothChildTiming: true,
+        defaults: {
+          ease: 'power2.out',
+          duration: 0.4,
+        },
+      });
+
       const containers = [
         container1Ref.current,
         container2Ref.current,
@@ -104,30 +122,13 @@ const CaseOne = () => {
         container4Ref.current,
         container5Ref.current,
       ].filter(Boolean);
-      if (containers.length) {
-        gsap.set(containers, {
-          autoAlpha: 0,
-          y: 20,
-          filter: 'blur(10px)',
-        });
-      }
 
       const badges = [badge1Ref.current, badge2Ref.current].filter(Boolean);
-      if (badges.length) {
-        gsap.set(badges, {
-          autoAlpha: 0,
-          y: 15,
-          filter: 'blur(5px)',
-        });
-      }
 
       const startCircle = document.querySelector('#svg1 circle[cx="152"][cy="180"]');
       const midCircle = document.querySelector('#svg2 circle[cx="355"][cy="25"]');
       const endCircle = document.querySelector('#svg3 circle[cx="338"][cy="15"]');
       const circles = [startCircle, midCircle, endCircle].filter(Boolean);
-      if (circles.length) {
-        gsap.set(circles, { autoAlpha: 0, scale: 0 });
-      }
 
       const arrows = [
         arrowRef1.current,
@@ -135,62 +136,47 @@ const CaseOne = () => {
         arrowRef3.current,
         arrowRef4.current,
       ].filter(Boolean);
-      if (arrows.length) {
-        gsap.set(arrows, { autoAlpha: 0, scale: 0 });
-      }
 
-      let path1Length = 0;
-      let path2Length = 0;
-      let path3Length = 0;
-      let path4Length = 0;
+      const paths = [path1Ref.current, path2Ref.current, path3Ref.current, path4Ref.current].filter(
+        Boolean,
+      );
 
-      if (path1Ref.current) {
+      gsap.set(containers, {
+        autoAlpha: 0,
+        y: 20,
+        filter: 'blur(5px)',
+      });
+
+      gsap.set(badges, {
+        autoAlpha: 0,
+        y: 15,
+        filter: 'blur(3px)',
+      });
+
+      gsap.set(circles, {
+        autoAlpha: 0,
+        scale: 0,
+        transformOrigin: 'center center',
+      });
+
+      gsap.set(arrows, {
+        autoAlpha: 0,
+        scale: 0,
+        transformOrigin: 'center center',
+      });
+
+      paths.forEach((path, index) => {
+        if (!path) return;
         try {
-          path1Length = path1Ref.current.getTotalLength() || 300;
-          gsap.set(path1Ref.current, {
-            strokeDasharray: path1Length,
-            strokeDashoffset: path1Length,
+          const pathLength = path.getTotalLength() || 300;
+          gsap.set(path, {
+            strokeDasharray: pathLength,
+            strokeDashoffset: pathLength,
           });
-        } catch {
-          console.error('Error setting up path1');
+        } catch (err) {
+          console.error(`Error setting up path ${index + 1}`, err);
         }
-      }
-
-      if (path2Ref.current) {
-        try {
-          path2Length = path2Ref.current.getTotalLength() || 300;
-          gsap.set(path2Ref.current, {
-            strokeDasharray: path2Length,
-            strokeDashoffset: path2Length,
-          });
-        } catch {
-          console.error('Error setting up path2');
-        }
-      }
-
-      if (path3Ref.current) {
-        try {
-          path3Length = path3Ref.current.getTotalLength() || 300;
-          gsap.set(path3Ref.current, {
-            strokeDasharray: path3Length,
-            strokeDashoffset: path3Length,
-          });
-        } catch {
-          console.error('Error setting up path3');
-        }
-      }
-
-      if (path4Ref.current) {
-        try {
-          path4Length = path4Ref.current.getTotalLength() || 300;
-          gsap.set(path4Ref.current, {
-            strokeDasharray: path4Length,
-            strokeDashoffset: path4Length,
-          });
-        } catch {
-          console.error('Error setting up path4');
-        }
-      }
+      });
 
       if (stickyWrapperRef.current && containerRef.current) {
         ScrollTrigger.create({
@@ -200,69 +186,71 @@ const CaseOne = () => {
           pin: containerRef.current,
           pinSpacing: true,
           anticipatePin: 1,
+          pinReparent: false,
+          refreshPriority: 1,
+          id: 'case-one-pin',
+          onLeaveBack: () => {
+            mainTl.progress(0);
+          },
+          onLeave: () => {
+            mainTl.progress(1);
+          },
         });
       }
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: stickyWrapperRef.current,
-          start: 'top 60%',
-          end: 'bottom 20%',
-          scrub: 0.6,
-          toggleActions: 'play none none reverse',
-          markers: false,
-        },
-      });
-
-      tl.to(container1Ref.current, {
-        autoAlpha: 1,
-        y: 0,
-        filter: 'blur(0px)',
-        duration: 0.25,
-        ease: 'power3.out',
-      })
+      mainTl
+        .to(
+          container1Ref.current,
+          {
+            autoAlpha: 1,
+            y: 0,
+            filter: 'blur(0px)',
+            duration: 0.35,
+          },
+          0,
+        )
         .to(
           badge1Ref.current,
           {
             autoAlpha: 1,
             y: 0,
             filter: 'blur(0px)',
-            duration: 0.2,
-            ease: 'power3.out',
+            duration: 0.3,
           },
-          '>+0.5',
+          0.2,
         )
         .to(
           startCircle,
           {
             autoAlpha: 1,
             scale: 1,
-            duration: 0.15,
-            ease: 'back.out',
+            duration: 0.25,
+            ease: 'back.out(1.7)',
           },
-          '>-0.05',
+          0.3,
         )
         .to(
           arrowRef1.current,
           {
             autoAlpha: 1,
             scale: 1,
-            duration: 0.1,
-            ease: 'back.out',
+            duration: 0.25,
+            ease: 'back.out(1.7)',
           },
-          '>-0.05',
+          0.35,
         );
 
       if (path1Ref.current) {
-        tl.to(
-          path1Ref.current,
-          {
-            strokeDashoffset: 0,
-            duration: 0.4,
-            ease: 'power1.inOut',
-          },
-          '>-0.1',
-        )
+        mainTl
+          .to(
+            path1Ref.current,
+            {
+              strokeDashoffset: 0,
+              duration: 0.6,
+              ease: 'power1.inOut',
+            },
+            0.4,
+          )
           .to(
             arrowRef1.current,
             {
@@ -274,66 +262,66 @@ const CaseOne = () => {
                 start: 0,
                 end: 1,
               },
-              duration: 0.4,
+              duration: 0.5,
               ease: 'power1.inOut',
             },
-            '>-0.4',
-          )
-          .to(
-            container2Ref.current,
-            {
-              autoAlpha: 1,
-              y: 0,
-              filter: 'blur(0px)',
-              duration: 0.25,
-              ease: 'power3.out',
-            },
-            '>0.1',
-          )
-          .to(
-            badge2Ref.current,
-            {
-              autoAlpha: 1,
-              y: 0,
-              filter: 'blur(0px)',
-              duration: 0.2,
-              ease: 'power3.out',
-            },
-            '>+0.5',
-          )
-          .to(
-            midCircle,
-            {
-              autoAlpha: 1,
-              scale: 1,
-              duration: 0.15,
-              ease: 'back.out',
-            },
-            '>0.15',
+            0.4,
           );
       }
 
-      tl.to(
-        arrowRef2.current,
-        {
-          autoAlpha: 1,
-          scale: 1,
-          duration: 0.1,
-          ease: 'back.out',
-        },
-        '>0.1',
-      );
+      mainTl
+        .to(
+          container2Ref.current,
+          {
+            autoAlpha: 1,
+            y: 0,
+            filter: 'blur(0px)',
+            duration: 0.35,
+          },
+          0.8,
+        )
+        .to(
+          badge2Ref.current,
+          {
+            autoAlpha: 1,
+            y: 0,
+            filter: 'blur(0px)',
+            duration: 0.3,
+          },
+          0.9,
+        )
+        .to(
+          midCircle,
+          {
+            autoAlpha: 1,
+            scale: 1,
+            duration: 0.25,
+            ease: 'back.out(1.7)',
+          },
+          1.0,
+        )
+        .to(
+          arrowRef2.current,
+          {
+            autoAlpha: 1,
+            scale: 1,
+            duration: 0.25,
+            ease: 'back.out(1.7)',
+          },
+          1.1,
+        );
 
       if (path2Ref.current) {
-        tl.to(
-          path2Ref.current,
-          {
-            strokeDashoffset: 0,
-            duration: 0.4,
-            ease: 'power1.inOut',
-          },
-          '>0.1',
-        )
+        mainTl
+          .to(
+            path2Ref.current,
+            {
+              strokeDashoffset: 0,
+              duration: 0.6,
+              ease: 'power1.inOut',
+            },
+            1.2,
+          )
           .to(
             arrowRef2.current,
             {
@@ -345,53 +333,55 @@ const CaseOne = () => {
                 start: 0,
                 end: 1,
               },
-              duration: 0.4,
+              duration: 0.5,
               ease: 'power1.inOut',
             },
-            '>-0.4',
-          )
-          .to(
-            container3Ref.current,
-            {
-              autoAlpha: 1,
-              y: 0,
-              filter: 'blur(0px)',
-              duration: 0.25,
-              ease: 'power3.out',
-            },
-            '>0.1',
-          )
-          .to(
-            endCircle,
-            {
-              autoAlpha: 1,
-              scale: 1,
-              duration: 0.15,
-              ease: 'back.out',
-            },
-            '>0.15',
+            1.2,
           );
       }
 
-      if (path3Ref.current) {
-        tl.to(
+      mainTl
+        .to(
+          container3Ref.current,
+          {
+            autoAlpha: 1,
+            y: 0,
+            filter: 'blur(0px)',
+            duration: 0.35,
+          },
+          1.6,
+        )
+        .to(
+          endCircle,
+          {
+            autoAlpha: 1,
+            scale: 1,
+            duration: 0.25,
+            ease: 'back.out(1.7)',
+          },
+          1.7,
+        )
+        .to(
           arrowRef3.current,
           {
             autoAlpha: 1,
             scale: 1,
-            duration: 0.1,
-            ease: 'back.out',
+            duration: 0.25,
+            ease: 'back.out(1.7)',
           },
-          '>-0.05',
-        )
+          1.8,
+        );
+
+      if (path3Ref.current) {
+        mainTl
           .to(
             path3Ref.current,
             {
               strokeDashoffset: 0,
-              duration: 0.4,
+              duration: 0.6,
               ease: 'power1.inOut',
             },
-            '>-0.05',
+            1.9,
           )
           .to(
             arrowRef3.current,
@@ -404,43 +394,43 @@ const CaseOne = () => {
                 start: 0,
                 end: 1,
               },
-              duration: 0.4,
+              duration: 0.5,
               ease: 'power1.inOut',
             },
-            '>-0.4',
-          )
-          .to(
-            container4Ref.current,
-            {
-              autoAlpha: 1,
-              y: 0,
-              filter: 'blur(0px)',
-              duration: 0.25,
-              ease: 'power3.out',
-            },
-            '>0.1',
+            1.9,
           );
       }
 
+      mainTl.to(
+        container4Ref.current,
+        {
+          autoAlpha: 1,
+          y: 0,
+          filter: 'blur(0px)',
+          duration: 0.35,
+        },
+        2.3,
+      );
+
       if (path4Ref.current) {
-        tl.to(
-          arrowRef4.current,
-          {
-            autoAlpha: 0.5,
-            scale: 1,
-            duration: 0.1,
-            ease: 'back.out',
-          },
-          '>0.1',
-        )
+        mainTl
+          .to(
+            arrowRef4.current,
+            {
+              autoAlpha: 0.5,
+              scale: 1,
+              duration: 0.25,
+            },
+            2.4,
+          )
           .to(
             path4Ref.current,
             {
               strokeDashoffset: 0,
-              duration: 0.4,
+              duration: 0.6,
               ease: 'power1.inOut',
             },
-            '>0.1',
+            2.5,
           )
           .to(
             arrowRef4.current,
@@ -453,10 +443,10 @@ const CaseOne = () => {
                 start: 0,
                 end: 1,
               },
-              duration: 0.4,
+              duration: 0.5,
               ease: 'power1.inOut',
             },
-            '>-0.4',
+            2.5,
           )
           .to(
             container5Ref.current,
@@ -464,17 +454,15 @@ const CaseOne = () => {
               autoAlpha: 0.7,
               y: 0,
               filter: 'blur(0px) grayscale(40%)',
-              duration: 0.25,
-              ease: 'power3.out',
+              duration: 0.35,
             },
-            '>0.1',
+            2.9,
           );
       }
 
-      gsap.to('#arrowTriangle1, #arrowTriangle2, #arrowTriangle3, #arrowTriangle4', {
+      const loopTl = gsap.timeline({ repeat: -1, yoyo: true });
+      loopTl.to('#arrowTriangle1, #arrowTriangle2, #arrowTriangle3, #arrowTriangle4', {
         scale: 1.2,
-        repeat: -1,
-        yoyo: true,
         duration: 0.6,
         ease: 'sine.inOut',
       });
@@ -498,16 +486,33 @@ const CaseOne = () => {
           },
         },
       );
+
+      ScrollTrigger.create({
+        trigger: stickyWrapperRef.current,
+        start: 'top 60%',
+        end: 'bottom 20%',
+        onUpdate: (self) => {
+          const progress = Math.min(self.progress / 0.95, 1);
+          mainTl.progress(progress);
+        },
+        scrub: 1,
+        preventOverlaps: true,
+        fastScrollEnd: true,
+        markers: false,
+        id: 'case-one-animation',
+      });
     }, containerRef);
 
     return () => ctx.revert();
-  }, [isScrolling]);
+  }, [isScrolling, animationReady]);
 
   return (
     <div className="relative" ref={stickyWrapperRef}>
-      <div className="h-[150vh]">
-        {' '}
-        <div className="flex h-[800px]" ref={containerRef}>
+      <div className="h-[100vh]">
+        <div
+          className="flex h-[800px] translate-z-0 border-t border-b border-black/20 dark:border-white/30"
+          ref={containerRef}
+        >
           <div className="flex h-full w-1/4 flex-col justify-between gap-2 pt-10">
             <div className="container flex w-full flex-col gap-2">
               <h2 className="text-xl font-semibold">Hire local or global</h2>
@@ -517,7 +522,7 @@ const CaseOne = () => {
             </div>
             <Link
               href={'/'}
-              className="group relative px-4  flex w-fit items-center gap-1 pb-20 text-sm font-semibold"
+              className="group relative flex w-fit items-center gap-1 px-4 pb-20 text-sm font-semibold"
             >
               <span className="relative inline-block">
                 Explore platform
@@ -526,7 +531,7 @@ const CaseOne = () => {
               <ArrowRight className="inline h-4 w-4 transform transition-transform duration-300 ease-out group-hover:translate-x-1" />
             </Link>
           </div>
-          <div className="background-here relative flex w-2/4 flex-col gap-32 overflow-hidden border border-black/10 dark:border-white/10">
+          <div className="relative flex w-2/4 flex-col gap-32 overflow-hidden border-r border-l border-black/20 dark:border-white/30">
             <div className="absolute inset-0 overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary-medium-blue)]/5 via-transparent to-[var(--primary-gold)]/5"></div>
               <div className="absolute inset-0 [background-image:radial-gradient(var(--primary-medium-blue)_0.8px,transparent_0.8px)] [background-size:14px_14px]"></div>
@@ -648,7 +653,7 @@ const CaseOne = () => {
 
                 <path
                   ref={path3Ref}
-                  d="M 345 15 C 380 15 440 -20 465 -45"
+                  d="M 345 15 C 380 15 445 -25 485 -50"
                   fill="none"
                   stroke="url(#gradientFlow3)"
                   strokeWidth="2"
@@ -690,7 +695,7 @@ const CaseOne = () => {
 
                 <path
                   ref={path4Ref}
-                  d="M 344 15 C 380 60 380 80 465 80"
+                  d="M 344 14 C 380 60 380 80 485 85"
                   fill="none"
                   stroke="url(#gradientFlow4)"
                   strokeWidth="2"
@@ -1075,10 +1080,21 @@ const CaseOne = () => {
                 iconBgColor="#fce7f3"
               />
             </div>
-            <div className="mx-auto flex w-full items-center justify-center border-t-2 border-black/10">
+            <div className="mx-auto flex w-full items-center justify-center border-t-2 border-black/10 dark:border-white/30">
               <Image src="jobsmate-mob.svg" alt="Home icon" width={200} height={200} />
             </div>
           </div>
+          <style jsx global>{`
+            .js-animation-ready .container-1,
+            .js-animation-ready .container-2,
+            .js-animation-ready .container-3,
+            .js-animation-ready .container-4,
+            .js-animation-ready .container-5 {
+              opacity: 0;
+              visibility: hidden;
+              will-change: opacity, transform;
+            }
+          `}</style>
         </div>
       </div>
     </div>

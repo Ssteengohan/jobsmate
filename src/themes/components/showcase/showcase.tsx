@@ -3,6 +3,7 @@ import CaseOne from './CaseOne';
 import AnimatedHeading from '../AnimatedHeading';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import CaseTwo from './CaseTwo';
 
 // Register ScrollTrigger
 if (typeof window !== 'undefined') {
@@ -121,6 +122,7 @@ const ShowCase = () => {
       </div>
 
       <CaseOne />
+      <CaseTwo />
     </section>
   );
 };
