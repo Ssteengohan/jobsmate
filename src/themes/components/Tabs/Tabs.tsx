@@ -47,7 +47,7 @@ export function TabsDemo() {
   return (
     <AnimatePresence>
       <motion.div
-        className="3xl:!min-h-[115vh] relative z-50 flex h-[75vh] items-start border-none bg-none sm:!min-h-[130vh]"
+        className=" relative z-50 flex h-[75vh] items-start border-none bg-none sm:min-h-18000px"
         initial={{ opacity: 0, y: 50 }}
         animate={showTabs ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
         transition={{

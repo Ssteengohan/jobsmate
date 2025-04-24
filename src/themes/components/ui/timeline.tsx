@@ -51,7 +51,7 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
     target: containerRef,
     offset: isMobile
       ? ['start 15%', 'end 15%'] // Adjusted for more predictable mobile scrolling
-      : ['start 15%', 'end 40%'], // Adjusted for smoother desktop scrolling
+      : ['start 15%', 'end 45%'], // Adjusted for smoother desktop scrolling
   });
 
   // Optimize transforms to reduce calculation overhead
