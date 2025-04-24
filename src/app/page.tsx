@@ -51,7 +51,6 @@ export default function Home() {
         <div className='hidden lg:flex'>
           <ShowCase />
         </div>
-
         <TimelineDemo />
         <PricingCard />
       </div>
