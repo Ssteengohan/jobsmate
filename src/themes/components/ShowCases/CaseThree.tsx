@@ -211,8 +211,8 @@ const CaseThree = () => {
       if (stickyWrapperRef.current && containerRef.current) {
         ScrollTrigger.create({
           trigger: stickyWrapperRef.current,
-          start: 'top 15%', // Adjusted for better trigger point
-          end: 'bottom 15%',
+          start: 'top top', // Position at the very top
+          end: 'bottom top+=340px', // Adjusted end point calculation
           pin: containerRef.current,
           pinSpacing: true,
           anticipatePin: 1,
@@ -235,8 +235,8 @@ const CaseThree = () => {
       // Create animation trigger with optimized scrub and easing
       ScrollTrigger.create({
         trigger: stickyWrapperRef.current,
-        start: 'top 65%', // Adjusted to start animation slightly sooner
-        end: 'bottom 25%', // Better end point
+        start: 'top 50%', // Adjusted to trigger at the middle of viewport
+        end: 'bottom top', // End when bottom reaches the top
         onUpdate: (self) => {
           // Optimized progress calculation with smoother easing curve
           const rawProgress = Math.min(self.progress, 1);
@@ -283,12 +283,12 @@ const CaseThree = () => {
   }, [animationReady, createAnimationTimeline]);
 
   return (
-    <div className="relative z-40 mt-[720px]" ref={stickyWrapperRef}>
+    <div className="relative z-40 mt-[380px]" ref={stickyWrapperRef} style={{ position: 'relative', top: 0 }}>
       <div className="h-screen">
         <div
           ref={containerRef}
           className="relative h-[800px] border-t border-b border-black/20 dark:border-white/30"
-          style={{ willChange: 'transform' }} // Hint for browser optimization
+          style={{ willChange: 'transform', top: 0 }} // Added top: 0 to prevent unwanted top spacing
         >
           <div className="mx-auto h-full">
             <div className="flex h-full" ref={contentRef}>
