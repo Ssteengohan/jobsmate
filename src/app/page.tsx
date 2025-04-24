@@ -41,7 +41,6 @@ export default function Home() {
       <div className="relative z-10 container">
         <div className="absolute inset-y-0 left-[1%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]"></div>
         <div className="absolute inset-y-0 left-[99%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]"></div>
-
         <TabsDemo />
       </div>
       <div className="relative z-5 container">
