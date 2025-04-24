@@ -8,7 +8,7 @@ import Slider from '@/themes/components/Slider/Slider';
 import { TimelineDemo } from '@/themes/components/TimeLine/TimeLine';
 import PricingCard from '@/themes/components/PricingCard/PricingCard';
 import Footer from '@/themes/components/Footer/Footer';
-import ShowCase from '@/themes/components/ShowCase/ShowCase';
+import ShowCase from '@/themes/components/showcase/ShowCase';
 
 export default function Home() {
   return (
