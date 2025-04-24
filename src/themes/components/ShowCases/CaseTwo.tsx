@@ -32,6 +32,10 @@ const CaseTwo = () => {
   const pathRefs = useRef<(SVGPathElement | null)[]>([]);
   const arrowRefs = useRef<(SVGGElement | null)[]>([]);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const leftColumnRef = useRef<HTMLDivElement>(null);
+  const middleColumnRef = useRef<HTMLDivElement>(null);
+  const rightColumnRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLSpanElement>(null);
 
   // Set up animation readiness
   useEffect(() => {
@@ -50,6 +54,28 @@ const CaseTwo = () => {
       const paths = pathRefs.current.filter(Boolean);
       const arrows = arrowRefs.current.filter(Boolean);
       const cards = cardsRef.current.filter(Boolean);
+
+      // Create a main timeline for better sequencing
+      const mainTl = gsap.timeline({
+        paused: true,
+        smoothChildTiming: true,
+        defaults: {
+          ease: 'power2.out',
+          duration: 0.4,
+        },
+      });
+
+      // Initial state for columns
+      gsap.set([leftColumnRef.current, rightColumnRef.current], {
+        autoAlpha: 0,
+        y: 20,
+      });
+
+      // Initial state for the title
+      gsap.set(titleRef.current, {
+        autoAlpha: 0,
+        y: -15,
+      });
 
       // Set initial state of paths
       paths.forEach((path) => {
@@ -70,33 +96,33 @@ const CaseTwo = () => {
         autoAlpha: 0,
         scale: 0,
         transformOrigin: 'center center',
-        visibility: 'hidden', // Add explicit visibility property
+        visibility: 'hidden',
       });
 
       // Set initial state for the arrow triangles specifically
       gsap.set('#arrowTriangle1, #arrowTriangle2, #arrowTriangle3', {
         autoAlpha: 0,
         scale: 0,
-        visibility: 'hidden', // Add explicit visibility property
+        visibility: 'hidden',
       });
 
       // Ensure cards are completely hidden initially
       gsap.set('.info-container', {
         autoAlpha: 0,
         y: 30,
-        filter: 'blur(5px)',
         scale: 0.95,
+        immediateRender: true,
+        clearProps: 'filter',
       });
 
-      // Setup WorldMap animations - ensure it's visible from the start but with reduced opacity
+      // Setup WorldMap animations
       const worldMapElement = document.querySelector('.world-map-container');
       if (worldMapElement) {
         gsap.set(worldMapElement, {
-          autoAlpha: 0.3, // Start with low opacity instead of hidden
-          scale: 0.97, // Start slightly smaller
+          autoAlpha: 0.3,
+          scale: 0.97,
         });
 
-        // Get map connection lines if they exist
         const mapConnections = document.querySelectorAll('.map-connection');
         if (mapConnections.length) {
           mapConnections.forEach((conn) => {
@@ -108,7 +134,6 @@ const CaseTwo = () => {
           });
         }
 
-        // Get map markers
         const mapMarkers = document.querySelectorAll('.pulse-circle');
         if (mapMarkers.length) {
           gsap.set(mapMarkers, {
@@ -118,15 +143,26 @@ const CaseTwo = () => {
         }
       }
 
-      // Create master timeline
-      const mainTl = gsap.timeline({
-        paused: true,
-        smoothChildTiming: true,
-        defaults: {
-          ease: 'power2.out',
-          duration: 0.4,
-        },
-      });
+      // Animate side columns first
+      mainTl
+        .to(
+          leftColumnRef.current,
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.6,
+          },
+          0,
+        )
+        .to(
+          rightColumnRef.current,
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.6,
+          },
+          0.2,
+        );
 
       // Show the world map immediately at the start
       mainTl.to(
@@ -134,38 +170,35 @@ const CaseTwo = () => {
         {
           autoAlpha: 1,
           scale: 1,
-          duration: 0.35, // Faster animation
+          duration: 0.35,
           ease: 'power1.out',
         },
         0,
       );
 
       // Add title animation
-      const matchedTitle = document.querySelector('.matched-title');
-      if (matchedTitle) {
-        gsap.set(matchedTitle, { autoAlpha: 0, y: -10 });
-        mainTl.to(
-          matchedTitle,
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.4,
-          },
-          0.2, // Show title very early
-        );
-      }
+      mainTl.to(
+        titleRef.current,
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.4,
+          ease: 'back.out(1.2)',
+        },
+        0.2,
+      );
 
-      // Animate map markers with staggered effect - start earlier
+      // Animate map markers with staggered effect
       mainTl.to(
         '.pulse-circle',
         {
           autoAlpha: 1,
           scale: 1,
           duration: 0.4,
-          stagger: 0.07, // Faster stagger
+          stagger: 0.07,
           ease: 'back.out(1.7)',
         },
-        0.1, // Start almost immediately
+        0.1,
       );
 
       // Animate map connections with staggered effect
@@ -175,13 +208,13 @@ const CaseTwo = () => {
           strokeDashoffset: 0,
           autoAlpha: 0.7,
           duration: 0.5,
-          stagger: 0.1, // Faster stagger
+          stagger: 0.1,
           ease: 'power1.inOut',
         },
-        0.2, // Start earlier
+        0.2,
       );
 
-      // Create animations for each path, arrow, and card - with proper flowing sequence
+      // Create animations for each path, arrow, and card
       interface ArrowPulseTimeline {
         timeline: gsap.core.Timeline;
         arrow: SVGGElement | null;
@@ -189,13 +222,12 @@ const CaseTwo = () => {
 
       const arrowPulseTimelines: ArrowPulseTimeline[] = [];
 
-      // Make sure all arrows and triangles are fully hidden initially
       arrows.forEach((arrow, index) => {
         if (arrow) {
           gsap.set(arrow, {
             autoAlpha: 0,
             visibility: 'hidden',
-            scale: 0, // Make sure scale is 0 to completely hide
+            scale: 0,
           });
 
           const triangleId = `#arrowTriangle${index + 1}`;
@@ -211,13 +243,11 @@ const CaseTwo = () => {
       });
 
       arrows.forEach((arrow, index) => {
-        // Find the triangle inside this arrow container
         if (arrow) {
           const triangleId = `#arrowTriangle${index + 1}`;
           const triangle = arrow.querySelector(triangleId) || document.querySelector(triangleId);
 
           if (triangle) {
-            // Create a timeline for this arrow's pulsing but don't start it yet
             const pulseTl = gsap.timeline({ paused: true, repeat: -1, yoyo: true });
             pulseTl.to(triangle, {
               scale: 1.2,
@@ -233,10 +263,8 @@ const CaseTwo = () => {
       paths.forEach((path, index) => {
         if (!path) return;
 
-        // Calculate start time with enough gap between animations
         const startTime = index * 0.7 + 0.7;
 
-        // Create flowing effect for the path with correct timing
         mainTl.fromTo(
           path,
           {
@@ -249,16 +277,13 @@ const CaseTwo = () => {
             duration: 0.8,
             ease: 'power2.inOut',
             onStart: () => {
-              // Make arrow visible as path starts flowing
               if (arrows[index]) {
-                // Show the arrow container
                 gsap.set(arrows[index], {
                   autoAlpha: 1,
                   scale: 1,
                   visibility: 'visible',
                 });
 
-                // Find this arrow's triangle element and make it visible
                 const triangleId = `#arrowTriangle${index + 1}`;
                 const triangle =
                   arrows[index].querySelector(triangleId) || document.querySelector(triangleId);
@@ -270,7 +295,6 @@ const CaseTwo = () => {
                   });
                 }
 
-                // Start the pulsing animation for this arrow
                 const pulseAnimation = arrowPulseTimelines.find(
                   (item) => item.arrow === arrows[index],
                 );
@@ -283,9 +307,7 @@ const CaseTwo = () => {
           startTime,
         );
 
-        // Animate arrow along the path as the line flows
         if (arrows[index]) {
-          // First ensure the arrow container is visible
           mainTl.to(
             arrows[index],
             {
@@ -317,25 +339,33 @@ const CaseTwo = () => {
           );
         }
 
-        // Show card ONLY after line is partially drawn (30% through the animation)
         const card = cards[index];
         if (card) {
+          mainTl.set(
+            card,
+            {
+              autoAlpha: 0,
+              y: 30,
+              scale: 0.95,
+            },
+            startTime + 0.29,
+          );
+
           mainTl.to(
             card,
             {
               autoAlpha: 1,
               y: 0,
               scale: 1,
-              filter: 'blur(0px)',
               duration: 0.5,
               ease: 'back.out(1.2)',
+              clearProps: 'filter',
             },
-            startTime + 0.3, // Delay to show after line is flowing
+            startTime + 0.3,
           );
         }
       });
 
-      // Pin the container during scroll
       if (stickyWrapperRef.current && containerRef.current) {
         ScrollTrigger.create({
           trigger: stickyWrapperRef.current,
@@ -349,7 +379,6 @@ const CaseTwo = () => {
           id: 'case-two-pin',
           onLeaveBack: () => {
             mainTl.progress(0);
-            // Hide arrows when scrolling back past the section
             arrows.forEach((arrow, index) => {
               if (arrow) {
                 gsap.set(arrow, { autoAlpha: 0, visibility: 'hidden', scale: 0 });
@@ -369,17 +398,19 @@ const CaseTwo = () => {
         });
       }
 
-      // Make scroll trigger start earlier and be more responsive
       ScrollTrigger.create({
         trigger: stickyWrapperRef.current,
-        start: 'top 70%', // Start earlier as user scrolls
+        start: 'top 70%',
         end: 'bottom 20%',
         onUpdate: (self) => {
-          // Make animation more responsive to initial scroll
-          const progress = Math.min(self.progress * 1.1, 1); // Faster progress at the beginning
-          mainTl.progress(progress);
+          const rawProgress = Math.min(self.progress, 1);
+          const easedProgress =
+            rawProgress < 0.5
+              ? 2 * rawProgress * rawProgress
+              : 1 - Math.pow(-2 * rawProgress + 2, 2) / 2;
+          mainTl.progress(easedProgress);
         },
-        scrub: 0.6, // More responsive scrubbing
+        scrub: 0.6,
         preventOverlaps: true,
         fastScrollEnd: true,
         markers: false,
@@ -391,15 +422,18 @@ const CaseTwo = () => {
   }, [animationReady]);
 
   return (
-    <div className="relative z-50 mt-[680px]" ref={stickyWrapperRef}>
+    <div className="relative z-50 mt-[720px]" ref={stickyWrapperRef}>
       <div className="h-screen">
         <div
           ref={containerRef}
-          className="relative h-[800px] border-b border-black/20 pt-10 dark:border-white/30"
+          className="relative h-[800px] border-t border-b border-black/20 dark:border-white/30"
         >
           <div className="mx-auto h-full">
             <div className="flex h-full">
-              <div className="flex w-1/4 flex-col justify-between pt-20 text-gray-600 md:text-base dark:text-gray-400">
+              <div
+                ref={leftColumnRef}
+                className="flex w-1/4 flex-col justify-between pt-20 text-gray-600 md:text-base dark:text-gray-400"
+              >
                 <div className="px-4">
                   <h3 className="text-foreground text-xl font-bold">Build Your Global Team</h3>
                   <Balancer className="pt-5">
@@ -429,7 +463,10 @@ const CaseTwo = () => {
                   <ArrowRight className="inline h-4 w-4 transform transition-transform duration-300 ease-out group-hover:translate-x-1" />
                 </Link>
               </div>
-              <div className="relative w-2/4 overflow-hidden border-r border-l border-black/20 dark:border-white/30">
+              <div
+                ref={middleColumnRef}
+                className="relative w-2/4 overflow-hidden border-r border-l border-black/20 dark:border-white/30"
+              >
                 <div className="absolute inset-0 overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary-medium-blue)]/5 via-transparent to-[var(--primary-gold)]/5"></div>
                   <div className="absolute inset-0 [background-image:radial-gradient(var(--primary-medium-blue)_0.8px,transparent_0.8px)] [background-size:14px_14px]"></div>
@@ -437,7 +474,6 @@ const CaseTwo = () => {
                   <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white/40 [mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)] dark:bg-[var(--neutral-50)]/30"></div>
                 </div>
 
-                {/* SVG connecting lines with enhanced animation */}
                 <div className="pointer-events-none absolute inset-0 z-[5]">
                   <svg width="100%" height="100%" className="overflow-visible">
                     <defs>
@@ -457,7 +493,6 @@ const CaseTwo = () => {
                       </linearGradient>
                     </defs>
 
-                    {/* Connecting line to first card */}
                     <path
                       ref={(el) => {
                         pathRefs.current[0] = el;
@@ -485,7 +520,6 @@ const CaseTwo = () => {
                       />
                     </g>
 
-                    {/* Connecting line to second card */}
                     <path
                       ref={(el) => {
                         pathRefs.current[1] = el;
@@ -513,7 +547,6 @@ const CaseTwo = () => {
                       />
                     </g>
 
-                    {/* Connecting line to third card */}
                     <path
                       ref={(el) => {
                         pathRefs.current[2] = el;
@@ -545,7 +578,10 @@ const CaseTwo = () => {
 
                 <div className="relative z-10 flex flex-col">
                   <div className="pt-10 pl-5">
-                    <span className="matched-title rounded-xl bg-white px-2 py-2 text-xl font-bold text-[#05253c]">
+                    <span
+                      ref={titleRef}
+                      className="matched-title rounded-xl border-[0.5px] border-black/40 bg-white px-2 py-2 text-xl font-bold text-[#05253c]"
+                    >
                       <SaasIcon className="mr-2 inline-flex bg-[var(--primary-gold)]">
                         <Award className="h-3 w-3" />
                       </SaasIcon>
@@ -632,6 +668,7 @@ const CaseTwo = () => {
                         <Heart className="h-4 w-4" fill="#05253c" />
                       </span>
                     </div>
+
                     <div
                       ref={(el) => {
                         cardsRef.current[1] = el;
@@ -711,6 +748,7 @@ const CaseTwo = () => {
                         <MessageSquare className="h-4 w-4" fill="#05253c" />
                       </span>
                     </div>
+
                     <div
                       ref={(el) => {
                         cardsRef.current[2] = el;
@@ -796,7 +834,7 @@ const CaseTwo = () => {
                   <WorldMap className="world-map-container h-fit w-[95%]" />
                 </div>
               </div>
-              <div className="w-1/4">
+              <div ref={rightColumnRef} className="w-1/4">
                 <div className="flex h-full flex-col justify-between pt-20 pb-10">
                   <div className="flex flex-col gap-5 px-5">
                     <h3 className="text-foreground text-xl font-bold">Hiring Process</h3>
@@ -868,6 +906,25 @@ const CaseTwo = () => {
           </div>
         </div>
       </div>
+      <style jsx global>{`
+        .js-animation-ready .info-container {
+          opacity: 0;
+          transform: translateY(20px) scale(0.95);
+          will-change: opacity, transform;
+        }
+
+        .js-animation-ready .world-map-container {
+          opacity: 0.3;
+          transform: scale(0.97);
+          will-change: opacity, transform;
+        }
+
+        .js-animation-ready .matched-title {
+          opacity: 0;
+          transform: translateY(-15px);
+          will-change: opacity, transform;
+        }
+      `}</style>
     </div>
   );
 };
