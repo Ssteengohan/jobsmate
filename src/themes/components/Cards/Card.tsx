@@ -1,11 +1,18 @@
 import Link from 'next/link';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useScrollData } from '@/themes/lib/lenis';
+
+// Register ScrollTrigger
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const Card = () => {
-  // State to track if component is in viewport
-  const [isInView, setIsInView] = useState(false);
+  // Use scroll data from Lenis
+  const { isScrolling } = useScrollData();
 
   // Refs for animation targets
   const cardRef = useRef<HTMLDivElement>(null);
@@ -24,167 +31,144 @@ const Card = () => {
   const progressFillRef = useRef<HTMLDivElement>(null);
   const proBadgeRef = useRef<HTMLDivElement>(null);
 
-  // Set up intersection observer to detect when card is in view
+  // Animation timeline ref for cleanup
+  const tlRef = useRef<GSAPTimeline | null>(null);
+
+  // Create ScrollTrigger animation that starts when element enters view
   useEffect(() => {
-    // Capture the current value of the ref inside the effect
-    const currentCardElement = cardRef.current;
+    // Set initial states efficiently with one context
+    const ctx = gsap.context(() => {
+      // Set initial states - grouped for better performance
+      gsap.set([titleRef.current, subtitleRef.current], {
+        y: -20,
+        opacity: 0,
+      });
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // Update state when intersection status changes
-        if (entry.isIntersecting) {
-          setIsInView(true);
-          // Once we've seen it, no need to observe anymore
-          if (currentCardElement) observer.unobserve(currentCardElement);
-        }
-      },
-      {
-        // Start animation when element is 20% visible
-        threshold: 0.2,
-        // Start slightly before element is in view for smoother experience
-        rootMargin: '0px 0px -10% 0px',
-      },
-    );
+      gsap.set(buttonsRef.current, {
+        y: 15,
+        opacity: 0,
+      });
 
-    if (currentCardElement) {
-      observer.observe(currentCardElement);
-    }
+      gsap.set([timeCardRef.current, qualityCardRef.current], {
+        opacity: 0,
+        y: 15,
+        scale: 0.92,
+      });
 
-    return () => {
-      // Use the captured value in the cleanup function
-      if (currentCardElement) observer.unobserve(currentCardElement);
-    };
-  }, []);
+      gsap.set(dashboardRef.current, {
+        opacity: 0,
+        y: 8,
+      });
 
-  // Animation effect - now triggered when card is in view
-  useEffect(() => {
-    // Set initial states
-    gsap.set([titleRef.current, subtitleRef.current], {
-      y: -30,
-      opacity: 0,
-      transformOrigin: 'center center',
-    });
+      gsap.set([metricsRowRef.current, progressBarRef.current], {
+        opacity: 0,
+      });
 
-    gsap.set(buttonsRef.current, {
-      y: 20,
-      opacity: 0,
-    });
+      gsap.set(progressFillRef.current, {
+        width: '0%',
+      });
 
-    gsap.set([timeCardRef.current, qualityCardRef.current], {
-      opacity: 0,
-      y: 20,
-      scale: 0.9,
-    });
+      gsap.set(proBadgeRef.current, {
+        opacity: 0,
+        rotate: -5,
+        scale: 0.85,
+      });
 
-    gsap.set(dashboardRef.current, {
-      opacity: 0,
-      y: 10,
-    });
+      // Create optimized timeline with better sequencing
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: cardRef.current,
+          start: 'top 70%', // Start when top of element reaches 70% from top of viewport
+          toggleActions: 'play none none none', // Play once when entering view
+          once: true, // Only trigger once
+        },
+        defaults: {
+          ease: 'power2.out',
+          duration: 0.5, // Shorter base duration for all animations
+        },
+      });
 
-    gsap.set(metricsRowRef.current, {
-      opacity: 0,
-    });
+      // Store timeline in ref for cleanup
+      tlRef.current = tl;
 
-    gsap.set(progressBarRef.current, {
-      opacity: 0,
-    });
-
-    gsap.set(progressFillRef.current, {
-      width: '0%',
-    });
-
-    gsap.set(proBadgeRef.current, {
-      opacity: 0,
-      rotate: -5,
-      scale: 0.8,
-    });
-
-    // Only start animation when card is in view
-    if (isInView) {
-      // Main animation timeline
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-
-      // Start with the left side content animation
+      // Optimized animation sequence
       tl.to(titleRef.current, {
         y: 0,
         opacity: 1,
-        duration: 0.6,
+        duration: 0.4,
       })
         .to(
           subtitleRef.current,
           {
             y: 0,
             opacity: 1,
-            duration: 0.6,
+            duration: 0.4,
           },
-          '-=0.4',
-        ) // Slightly overlap with previous animation
+          '-=0.25', // Tighter overlap
+        )
         .to(
           buttonsRef.current,
           {
             y: 0,
             opacity: 1,
-            duration: 0.6,
+            duration: 0.4,
           },
-          '-=0.3',
+          '-=0.2',
         )
-
-        // Continue with right side animations
         .to(
           dashboardRef.current,
           {
             opacity: 1,
             y: 0,
-            duration: 0.7,
-          },
-          '-=0.2',
-        )
-        .to(
-          timeCardRef.current,
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.5,
-          },
-          '-=0.4',
-        )
-        .to(
-          qualityCardRef.current,
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
             duration: 0.5,
           },
           '-=0.3',
         )
-        .to(metricsRowRef.current, {
-          opacity: 1,
-          duration: 0.5,
-          onComplete: () => {
-            // Animate metric items individually
-            gsap.to('.metric-item', {
-              scale: 1,
-              opacity: 1,
-              stagger: 0.1,
-              duration: 0.3,
-              ease: 'back.out(1.2)',
-            });
+        .to(
+          [timeCardRef.current, qualityCardRef.current],
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            stagger: 0.1, // Stagger for efficiency instead of separate animations
+            duration: 0.4,
           },
-        })
-        .to(progressBarRef.current, {
-          opacity: 1,
-          duration: 0.5,
-        })
+          '-=0.3',
+        )
+        .to(
+          metricsRowRef.current,
+          {
+            opacity: 1,
+            duration: 0.3,
+            onComplete: () => {
+              // Animate metric items more efficiently
+              gsap.to('.metric-item', {
+                scale: 1,
+                opacity: 1,
+                stagger: 0.06, // Faster stagger
+                duration: 0.25,
+                ease: 'back.out(1.2)',
+              });
+            },
+          },
+          '-=0.1',
+        )
+        .to(
+          progressBarRef.current,
+          {
+            opacity: 1,
+            duration: 0.3,
+          },
+          '-=0.15',
+        )
         .to(
           progressFillRef.current,
           {
             width: '85%',
-            duration: 1.5,
-            ease: 'power2.out',
+            duration: 1,
+            ease: 'power2.inOut', // Smoother easing
           },
-          '-=0.3',
+          '-=0.25',
         )
         .to(
           proBadgeRef.current,
@@ -192,49 +176,62 @@ const Card = () => {
             opacity: 1,
             rotate: 0,
             scale: 1,
-            duration: 0.5,
+            duration: 0.4,
             ease: 'back.out(1.7)',
           },
-          '-=1.2',
+          '-=0.8',
         );
-
-      return () => {
-        // Clean up animations
-        tl.kill();
-      };
-    }
-  }, [isInView]); // Depend on isInView state
-
-  // Button hover animations
-  useEffect(() => {
-    // Add subtle hover animations for buttons
-    const buttons = document.querySelectorAll('.card-button');
-    buttons.forEach((button) => {
-      button.addEventListener('mouseenter', () => {
-        gsap.to(button, {
-          y: -3,
-          duration: 0.2,
-          ease: 'power2.out',
-        });
-      });
-
-      button.addEventListener('mouseleave', () => {
-        gsap.to(button, {
-          y: 0,
-          duration: 0.3,
-          ease: 'power2.out',
-        });
-      });
-    });
+    }, cardRef);
 
     return () => {
-      // Clean up event listeners
-      buttons.forEach((button) => {
-        button.removeEventListener('mouseenter', () => {});
-        button.removeEventListener('mouseleave', () => {});
-      });
+      // Proper cleanup of animations
+      ctx.revert();
+      if (tlRef.current) {
+        tlRef.current.kill();
+      }
     };
-  }, []);
+  }, []); // Run once on mount
+
+  // More efficient button hover animations
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Add subtle hover animations for buttons using event delegation
+      const handleMouseEnter = (e: Event) => {
+        if (isScrolling) return; // Skip hover animation while scrolling for better performance
+        const button = e.currentTarget;
+        gsap.to(button, {
+          y: -3,
+          duration: 0.15, // Faster animation
+          ease: 'power1.out', // Simpler easing
+        });
+      };
+
+      const handleMouseLeave = (e: Event) => {
+        const button = e.currentTarget;
+        gsap.to(button, {
+          y: 0,
+          duration: 0.2,
+          ease: 'power1.out',
+        });
+      };
+
+      // Set up event listeners
+      document.querySelectorAll('.card-button').forEach((button) => {
+        button.addEventListener('mouseenter', handleMouseEnter);
+        button.addEventListener('mouseleave', handleMouseLeave);
+      });
+
+      // Clean up function
+      return () => {
+        document.querySelectorAll('.card-button').forEach((button) => {
+          button.removeEventListener('mouseenter', handleMouseEnter);
+          button.removeEventListener('mouseleave', handleMouseLeave);
+        });
+      };
+    }, cardRef);
+
+    return () => ctx.revert();
+  }, [isScrolling]); // Depend on scroll state for performance
 
   return (
     <section

@@ -369,8 +369,8 @@ const CaseTwo = () => {
       if (stickyWrapperRef.current && containerRef.current) {
         ScrollTrigger.create({
           trigger: stickyWrapperRef.current,
-          start: 'top 10%',
-          end: 'bottom 10%',
+          start: 'top top', // Position at the very top
+          end: 'bottom top+=340px', // Adjusted end point calculation
           pin: containerRef.current,
           pinSpacing: true,
           anticipatePin: 1,
@@ -400,8 +400,8 @@ const CaseTwo = () => {
 
       ScrollTrigger.create({
         trigger: stickyWrapperRef.current,
-        start: 'top 70%',
-        end: 'bottom 20%',
+        start: 'top 50%', // Adjusted to trigger at the middle of viewport
+        end: 'bottom top', // End when bottom reaches the top
         onUpdate: (self) => {
           const rawProgress = Math.min(self.progress, 1);
           const easedProgress =
@@ -422,11 +422,12 @@ const CaseTwo = () => {
   }, [animationReady]);
 
   return (
-    <div className="relative z-50 mt-[720px]" ref={stickyWrapperRef}>
+    <div className="relative z-50 mt-[720px]" ref={stickyWrapperRef} style={{ position: 'relative', top: 0 }}>
       <div className="h-screen">
         <div
           ref={containerRef}
           className="relative h-[800px] border-t border-b border-black/20 dark:border-white/30"
+          style={{ willChange: 'transform', top: 0 }}
         >
           <div className="mx-auto h-full">
             <div className="flex h-full">
