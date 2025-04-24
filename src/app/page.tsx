@@ -7,8 +7,9 @@ import { Spotlight } from '@/themes/components/ui/Spotlight';
 import Slider from '@/themes/components/Slider/Slider';
 import { TimelineDemo } from '@/themes/components/TimeLine/TimeLine';
 import PricingCard from '@/themes/components/PricingCard/PricingCard';
-import Footer from '@/themes/components/Footer/Footer';
 import ShowCase from '@/themes/components/showcase/ShowCase';
+import Footer from '@/themes/components/Footer/Footer';
+
 
 export default function Home() {
   return (
@@ -48,7 +49,7 @@ export default function Home() {
         <div className="absolute inset-y-0 left-[99%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]/90"></div>
         <Slider />
         <div className='hidden lg:flex'>
-          <ShowCase />
+          <ShowCase/>
         </div>
         <TimelineDemo />
         <PricingCard />
