@@ -417,7 +417,7 @@ const CaseThree = () => {
                   </div>
 
                   <div className="mx-auto mt-5 w-[85%] rounded-lg border border-[var(--primary-medium-blue)]/30 bg-gradient-to-r from-[var(--primary-medium-blue)]/15 to-[var(--primary-gold)]/10 p-4 shadow-sm dark:border-[var(--primary-medium-blue)]/40 dark:from-[var(--primary-medium-blue)]/25 dark:to-[var(--primary-gold)]/15">
-                    <h3 className="text-sm font-semibold text-[var(--primary-medium-blue)] dark:text-[var(--primary-medium-blue)]">
+                    <h3 className="text-sm font-semibold text-[var(--primary-medium-blue)]">
                       How Jobsmate Improves These Metrics:
                     </h3>
                     <ul className="mt-2 space-y-2 text-xs text-gray-600 dark:text-gray-300">
@@ -425,19 +425,25 @@ const CaseThree = () => {
                         <span className="mr-2 rounded-full bg-[var(--primary-gold)]/20 p-0.5 text-[var(--primary-gold)]">
                           ▲
                         </span>
-                        <span>Cut time-to-hire by 28% with automated candidate screening</span>
+                        <span className="font-medium text-white">
+                          Cut time-to-hire by 28% with automated candidate screening
+                        </span>
                       </li>
                       <li className="flex items-start">
                         <span className="mr-2 rounded-full bg-[var(--primary-gold)]/20 p-0.5 text-[var(--primary-gold)]">
                           ▲
                         </span>
-                        <span>Reduce cost-per-hire by identifying efficient sourcing channels</span>
+                        <span className="font-medium text-white">
+                          Reduce cost-per-hire by identifying efficient sourcing channels
+                        </span>
                       </li>
                       <li className="flex items-start">
                         <span className="mr-2 rounded-full bg-[var(--primary-gold)]/20 p-0.5 text-[var(--primary-gold)]">
                           ▲
                         </span>
-                        <span>Improve candidate quality with skill-based assessments</span>
+                        <span className="font-medium text-white">
+                          Improve candidate quality with skill-based assessments
+                        </span>
                       </li>
                     </ul>
                   </div>

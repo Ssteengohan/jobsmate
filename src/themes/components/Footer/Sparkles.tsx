@@ -1,9 +1,50 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { SparklesCore } from '../ui/sparkles';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+// Register GSAP plugins
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 export function SparklesPreview() {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const gradientRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: 'top 80%',
+        once: true,
+      },
+    });
+
+    // Animate gradient lines
+    if (gradientRef.current) {
+      const gradients = gradientRef.current.querySelectorAll('.gradient-line');
+      tl.from(
+        gradients,
+        {
+          width: 0,
+          opacity: 0,
+          duration: 1.2,
+          stagger: 0.15,
+          ease: 'power2.inOut',
+        },
+        0.3,
+      );
+    }
+
+    return () => {
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
+  }, []);
 
   useEffect(() => {
     // Check initial color scheme
@@ -20,35 +61,27 @@ export function SparklesPreview() {
   }, []);
 
   return (
-    <div className="flex h-[40rem] w-full flex-col items-center justify-center overflow-hidden rounded-md">
-      <div className="relative">
-        <h3 className="relative z-20 text-center text-2xl sm:text-3xl font-bold md:text-6xl lg:text-7xl">
-          <span className="drop-shadow-[0_0_5px_rgba(0,0,0,0.2)] dark:drop-shadow-[0_0_8px_rgba(42,151,219,0.3)]">
-            Join our tech{' '}
-          </span>
-          <span className="bg-gradient-to-r from-[var(--primary-gold)] to-[var(--primary-gold)] bg-clip-text text-transparent drop-shadow-[0_0_8px_rgba(240,180,41,0.6)] dark:drop-shadow-[0_0_5px_rgba(255,197,71,0.8)]">
-            community
-          </span>
-        </h3>
-
-        {/* Gradients positioned under the text */}
-        <div className="absolute right-0 -bottom-4 left-0 h-[2px] w-full bg-gradient-to-r from-transparent via-[#2a97db] to-transparent blur-sm" />
-        <div className="absolute right-0 -bottom-4 left-0 h-px w-full bg-gradient-to-r from-transparent via-[#1c6a9e] to-transparent" />
-        <div className="absolute right-1/4 -bottom-6 left-1/6 mx-auto h-[3px] w-3/4 bg-gradient-to-r from-transparent via-[#f0b429] to-transparent blur-sm" />
+    <div
+      ref={containerRef}
+      className="absolute inset-0 flex h-full w-full items-center justify-center"
+    >
+      {/* Enhanced gradients with better positioning */}
+      <div ref={gradientRef} className="pointer-events-none absolute inset-0">
+        <div className="gradient-line absolute top-1/3 right-0 left-0 mx-auto h-[2px] w-2/3 bg-gradient-to-r from-transparent via-[#2a97db] to-transparent opacity-60 blur-sm" />
+        <div className="gradient-line absolute top-1/2 right-0 left-0 mx-auto h-px w-3/5 bg-gradient-to-r from-transparent via-[#1c6a9e] to-transparent opacity-40" />
+        {/* <div className="gradient-line absolute right-0 bottom-1/3 left-0 mx-auto h-[2px] w-2/5 bg-gradient-to-r from-transparent via-[#f0b429] to-transparent opacity-70 blur-[1px]" /> */}
       </div>
 
-      <div className="relative mt-8 flex h-1/4 w-full justify-center lg:w-[60rem]">
-        {/* Core component */}
-        <SparklesCore
-          background="transparent"
-          minSize={0.9}
-          maxSize={1}
-          particleDensity={1200}
-          className="h-2/6 sm:h-3/4 w-full sm:pt-1"
-          particleColor={isDarkMode ? '#3aa8ec' : '#1c6a9e'}
-          speed={2}
-        />
-      </div>
+      {/* Core sparkles component with more subtle settings */}
+      <SparklesCore
+        background="transparent"
+        minSize={0.4} // Reduced size for subtlety
+        maxSize={1.0} // Reduced max size
+        particleDensity={600} // Reduced density
+        className="h-full w-full"
+        particleColor={isDarkMode ? 'rgba(58, 168, 236, 0.7)' : 'rgba(28, 106, 158, 0.5)'}
+        speed={0.8} // Slowed down for elegance
+      />
     </div>
   );
 }
