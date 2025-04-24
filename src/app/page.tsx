@@ -7,7 +7,7 @@ import { Spotlight } from '@/themes/components/ui/Spotlight';
 import Slider from '@/themes/components/Slider/Slider';
 import { TimelineDemo } from '@/themes/components/TimeLine/TimeLine';
 import PricingCard from '@/themes/components/PricingCard/PricingCard';
-import ShowCase from '@/themes/components/showcase/ShowCase';
+import ShowCase from '@/themes/components/ShowCases/ShowCase';
 import Footer from '@/themes/components/Footer/Footer';
 
 
