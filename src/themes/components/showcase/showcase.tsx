@@ -100,7 +100,7 @@ const ShowCase = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative z-10 mx-auto flex h-[300vh] w-full flex-col gap-20 bg-white dark:bg-[#1e2635]"
+      className="relative z-10 mx-auto flex h-[370vh] w-full flex-col gap-20 bg-white dark:bg-[#1e2635]"
       style={{ isolation: 'isolate' }}
     >
       <div className="flex max-w-7xl flex-col gap-4 pt-10 container">
