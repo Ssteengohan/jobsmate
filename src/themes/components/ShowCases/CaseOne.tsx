@@ -40,12 +40,20 @@ interface SliderItemProps {
   isActive?: boolean;
   iconColor: string;
   iconBgColor: string;
+  className?: string;
 }
 
-const SliderItem = ({ icon, label, isActive = false, iconColor, iconBgColor }: SliderItemProps) => {
+const SliderItem = ({
+  icon,
+  label,
+  isActive = false,
+  iconColor,
+  iconBgColor,
+  className = '',
+}: SliderItemProps) => {
   return (
     <div
-      className={`flex items-center gap-3 rounded-lg border-1 ${
+      className={`slider-item flex items-center gap-3 rounded-lg border-1 ${
         isActive
           ? 'border-gray-400/30 bg-gradient-to-r from-white to-gray-50 shadow-[0_0px_15px_0px_rgba(0,0,0,0.1)] dark:from-gray-800 dark:to-gray-900'
           : 'border-gray-400/10 opacity-65 grayscale-[30%] filter'
@@ -53,7 +61,7 @@ const SliderItem = ({ icon, label, isActive = false, iconColor, iconBgColor }: S
         isActive
           ? 'hover:shadow-[0_0px_20px_0px_rgba(0,0,0,0.15)]'
           : 'hover:opacity-80 hover:grayscale-[0%]'
-      }`}
+      } ${className}`}
     >
       <div
         className="flex h-9 w-9 items-center justify-center rounded-md"
@@ -94,6 +102,10 @@ const CaseOne = () => {
   const arrowRef3 = useRef<SVGGElement>(null);
   const arrowRef4 = useRef<SVGGElement>(null);
 
+  const leftColumnRef = useRef<HTMLDivElement>(null);
+  const middleColumnRef = useRef<HTMLDivElement>(null);
+  const rightColumnRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (typeof document !== 'undefined') {
       document.documentElement.classList.add('js-animation-ready');
@@ -125,6 +137,12 @@ const CaseOne = () => {
 
       const badges = [badge1Ref.current, badge2Ref.current].filter(Boolean);
 
+      const columns = [
+        leftColumnRef.current,
+        middleColumnRef.current,
+        rightColumnRef.current,
+      ].filter(Boolean);
+
       const startCircle = document.querySelector('#svg1 circle[cx="152"][cy="180"]');
       const midCircle = document.querySelector('#svg2 circle[cx="355"][cy="25"]');
       const endCircle = document.querySelector('#svg3 circle[cx="338"][cy="15"]');
@@ -140,6 +158,18 @@ const CaseOne = () => {
       const paths = [path1Ref.current, path2Ref.current, path3Ref.current, path4Ref.current].filter(
         Boolean,
       );
+
+      const sliderItems = document.querySelectorAll('.slider-item');
+      gsap.set(sliderItems, {
+        autoAlpha: 0,
+        x: 15,
+        filter: 'blur(2px)',
+      });
+
+      gsap.set(columns, {
+        autoAlpha: 0,
+        y: 20,
+      });
 
       gsap.set(containers, {
         autoAlpha: 0,
@@ -178,6 +208,326 @@ const CaseOne = () => {
         }
       });
 
+      mainTl
+        .to(
+          leftColumnRef.current,
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.6,
+            ease: 'power2.out',
+          },
+          0,
+        )
+        .to(
+          middleColumnRef.current,
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.6,
+            ease: 'power2.out',
+          },
+          0.15,
+        )
+        .to(
+          rightColumnRef.current,
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.6,
+            ease: 'power2.out',
+          },
+          0.3,
+        );
+
+      mainTl.to(
+        sliderItems,
+        {
+          autoAlpha: 1,
+          x: 0,
+          filter: 'blur(0px)',
+          duration: 0.4,
+          stagger: 0.1,
+          ease: 'back.out(1.2)',
+        },
+        0.4,
+      );
+
+      // Container 1 animations
+      mainTl
+        .to(
+          container1Ref.current,
+          {
+            autoAlpha: 1,
+            y: 0,
+            filter: 'blur(0px)',
+            duration: 0.5,
+          },
+          0.5,
+        )
+        .to(
+          badge1Ref.current,
+          {
+            autoAlpha: 1,
+            y: 0,
+            filter: 'blur(0px)',
+            duration: 0.4,
+          },
+          0.7,
+        )
+        .to(
+          startCircle,
+          {
+            autoAlpha: 1,
+            scale: 1,
+            duration: 0.4,
+            ease: 'back.out(1.7)',
+          },
+          0.8,
+        )
+        // Path 1 animation
+        .to(
+          path1Ref.current,
+          {
+            strokeDashoffset: 0,
+            duration: 0.8,
+            ease: 'power2.inOut',
+          },
+          0.9,
+        );
+
+      // Arrow 1 animation - set initial state then animate with motion path
+      if (path1Ref.current && arrowRef1.current) {
+        mainTl
+          .set(
+            arrowRef1.current,
+            {
+              autoAlpha: 0,
+              scale: 0,
+            },
+            0.9,
+          )
+          .to(
+            arrowRef1.current,
+            {
+              autoAlpha: 1,
+              scale: 1,
+              duration: 0.8,
+              motionPath: {
+                path: path1Ref.current,
+                align: path1Ref.current,
+                alignOrigin: [0.5, 0.5],
+                autoRotate: true,
+                start: 0,
+                end: 1,
+              },
+              ease: 'power2.inOut',
+            },
+            0.9,
+          );
+      }
+
+      // Container 2 animations
+      mainTl
+        .to(
+          container2Ref.current,
+          {
+            autoAlpha: 1,
+            y: 0,
+            filter: 'blur(0px)',
+            duration: 0.5,
+          },
+          1.6,
+        )
+        .to(
+          badge2Ref.current,
+          {
+            autoAlpha: 1,
+            y: 0,
+            filter: 'blur(0px)',
+            duration: 0.4,
+          },
+          1.8,
+        )
+        .to(
+          midCircle,
+          {
+            autoAlpha: 1,
+            scale: 1,
+            duration: 0.4,
+            ease: 'back.out(1.7)',
+          },
+          1.9,
+        )
+        // Path 2 animation
+        .to(
+          path2Ref.current,
+          {
+            strokeDashoffset: 0,
+            duration: 0.8,
+            ease: 'power2.inOut',
+          },
+          2.0,
+        );
+
+      // Arrow 2 animation
+      if (path2Ref.current && arrowRef2.current) {
+        mainTl
+          .set(
+            arrowRef2.current,
+            {
+              autoAlpha: 0,
+              scale: 0,
+            },
+            2.0,
+          )
+          .to(
+            arrowRef2.current,
+            {
+              autoAlpha: 1,
+              scale: 1,
+              duration: 0.8,
+              motionPath: {
+                path: path2Ref.current,
+                align: path2Ref.current,
+                alignOrigin: [0.5, 0.5],
+                autoRotate: true,
+                start: 0,
+                end: 1,
+              },
+              ease: 'power2.inOut',
+            },
+            2.0,
+          );
+      }
+
+      // Container 3 animations
+      mainTl.to(
+        container3Ref.current,
+        {
+          autoAlpha: 1,
+          y: 0,
+          filter: 'blur(0px)',
+          duration: 0.5,
+        },
+        2.7,
+      );
+
+      // Container 4 & 5 animations
+      mainTl
+        .to(
+          container4Ref.current,
+          {
+            autoAlpha: 1,
+            y: 0,
+            filter: 'blur(0px)',
+            duration: 0.5,
+          },
+          2.9,
+        )
+        .to(
+          container5Ref.current,
+          {
+            autoAlpha: 0.8,
+            y: 0,
+            filter: 'blur(0px)',
+            duration: 0.5,
+          },
+          3.0,
+        )
+        .to(
+          endCircle,
+          {
+            autoAlpha: 1,
+            scale: 1,
+            duration: 0.4,
+            ease: 'back.out(1.7)',
+          },
+          3.1,
+        )
+        // Path 3 animation
+        .to(
+          path3Ref.current,
+          {
+            strokeDashoffset: 0,
+            duration: 0.8,
+            ease: 'power2.inOut',
+          },
+          3.2,
+        )
+        // Path 4 animation
+        .to(
+          path4Ref.current,
+          {
+            strokeDashoffset: 0,
+            duration: 0.8,
+            ease: 'power2.inOut',
+          },
+          3.2,
+        );
+
+      // Arrow 3 animation
+      if (path3Ref.current && arrowRef3.current) {
+        mainTl
+          .set(
+            arrowRef3.current,
+            {
+              autoAlpha: 0,
+              scale: 0,
+            },
+            3.2,
+          )
+          .to(
+            arrowRef3.current,
+            {
+              autoAlpha: 1,
+              scale: 1,
+              duration: 0.8,
+              motionPath: {
+                path: path3Ref.current,
+                align: path3Ref.current,
+                alignOrigin: [0.5, 0.5],
+                autoRotate: true,
+                start: 0,
+                end: 1,
+              },
+              ease: 'power2.inOut',
+            },
+            3.2,
+          );
+      }
+
+      // Arrow 4 animation
+      if (path4Ref.current && arrowRef4.current) {
+        mainTl
+          .set(
+            arrowRef4.current,
+            {
+              autoAlpha: 0,
+              scale: 0,
+            },
+            3.2,
+          )
+          .to(
+            arrowRef4.current,
+            {
+              autoAlpha: 1,
+              scale: 1,
+              duration: 0.8,
+              motionPath: {
+                path: path4Ref.current,
+                align: path4Ref.current,
+                alignOrigin: [0.5, 0.5],
+                autoRotate: true,
+                start: 0,
+                end: 1,
+              },
+              ease: 'power2.inOut',
+            },
+            3.2,
+          );
+      }
+
       if (stickyWrapperRef.current && containerRef.current) {
         ScrollTrigger.create({
           trigger: stickyWrapperRef.current,
@@ -195,307 +545,23 @@ const CaseOne = () => {
           onLeave: () => {
             mainTl.progress(1);
           },
+          markers: false,
         });
       }
-
-      mainTl
-        .to(
-          container1Ref.current,
-          {
-            autoAlpha: 1,
-            y: 0,
-            filter: 'blur(0px)',
-            duration: 0.35,
-          },
-          0,
-        )
-        .to(
-          badge1Ref.current,
-          {
-            autoAlpha: 1,
-            y: 0,
-            filter: 'blur(0px)',
-            duration: 0.3,
-          },
-          0.2,
-        )
-        .to(
-          startCircle,
-          {
-            autoAlpha: 1,
-            scale: 1,
-            duration: 0.25,
-            ease: 'back.out(1.7)',
-          },
-          0.3,
-        )
-        .to(
-          arrowRef1.current,
-          {
-            autoAlpha: 1,
-            scale: 1,
-            duration: 0.25,
-            ease: 'back.out(1.7)',
-          },
-          0.35,
-        );
-
-      if (path1Ref.current) {
-        mainTl
-          .to(
-            path1Ref.current,
-            {
-              strokeDashoffset: 0,
-              duration: 0.6,
-              ease: 'power1.inOut',
-            },
-            0.4,
-          )
-          .to(
-            arrowRef1.current,
-            {
-              motionPath: {
-                path: path1Ref.current,
-                align: path1Ref.current,
-                alignOrigin: [0.7, 0.5],
-                autoRotate: false,
-                start: 0,
-                end: 1,
-              },
-              duration: 0.5,
-              ease: 'power1.inOut',
-            },
-            0.4,
-          );
-      }
-
-      mainTl
-        .to(
-          container2Ref.current,
-          {
-            autoAlpha: 1,
-            y: 0,
-            filter: 'blur(0px)',
-            duration: 0.35,
-          },
-          0.8,
-        )
-        .to(
-          badge2Ref.current,
-          {
-            autoAlpha: 1,
-            y: 0,
-            filter: 'blur(0px)',
-            duration: 0.3,
-          },
-          0.9,
-        )
-        .to(
-          midCircle,
-          {
-            autoAlpha: 1,
-            scale: 1,
-            duration: 0.25,
-            ease: 'back.out(1.7)',
-          },
-          1.0,
-        )
-        .to(
-          arrowRef2.current,
-          {
-            autoAlpha: 1,
-            scale: 1,
-            duration: 0.25,
-            ease: 'back.out(1.7)',
-          },
-          1.1,
-        );
-
-      if (path2Ref.current) {
-        mainTl
-          .to(
-            path2Ref.current,
-            {
-              strokeDashoffset: 0,
-              duration: 0.6,
-              ease: 'power1.inOut',
-            },
-            1.2,
-          )
-          .to(
-            arrowRef2.current,
-            {
-              motionPath: {
-                path: path2Ref.current,
-                align: path2Ref.current,
-                alignOrigin: [0.5, 0.5],
-                autoRotate: false,
-                start: 0,
-                end: 1,
-              },
-              duration: 0.5,
-              ease: 'power1.inOut',
-            },
-            1.2,
-          );
-      }
-
-      mainTl
-        .to(
-          container3Ref.current,
-          {
-            autoAlpha: 1,
-            y: 0,
-            filter: 'blur(0px)',
-            duration: 0.35,
-          },
-          1.6,
-        )
-        .to(
-          endCircle,
-          {
-            autoAlpha: 1,
-            scale: 1,
-            duration: 0.25,
-            ease: 'back.out(1.7)',
-          },
-          1.7,
-        )
-        .to(
-          arrowRef3.current,
-          {
-            autoAlpha: 1,
-            scale: 1,
-            duration: 0.25,
-            ease: 'back.out(1.7)',
-          },
-          1.8,
-        );
-
-      if (path3Ref.current) {
-        mainTl
-          .to(
-            path3Ref.current,
-            {
-              strokeDashoffset: 0,
-              duration: 0.6,
-              ease: 'power1.inOut',
-            },
-            1.9,
-          )
-          .to(
-            arrowRef3.current,
-            {
-              motionPath: {
-                path: path3Ref.current,
-                align: path3Ref.current,
-                alignOrigin: [0.5, 0.5],
-                autoRotate: true,
-                start: 0,
-                end: 1,
-              },
-              duration: 0.5,
-              ease: 'power1.inOut',
-            },
-            1.9,
-          );
-      }
-
-      mainTl.to(
-        container4Ref.current,
-        {
-          autoAlpha: 1,
-          y: 0,
-          filter: 'blur(0px)',
-          duration: 0.35,
-        },
-        2.3,
-      );
-
-      if (path4Ref.current) {
-        mainTl
-          .to(
-            arrowRef4.current,
-            {
-              autoAlpha: 0.5,
-              scale: 1,
-              duration: 0.25,
-            },
-            2.4,
-          )
-          .to(
-            path4Ref.current,
-            {
-              strokeDashoffset: 0,
-              duration: 0.6,
-              ease: 'power1.inOut',
-            },
-            2.5,
-          )
-          .to(
-            arrowRef4.current,
-            {
-              motionPath: {
-                path: path4Ref.current,
-                align: path4Ref.current,
-                alignOrigin: [0.5, 0.5],
-                autoRotate: true,
-                start: 0,
-                end: 1,
-              },
-              duration: 0.5,
-              ease: 'power1.inOut',
-            },
-            2.5,
-          )
-          .to(
-            container5Ref.current,
-            {
-              autoAlpha: 0.7,
-              y: 0,
-              filter: 'blur(0px) grayscale(40%)',
-              duration: 0.35,
-            },
-            2.9,
-          );
-      }
-
-      const loopTl = gsap.timeline({ repeat: -1, yoyo: true });
-      loopTl.to('#arrowTriangle1, #arrowTriangle2, #arrowTriangle3, #arrowTriangle4', {
-        scale: 1.2,
-        duration: 0.6,
-        ease: 'sine.inOut',
-      });
-
-      gsap.to(
-        '#gradientStop1, #gradientStop2, #gradientStop3, #gradientStop4, #gradientStop5, #gradientStop6, #gradientStop7, #gradientStop8',
-        {
-          attr: { offset: '+=1' },
-          repeat: -1,
-          duration: 2,
-          ease: 'none',
-          modifiers: {
-            offset: (offset) => {
-              try {
-                const num = parseFloat(offset) || 0;
-                return (num % 1).toString();
-              } catch {
-                return '0';
-              }
-            },
-          },
-        },
-      );
 
       ScrollTrigger.create({
         trigger: stickyWrapperRef.current,
         start: 'top 60%',
         end: 'bottom 20%',
         onUpdate: (self) => {
-          const progress = Math.min(self.progress / 0.95, 1);
-          mainTl.progress(progress);
+          const rawProgress = Math.min(self.progress, 1);
+          const easedProgress =
+            rawProgress < 0.5
+              ? 2 * rawProgress * rawProgress
+              : 1 - Math.pow(-2 * rawProgress + 2, 2) / 2;
+          mainTl.progress(easedProgress);
         },
-        scrub: 1,
+        scrub: 0.8,
         preventOverlaps: true,
         fastScrollEnd: true,
         markers: false,
@@ -513,7 +579,10 @@ const CaseOne = () => {
           className="flex h-[800px] translate-z-0 border-t border-b border-black/20 dark:border-white/30"
           ref={containerRef}
         >
-          <div className="flex h-full w-1/4 flex-col justify-between gap-2 pt-10">
+          <div
+            ref={leftColumnRef}
+            className="flex h-full w-1/4 flex-col justify-between gap-2 pt-10"
+          >
             <div className="container flex w-full flex-col gap-2">
               <h2 className="text-xl font-semibold">Hire local or global</h2>
               <Balancer className="w-3/4 text-gray-600 *:text-sm md:text-base dark:text-gray-400">
@@ -531,7 +600,10 @@ const CaseOne = () => {
               <ArrowRight className="inline h-4 w-4 transform transition-transform duration-300 ease-out group-hover:translate-x-1" />
             </Link>
           </div>
-          <div className="relative flex w-2/4 flex-col gap-32 overflow-hidden border-r border-l border-black/20 dark:border-white/30">
+          <div
+            ref={middleColumnRef}
+            className="relative flex w-2/4 flex-col gap-32 overflow-hidden border-r border-l border-black/20 dark:border-white/30"
+          >
             <div className="absolute inset-0 overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary-medium-blue)]/5 via-transparent to-[var(--primary-gold)]/5"></div>
               <div className="absolute inset-0 [background-image:radial-gradient(var(--primary-medium-blue)_0.8px,transparent_0.8px)] [background-size:14px_14px]"></div>
@@ -824,7 +896,10 @@ const CaseOne = () => {
               </div>
             </div>
           </div>
-          <div className="flex w-1/4 flex-col items-center justify-between pb-20">
+          <div
+            ref={rightColumnRef}
+            className="flex w-1/4 flex-col items-center justify-between pb-20"
+          >
             <div className="flex flex-col justify-center gap-4 px-9 pt-20">
               <SliderItem
                 icon={
@@ -867,6 +942,7 @@ const CaseOne = () => {
                 label="New Applicant"
                 iconColor="#0891b2"
                 iconBgColor="#cffafe"
+                className="slider-item"
               />
               <SliderItem
                 icon={
@@ -909,6 +985,7 @@ const CaseOne = () => {
                 label="Monitor Anti-cheating"
                 iconColor="#9333ea"
                 iconBgColor="#f3e8ff"
+                className="slider-item"
               />
               <SliderItem
                 icon={
@@ -952,6 +1029,7 @@ const CaseOne = () => {
                 isActive={true}
                 iconColor="#16a34a"
                 iconBgColor="#dcfce7"
+                className="slider-item"
               />
               <SliderItem
                 icon={
@@ -994,6 +1072,7 @@ const CaseOne = () => {
                 label="Ranked matches"
                 iconColor="#ea580c"
                 iconBgColor="#ffedd5"
+                className="slider-item"
               />
               <SliderItem
                 icon={
@@ -1036,6 +1115,7 @@ const CaseOne = () => {
                 label="Assessed candidate"
                 iconColor="#4f46e5"
                 iconBgColor="#e0e7ff"
+                className="slider-item"
               />
               <SliderItem
                 icon={
@@ -1078,10 +1158,16 @@ const CaseOne = () => {
                 label="Favorite Applicants"
                 iconColor="#db2777"
                 iconBgColor="#fce7f3"
+                className="slider-item"
               />
             </div>
             <div className="mx-auto flex w-full items-center justify-center border-t-2 border-black/10 dark:border-white/30">
-              <Image src="jobsmate-mob.svg" alt="Home icon" width={200} height={200} />
+              <Image
+                src="jobsmate-mob.svg"
+                alt="Home icon"
+                width={200}
+                height={200}
+              />
             </div>
           </div>
           <style jsx global>{`
@@ -1093,6 +1179,28 @@ const CaseOne = () => {
               opacity: 0;
               visibility: hidden;
               will-change: opacity, transform;
+            }
+
+            .js-animation-ready .slider-item {
+              opacity: 0;
+              transform: translateX(15px);
+              will-change: opacity, transform;
+            }
+
+            @keyframes customPulse {
+              0%,
+              100% {
+                opacity: 1;
+                transform: scale(1);
+              }
+              50% {
+                opacity: 0.7;
+                transform: scale(0.95);
+              }
+            }
+
+            .custom-pulse {
+              animation: customPulse 2s ease-in-out infinite;
             }
           `}</style>
         </div>
