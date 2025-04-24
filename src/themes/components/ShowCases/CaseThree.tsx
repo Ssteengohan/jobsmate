@@ -283,7 +283,11 @@ const CaseThree = () => {
   }, [animationReady, createAnimationTimeline]);
 
   return (
-    <div className="relative z-40 mt-[719px]" ref={stickyWrapperRef} style={{ position: 'relative', top: 0 }}>
+    <div
+      className="relative z-40 mt-[719px]"
+      ref={stickyWrapperRef}
+      style={{ position: 'relative', top: 0 }}
+    >
       <div className="h-screen">
         <div
           ref={containerRef}
@@ -346,7 +350,7 @@ const CaseThree = () => {
 
                   <div
                     ref={chartRef}
-                    className="mx-auto mt-8 flex w-[85%] flex-col items-center justify-center rounded-lg bg-white/90 p-6 shadow-lg dark:bg-gray-800/90"
+                    className="mx-auto mt-8 flex relative z-50 w-[85%] flex-col items-center justify-center rounded-lg bg-white/90 p-6 shadow-lg dark:bg-gray-800/90"
                   >
                     <div className="mb-8 flex w-full flex-col space-y-3">
                       <span className="text-sm font-medium text-gray-500">
@@ -416,7 +420,7 @@ const CaseThree = () => {
                     </div>
                   </div>
 
-                  <div className="mx-auto mt-5 w-[85%] rounded-lg border border-[var(--primary-medium-blue)]/30 bg-gradient-to-r from-[var(--primary-medium-blue)]/15 to-[var(--primary-gold)]/10 p-4 shadow-sm dark:border-[var(--primary-medium-blue)]/40 dark:from-[var(--primary-medium-blue)]/25 dark:to-[var(--primary-gold)]/15">
+                  <div className="mx-auto flex flex-col z-50 relative mt-5 w-[85%] rounded-lg border border-[var(--primary-medium-blue)]/30 bg-gradient-to-r from-[var(--primary-medium-blue)]/15 to-[var(--primary-gold)]/10 p-4 shadow-sm dark:border-[var(--primary-medium-blue)]/40 dark:from-[var(--primary-medium-blue)]/25 dark:to-[var(--primary-gold)]/15">
                     <h3 className="text-sm font-semibold text-[var(--primary-medium-blue)]">
                       How Jobsmate Improves These Metrics:
                     </h3>
@@ -425,7 +429,7 @@ const CaseThree = () => {
                         <span className="mr-2 rounded-full bg-[var(--primary-gold)]/20 p-0.5 text-[var(--primary-gold)]">
                           ▲
                         </span>
-                        <span className="font-medium text-white">
+                        <span className="font-bold text-[#05253c] dark:text-white">
                           Cut time-to-hire by 28% with automated candidate screening
                         </span>
                       </li>
@@ -433,7 +437,7 @@ const CaseThree = () => {
                         <span className="mr-2 rounded-full bg-[var(--primary-gold)]/20 p-0.5 text-[var(--primary-gold)]">
                           ▲
                         </span>
-                        <span className="font-medium text-white">
+                        <span className="font-bold text-[#05253c] dark:text-white">
                           Reduce cost-per-hire by identifying efficient sourcing channels
                         </span>
                       </li>
@@ -441,7 +445,7 @@ const CaseThree = () => {
                         <span className="mr-2 rounded-full bg-[var(--primary-gold)]/20 p-0.5 text-[var(--primary-gold)]">
                           ▲
                         </span>
-                        <span className="font-medium text-white">
+                        <span className="font-bold text-[#05253c] dark:text-white">
                           Improve candidate quality with skill-based assessments
                         </span>
                       </li>
