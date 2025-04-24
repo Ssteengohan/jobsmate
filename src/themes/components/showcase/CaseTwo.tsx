@@ -70,6 +70,14 @@ const CaseTwo = () => {
         autoAlpha: 0,
         scale: 0,
         transformOrigin: 'center center',
+        visibility: 'hidden', // Add explicit visibility property
+      });
+
+      // Set initial state for the arrow triangles specifically
+      gsap.set('#arrowTriangle1, #arrowTriangle2, #arrowTriangle3', {
+        autoAlpha: 0,
+        scale: 0,
+        visibility: 'hidden', // Add explicit visibility property
       });
 
       // Ensure cards are completely hidden initially
@@ -174,6 +182,54 @@ const CaseTwo = () => {
       );
 
       // Create animations for each path, arrow, and card - with proper flowing sequence
+      interface ArrowPulseTimeline {
+        timeline: gsap.core.Timeline;
+        arrow: SVGGElement | null;
+      }
+
+      const arrowPulseTimelines: ArrowPulseTimeline[] = [];
+
+      // Make sure all arrows and triangles are fully hidden initially
+      arrows.forEach((arrow, index) => {
+        if (arrow) {
+          gsap.set(arrow, {
+            autoAlpha: 0,
+            visibility: 'hidden',
+            scale: 0, // Make sure scale is 0 to completely hide
+          });
+
+          const triangleId = `#arrowTriangle${index + 1}`;
+          const triangle = arrow.querySelector(triangleId) || document.querySelector(triangleId);
+          if (triangle) {
+            gsap.set(triangle, {
+              autoAlpha: 0,
+              visibility: 'hidden',
+              scale: 0,
+            });
+          }
+        }
+      });
+
+      arrows.forEach((arrow, index) => {
+        // Find the triangle inside this arrow container
+        if (arrow) {
+          const triangleId = `#arrowTriangle${index + 1}`;
+          const triangle = arrow.querySelector(triangleId) || document.querySelector(triangleId);
+
+          if (triangle) {
+            // Create a timeline for this arrow's pulsing but don't start it yet
+            const pulseTl = gsap.timeline({ paused: true, repeat: -1, yoyo: true });
+            pulseTl.to(triangle, {
+              scale: 1.2,
+              duration: 0.6,
+              ease: 'sine.inOut',
+            });
+
+            arrowPulseTimelines.push({ timeline: pulseTl, arrow });
+          }
+        }
+      });
+
       paths.forEach((path, index) => {
         if (!path) return;
 
@@ -195,7 +251,32 @@ const CaseTwo = () => {
             onStart: () => {
               // Make arrow visible as path starts flowing
               if (arrows[index]) {
-                gsap.set(arrows[index], { autoAlpha: 1, scale: 1 });
+                // Show the arrow container
+                gsap.set(arrows[index], {
+                  autoAlpha: 1,
+                  scale: 1,
+                  visibility: 'visible',
+                });
+
+                // Find this arrow's triangle element and make it visible
+                const triangleId = `#arrowTriangle${index + 1}`;
+                const triangle =
+                  arrows[index].querySelector(triangleId) || document.querySelector(triangleId);
+                if (triangle) {
+                  gsap.set(triangle, {
+                    autoAlpha: 1,
+                    visibility: 'visible',
+                    scale: 1,
+                  });
+                }
+
+                // Start the pulsing animation for this arrow
+                const pulseAnimation = arrowPulseTimelines.find(
+                  (item) => item.arrow === arrows[index],
+                );
+                if (pulseAnimation) {
+                  pulseAnimation.timeline.play();
+                }
               }
             },
           },
@@ -204,6 +285,20 @@ const CaseTwo = () => {
 
         // Animate arrow along the path as the line flows
         if (arrows[index]) {
+          // First ensure the arrow container is visible
+          mainTl.to(
+            arrows[index],
+            {
+              autoAlpha: 1,
+              visibility: 'visible',
+              scale: 1,
+              duration: 0.2,
+              ease: 'power1.out',
+              immediateRender: true,
+            },
+            startTime,
+          );
+
           mainTl.to(
             arrows[index],
             {
@@ -240,29 +335,6 @@ const CaseTwo = () => {
         }
       });
 
-      // Create animation for pulsing arrows
-      gsap.to('#arrowTriangle1, #arrowTriangle2, #arrowTriangle3', {
-        scale: 1.2,
-        repeat: -1,
-        yoyo: true,
-        duration: 0.6,
-        ease: 'sine.inOut',
-      });
-
-      // Gradient animation
-      gsap.to('#gradientStop1, #gradientStop2, #gradientStop3, #gradientStop4', {
-        attr: { offset: '+=1' },
-        repeat: -1,
-        duration: 2,
-        ease: 'none',
-        modifiers: {
-          offset: (offset) => {
-            const num = parseFloat(offset) || 0;
-            return (num % 1).toString();
-          },
-        },
-      });
-
       // Pin the container during scroll
       if (stickyWrapperRef.current && containerRef.current) {
         ScrollTrigger.create({
@@ -277,6 +349,19 @@ const CaseTwo = () => {
           id: 'case-two-pin',
           onLeaveBack: () => {
             mainTl.progress(0);
+            // Hide arrows when scrolling back past the section
+            arrows.forEach((arrow, index) => {
+              if (arrow) {
+                gsap.set(arrow, { autoAlpha: 0, visibility: 'hidden', scale: 0 });
+
+                const triangleId = `#arrowTriangle${index + 1}`;
+                const triangle =
+                  arrow.querySelector(triangleId) || document.querySelector(triangleId);
+                if (triangle) {
+                  gsap.set(triangle, { autoAlpha: 0, visibility: 'hidden', scale: 0 });
+                }
+              }
+            });
           },
           onLeave: () => {
             mainTl.progress(1);
@@ -310,7 +395,7 @@ const CaseTwo = () => {
       <div className="h-screen">
         <div
           ref={containerRef}
-          className="relative h-[800px] border-b border-black/20 dark:border-white/30 pt-10"
+          className="relative h-[800px] border-b border-black/20 pt-10 dark:border-white/30"
         >
           <div className="mx-auto h-full">
             <div className="flex h-full">
