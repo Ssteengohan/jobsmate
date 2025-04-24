@@ -9,6 +9,7 @@ import { TimelineDemo } from '@/themes/components/TimeLine/TimeLine';
 import PricingCard from '@/themes/components/PricingCard/PricingCard';
 import ShowCase from '@/themes/components/ShowCases/ShowCase';
 import Footer from '@/themes/components/Footer/Footer';
+import Card from '@/themes/components/Cards/Card';
 
 
 export default function Home() {
@@ -52,6 +53,7 @@ export default function Home() {
           <ShowCase/>
         </div>
         <TimelineDemo />
+        <Card/>
         <PricingCard />
       </div>
       <Footer />

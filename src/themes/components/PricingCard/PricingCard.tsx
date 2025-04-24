@@ -88,7 +88,7 @@ const defaultTiers: PricingTier[] = [
 
 const PricingCard: React.FC<PricingCardProps> = ({ tiers = defaultTiers }) => {
   return (
-    <div className="relative container flex min-h-[90vh] justify-center bg-gradient-to-b from-[#faf3e6] to-[#fcf4e5] px-2 py-4 sm:min-h-[90vh] sm:px-6 md:py-12 lg:px-8 dark:bg-[var(--primary-dark)] dark:bg-none">
+    <div className="relative container flex min-h-[90vh] justify-center bg-gradient-to-b from-[#faf3e6] to-[#fcf4e5] px-2 py-4 sm:min-h-[90vh] sm:px-6 md:py-12 lg:px-8 dark:bg-[#1e2635] dark:bg-none">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 py-6 md:gap-12 md:py-12 md:pt-0">
         <div className="mb-4 text-center md:mb-12">
           <motion.h2
@@ -98,9 +98,7 @@ const PricingCard: React.FC<PricingCardProps> = ({ tiers = defaultTiers }) => {
             className="pt-12 pb-1 text-center text-3xl leading-tight font-bold tracking-tight sm:pb-2 sm:leading-relaxed md:text-6xl"
           >
             Simple, transparent{' '}
-            <span className="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-gold)] bg-clip-text text-transparent">
-              pricing
-            </span>
+            <span className="bg-[var(--primary-gold)] bg-clip-text text-transparent">pricing</span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
