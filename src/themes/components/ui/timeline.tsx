@@ -1,5 +1,5 @@
 'use client';
-import { useScroll, useTransform, motion } from 'framer-motion';
+import { useScroll, useTransform, motion, useMotionValue, useSpring } from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
 import Balancer from 'react-wrap-balancer';
 
@@ -14,55 +14,108 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
   const [height, setHeight] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
+  // Create a manual progress value for smoother updates
+  const manualProgress = useMotionValue(0);
+
+  // More responsive spring, especially after first item
+  const springyProgress = useSpring(manualProgress, {
+    stiffness: isMobile ? 400 : 100, // Increased stiffness for faster response
+    damping: isMobile ? 15 : 30, // Lower damping for quicker reaction
+    mass: 0.1, // Reduced mass for more responsive movement
+    restSpeed: 0.01, // Smaller rest speed for more precise stopping
+  });
+
   // Memoize resize handler to improve performance
   const handleResize = React.useCallback(() => {
     // Check if we're on a mobile device
-    setIsMobile(window.innerWidth < 768);
+    const mobileView = window.innerWidth < 768;
+    setIsMobile(mobileView);
 
     // Update height measurement
     if (ref.current) {
       const rect = ref.current.getBoundingClientRect();
-      setHeight(rect.height);
+      // Adjust height for mobile to prevent line extending too far
+      const calculatedHeight = mobileView
+        ? Math.min(rect.height, window.innerHeight * 1.2)
+        : rect.height;
+      setHeight(calculatedHeight);
     }
   }, []);
+
+  // Improved scroll configuration with even broader range
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: isMobile
+      ? ['start -20%', 'end 150%'] // Much broader range for mobile to ensure full coverage
+      : ['start 10%', 'end 85%'],
+  });
+
+  // Enhance progress tracking to prevent disappearing line between items 2 and 3
+  useEffect(() => {
+    const unsubscribe = scrollYProgress.on('change', (latest) => {
+      // Boost progress values on mobile to ensure completion
+      if (isMobile) {
+        // Even more aggressive boosting with custom curve to ensure middle visibility
+        let boostedValue;
+        if (latest > 0.3 && latest < 0.7) {
+          // Extra boost in the middle section (between items 2 and 3)
+          boostedValue = Math.min(1, latest * 1.8);
+        } else {
+          // Normal boost elsewhere
+          boostedValue = Math.min(1, latest * 1.5);
+        }
+        manualProgress.set(boostedValue);
+      } else {
+        manualProgress.set(latest);
+      }
+    });
+
+    return unsubscribe;
+  }, [scrollYProgress, manualProgress, isMobile]);
 
   useEffect(() => {
     // Initial check
     handleResize();
 
-    // Optimize resize listener with debouncing
-    let resizeTimer: ReturnType<typeof setTimeout>;
-    const debouncedResize = () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(handleResize, 100);
+    // Optimize resize listener with requestAnimationFrame for smoother updates
+    let resizeFrame: number;
+    const smoothResize = () => {
+      cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(handleResize);
     };
 
     // Add optimized resize listener
-    window.addEventListener('resize', debouncedResize);
+    window.addEventListener('resize', smoothResize);
 
     return () => {
-      clearTimeout(resizeTimer);
-      window.removeEventListener('resize', debouncedResize);
+      cancelAnimationFrame(resizeFrame);
+      window.removeEventListener('resize', smoothResize);
     };
   }, [handleResize]);
 
-  // Optimized scroll configuration
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: isMobile
-      ? ['start 15%', 'end 15%'] // Adjusted for more predictable mobile scrolling
-      : ['start 15%', 'end 45%'], // Adjusted for smoother desktop scrolling
-  });
+  // Fixed transform mapping with better middle section visibility
+  const heightTransform = useTransform(
+    springyProgress,
+    // More control points with finer gradations in the middle
+    [0, 0.2, 0.35, 0.5, 0.65, 0.8, 1],
+    [
+      0,
+      isMobile ? height * 0.25 : height * 0.2,          // Start
+      isMobile ? height * 0.45 : height * 0.35,         // Before middle
+      isMobile ? height * 0.6 : height * 0.5,           // Middle
+      isMobile ? height * 0.75 : height * 0.65,         // After middle
+      isMobile ? height * 0.9 : height * 0.8,           // Near end
+      height,                                           // Full height
+    ],
+  );
 
-  // Optimize transforms to reduce calculation overhead
-  const heightTransform = useTransform(scrollYProgress, [0, 1], [0, height], {
-    clamp: false, // Remove clamp for smoother transitions
-  });
-
-  // Optimized opacity transform
-  const opacityTransform = useTransform(scrollYProgress, [0, 0.05, 0.95, 1], [0, 1, 1, 0], {
-    clamp: false, // Remove clamp for smoother transitions
-  });
+  // Ensure line remains visible through the middle sections
+  const opacityTransform = useTransform(
+    springyProgress, 
+    // Keep full opacity through the middle range
+    [0, 0.03, 0.2, 0.8, 0.97, 1], 
+    [0, 0.8, 1, 1, 0.8, 0], 
+  );
 
   return (
     <div
@@ -110,24 +163,28 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
         <div
           style={{
             height: height + 'px',
-            maxHeight: isMobile ? 'calc(100vh * 1.5)' : 'none',
+            maxHeight: 'none', // Remove height constraint completely
           }}
-          className="absolute top-0 left-8 w-[2px] overflow-hidden bg-[linear-gradient(to_bottom,var(--tw-gradient-stops))] from-transparent from-[0%] via-[var(--neutral-200)] to-transparent to-[99%] transition-colors duration-300 [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)] md:left-8 dark:via-[var(--neutral-200)]"
+          className="absolute top-0 left-8 w-[2px] overflow-visible bg-[linear-gradient(to_bottom,var(--tw-gradient-stops))] from-transparent from-[0%] via-[var(--neutral-200)] to-transparent to-[99%] transition-colors duration-300 [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)] md:left-8 dark:via-[var(--neutral-200)]"
         >
           <motion.div
             transition={{
-              duration: 0.05, // Reduced for better performance
+              duration: 0.01, // Very fast updates for all devices
               ease: 'linear',
-              // Add hardware acceleration
               type: 'tween',
             }}
             style={{
               height: heightTransform,
               opacity: opacityTransform,
-              maxHeight: isMobile ? '100%' : 'none',
-              willChange: 'transform, opacity', // Hint for browser optimization
+              maxHeight: '500%', // Much more room to grow
+              willChange: 'transform, opacity',
+              translateZ: 0,
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
             }}
-            className="absolute inset-x-0 top-0 w-[2px] rounded-full bg-gradient-to-t from-[var(--primary-gold)] from-[0%] via-[var(--primary-light-blue)] via-[10%] to-transparent"
+            className="w-[2px] rounded-full bg-gradient-to-t from-[var(--primary-gold)] from-[0%] via-[var(--primary-light-blue)] via-[10%] to-transparent"
           />
         </div>
       </div>

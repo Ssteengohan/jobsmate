@@ -211,8 +211,8 @@ const CaseThree = () => {
       if (stickyWrapperRef.current && containerRef.current) {
         ScrollTrigger.create({
           trigger: stickyWrapperRef.current,
-          start: 'top top', // Position at the very top
-          end: 'bottom top+=340px', // Adjusted end point calculation
+          start: 'top 10%', // Changed from 'top top' to match other cases
+          end: 'bottom 10%', // Changed to match start/end pattern of other cases
           pin: containerRef.current,
           pinSpacing: true,
           anticipatePin: 1,
@@ -233,29 +233,30 @@ const CaseThree = () => {
       }
 
       // Create animation trigger with optimized scrub and easing
-      ScrollTrigger.create({
+      const scrollTrigger = ScrollTrigger.create({
         trigger: stickyWrapperRef.current,
-        start: 'top 50%', // Adjusted to trigger at the middle of viewport
-        end: 'bottom top', // End when bottom reaches the top
+        start: 'top 60%', // Changed from 'top 50%' to match CaseOne
+        end: 'bottom 20%', // Changed to match CaseOne's end point
         onUpdate: (self) => {
-          // Optimized progress calculation with smoother easing curve
+          // Remove requestAnimationFrame to avoid potential timing issues
           const rawProgress = Math.min(self.progress, 1);
-          // Simpler quadratic easing that's more performant
+          // Use same easing as other cases for consistency
           const easedProgress =
             rawProgress < 0.5
               ? 2 * rawProgress * rawProgress
-              : -1 + (4 - 2 * rawProgress) * rawProgress;
+              : 1 - Math.pow(-2 * rawProgress + 2, 2) / 2;
 
           mainTl.progress(easedProgress);
         },
-        scrub: 0.5, // Reduced scrub for more immediate response
-        preventOverlaps: true, // Prevent conflicting ScrollTriggers
-        fastScrollEnd: true, // Better performance on fast scrolling
+        scrub: 0.8, // Increased from 0.5 to match other cases
+        preventOverlaps: true,
+        fastScrollEnd: true,
         id: 'case-three-animation',
       });
 
       return () => {
-        // Return the timeline for external control if needed
+        // Return cleanup function that properly kills the ScrollTrigger
+        scrollTrigger.kill();
         return mainTl;
       };
     }, containerRef);
@@ -342,7 +343,7 @@ const CaseThree = () => {
                 </div>
 
                 <div className="flex h-full flex-col items-center">
-                  <div className="pt-12 text-center">
+                  <div className="pt-4 text-center">
                     <h2 ref={titleRef} className="mb-2 text-2xl font-bold">
                       Recruitment Analytics
                     </h2>
@@ -350,7 +351,7 @@ const CaseThree = () => {
 
                   <div
                     ref={chartRef}
-                    className="mx-auto mt-8 flex relative z-50 w-[85%] flex-col items-center justify-center rounded-lg bg-white/90 p-6 shadow-lg dark:bg-gray-800/90"
+                    className="relative z-50 mx-auto mt-8 flex w-[85%] flex-col items-center justify-center rounded-lg bg-white/90 p-6 shadow-lg dark:bg-gray-800/90"
                   >
                     <div className="mb-8 flex w-full flex-col space-y-3">
                       <span className="text-sm font-medium text-gray-500">
@@ -420,7 +421,7 @@ const CaseThree = () => {
                     </div>
                   </div>
 
-                  <div className="mx-auto flex flex-col z-50 relative mt-5 w-[85%] rounded-lg border border-[var(--primary-medium-blue)]/30 bg-gradient-to-r from-[var(--primary-medium-blue)]/15 to-[var(--primary-gold)]/10 p-4 shadow-sm dark:border-[var(--primary-medium-blue)]/40 dark:from-[var(--primary-medium-blue)]/25 dark:to-[var(--primary-gold)]/15">
+                  <div className="relative z-50 mx-auto mt-5 flex w-[85%] flex-col rounded-lg border border-[var(--primary-medium-blue)]/30 bg-gradient-to-r from-[var(--primary-medium-blue)]/15 to-[var(--primary-gold)]/10 p-4 shadow-sm dark:border-[var(--primary-medium-blue)]/40 dark:from-[var(--primary-medium-blue)]/25 dark:to-[var(--primary-gold)]/15">
                     <h3 className="text-sm font-semibold text-[var(--primary-medium-blue)]">
                       How Jobsmate Improves These Metrics:
                     </h3>
