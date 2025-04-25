@@ -16,7 +16,6 @@ export function TimelineDemo() {
   });
 
   useEffect(() => {
-    // Optimize video loading and playback
     const videoElements = [videoRef.current, videoRef2.current];
 
     videoElements.forEach((video) => {

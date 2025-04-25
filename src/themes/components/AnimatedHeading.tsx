@@ -4,7 +4,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-// Register the plugins
+
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
@@ -29,43 +29,38 @@ const AnimatedHeading: React.FC<AnimatedHeadingProps> = ({
   const headingRef = useRef<HTMLHeadingElement>(null);
   const [characters, setCharacters] = useState<string[]>([]);
 
-  // Split text into characters on component mount
   useEffect(() => {
     const chars = text.split('');
     setCharacters(chars);
   }, [text]);
 
-  // Set up the GSAP animation
   useEffect(() => {
     if (!headingRef.current || typeof window === 'undefined' || characters.length === 0) return;
 
-    // Store ref value to avoid issues with cleanup function
     const headingElement = headingRef.current;
     const chars = headingElement.querySelectorAll('.animated-char');
 
-    // Reset all characters to the initial state
     gsap.set(chars, {
       color: 'transparent',
       WebkitTextStroke: `${strokeWidth}px ${outlineColor}`,
       opacity: 1,
     });
 
-    // Create the scroll-triggered animation
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: headingElement,
         start: 'top 80%',
         end: 'top 30%',
-        scrub: 0.3, // Smoother scrubbing
+        scrub: 0.3, 
       },
     });
 
-    // Add staggered character animation to the timeline
+
     tl.to(chars, {
       color: fillColor,
       WebkitTextStroke: `0px transparent`,
       stagger: {
-        each: 0.02, // Faster stagger for smoother appearance
+        each: 0.02, 
         from: 'start',
         ease: 'power2.inOut',
       },
@@ -73,7 +68,6 @@ const AnimatedHeading: React.FC<AnimatedHeadingProps> = ({
       ease: 'power2.inOut',
     });
 
-    // Create a separate timeline to ensure all characters complete their animation
     const completionTimeline = gsap.timeline({
       scrollTrigger: {
         trigger: headingElement,
@@ -83,7 +77,7 @@ const AnimatedHeading: React.FC<AnimatedHeadingProps> = ({
             color: fillColor,
             WebkitTextStroke: `0px transparent`,
             duration: 0.2,
-            stagger: 0.01, // Quick staggered completion
+            stagger: 0.01,
             ease: 'power1.out',
             overwrite: 'auto',
           });
@@ -91,12 +85,11 @@ const AnimatedHeading: React.FC<AnimatedHeadingProps> = ({
       },
     });
 
-    // Clean up animations when component unmounts
+
     return () => {
       tl.kill();
       completionTimeline.kill();
       ScrollTrigger.getAll().forEach((trigger) => {
-        // Use the stored reference for cleanup
         if (trigger.vars.trigger === headingElement) {
           trigger.kill();
         }
@@ -131,7 +124,6 @@ const AnimatedHeading: React.FC<AnimatedHeadingProps> = ({
         ))}
       </Component>
 
-      {/* Hidden text for SEO */}
       <span className="sr-only">{text}</span>
     </div>
   );

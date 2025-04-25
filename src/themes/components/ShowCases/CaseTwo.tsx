@@ -86,8 +86,8 @@ const CaseTwo = () => {
             strokeDasharray: pathLength,
             strokeDashoffset: pathLength,
           });
-        } catch (err) {
-          console.error('Error setting up path', err);
+        } catch {
+          // console.error('Error setting up path', err);
         }
       });
 

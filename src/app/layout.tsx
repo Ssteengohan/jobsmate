@@ -16,6 +16,10 @@ export const metadata: Metadata = {
     icon: '/jobsmate-mob.svg',
     shortcut: '/jobsmate-mob.svg',
   },
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#202735' },
+  ],
 };
 
 export default function RootLayout({
@@ -25,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${lexend.variable} antialiased`}>
+      <body className={`${lexend.variable} bg-white antialiased dark:bg-[#202735]`}>
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
       </body>
     </html>

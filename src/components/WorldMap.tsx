@@ -2,10 +2,8 @@ import React from 'react';
 import { ComposableMap, Geographies, Geography, Line, Marker } from 'react-simple-maps';
 import type { RSMFeature } from 'react-simple-maps';
 
-// Use a TopoJSON source for the world map for better quality
 const geoUrl = 'https://unpkg.com/world-atlas@2.0.2/countries-110m.json';
 
-// Define connection points for different regions
 const connectionPoints: { name: string; coordinates: [number, number]; color: string }[] = [
   { name: 'North America', coordinates: [-100, 41], color: '#4dabf7' },
   { name: 'South America', coordinates: [-60, -20], color: '#4dabf7' },
@@ -15,13 +13,12 @@ const connectionPoints: { name: string; coordinates: [number, number]; color: st
   { name: 'Australia', coordinates: [135, -25], color: 'var(--primary-gold)' },
 ];
 
-// Define connections between regions
 const connections = [
-  { from: [0], to: [2, 4] }, // North America to Europe and Asia
-  { from: [1], to: [3] }, // South America to Africa
-  { from: [2], to: [3, 4] }, // Europe to Africa and Asia
-  { from: [4], to: [5] }, // Asia to Australia
-  { from: [3], to: [5] }, // Africa to Australia
+  { from: [0], to: [2, 4] },
+  { from: [1], to: [3] },
+  { from: [2], to: [3, 4] },
+  { from: [4], to: [5] },
+  { from: [3], to: [5] },
 ];
 
 interface WorldMapProps {
@@ -61,24 +58,23 @@ const WorldMap: React.FC<WorldMapProps> = ({ className }) => {
           }
         </Geographies>
 
-        {/* Connection Lines */}
         {connections.map((connection, i) =>
           connection.from.flatMap((fromIndex) =>
             connection.to.map((toIndex, j) => (
-              <Line
-                key={`connection-${i}-${j}`}
-                from={connectionPoints[fromIndex].coordinates}
-                to={connectionPoints[toIndex].coordinates}
-                stroke="url(#connectionGradient)"
-                strokeWidth={1.5}
-                strokeLinecap="round"
-                strokeDasharray="5,3"
-              />
+              <g key={`connection-${i}-${j}`} className="map-connection">
+                <Line
+                  from={connectionPoints[fromIndex].coordinates}
+                  to={connectionPoints[toIndex].coordinates}
+                  stroke="url(#connectionGradient)"
+                  strokeWidth={1.5}
+                  strokeLinecap="round"
+                  strokeDasharray="5,3"
+                />
+              </g>
             )),
           ),
         )}
 
-        {/* Markers at connection points */}
         {connectionPoints.map((point, i) => (
           <Marker key={`marker-${i}`} coordinates={point.coordinates}>
             <circle r={5} fill={point.color} className="pulse-circle" />

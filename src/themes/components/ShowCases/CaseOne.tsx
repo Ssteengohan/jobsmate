@@ -195,7 +195,7 @@ const CaseOne = () => {
         transformOrigin: 'center center',
       });
 
-      paths.forEach((path, index) => {
+      paths.forEach((path) => {
         if (!path) return;
         try {
           const pathLength = path.getTotalLength() || 300;
@@ -203,8 +203,8 @@ const CaseOne = () => {
             strokeDasharray: pathLength,
             strokeDashoffset: pathLength,
           });
-        } catch (err) {
-          console.error(`Error setting up path ${index + 1}`, err);
+        } catch {
+          // Error handling logic can be added here if needed
         }
       });
 
@@ -896,11 +896,8 @@ const CaseOne = () => {
               </div>
             </div>
           </div>
-          <div
-            ref={rightColumnRef}
-            className="flex w-1/4 flex-col items-center justify-between pb-20"
-          >
-            <div className="flex flex-col justify-center gap-4 px-9 pt-20">
+          <div ref={rightColumnRef} className="flex w-1/4 flex-col items-center justify-between">
+            <div className="flex flex-col justify-center gap-4 px-9 pt-0">
               <SliderItem
                 icon={
                   <svg
@@ -1161,13 +1158,8 @@ const CaseOne = () => {
                 className="slider-item"
               />
             </div>
-            <div className="mx-auto flex w-full items-center justify-center border-t-2 border-black/10 dark:border-white/30">
-              <Image
-                src="jobsmate-mob.svg"
-                alt="Home icon"
-                width={200}
-                height={200}
-              />
+            <div className="mx-auto flex h-full w-full items-center justify-center border-t-2 border-black/10 dark:border-white/30">
+              <Image src="jobsmate-mob.svg" alt="Home icon" width={200} height={200} />
             </div>
           </div>
           <style jsx global>{`

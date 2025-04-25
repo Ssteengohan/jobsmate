@@ -38,10 +38,7 @@ const Card = () => {
       </div>
       <div className="relative mt-4 flex h-[300px] w-full items-center justify-center overflow-hidden md:mt-0 md:h-full md:w-1/2">
         <div className="absolute inset-0 bg-gradient-to-br bg-none from-[var(--primary-light-blue)]/10 to-[var(--primary-gold)]/10 opacity-60 dark:opacity-100"></div>
-
-        {/* Dashboard visualization with static elements */}
         <div className="relative z-10 w-full max-w-xs md:max-w-md">
-          {/* Floating statistics cards */}
           <div className="absolute -top-6 -right-4 z-20 rounded-lg border border-[var(--primary-light-blue)]/20 bg-white p-2 shadow-lg md:-top-10 md:-right-10 md:p-3 dark:border-[var(--primary-light-blue)]/40 dark:bg-[var(--neutral-50)]">
             <p className="text-xs text-gray-600 dark:text-gray-400">Time saved</p>
             <div className="flex items-baseline gap-1">
@@ -60,7 +57,6 @@ const Card = () => {
             </div>
           </div>
 
-          {/* Main dashboard preview */}
           <div className="overflow-hidden rounded-xl border border-gray-200/70 shadow-xl md:shadow-2xl dark:border-white/20">
             <Image
               src="/dashboard-preview.png"
@@ -69,10 +65,8 @@ const Card = () => {
               height={300}
               className="h-auto w-full"
               onError={(e) => {
-                // Fallback if image doesn't exist - with proper type checking
                 e.currentTarget.style.display = 'none';
 
-                // Safe access to nextSibling with proper type checking
                 const fallbackElement = e.currentTarget.nextSibling as HTMLElement;
                 if (fallbackElement && fallbackElement instanceof HTMLElement) {
                   fallbackElement.style.display = 'block';
@@ -80,7 +74,6 @@ const Card = () => {
               }}
             />
 
-            {/* Fallback if image doesn't exist */}
             <div className="hidden h-52 w-full bg-gradient-to-br from-[var(--primary-light-blue)] to-[var(--primary-gold)] p-4">
               <div className="flex h-full flex-col justify-between">
                 <div className="space-y-2">
@@ -98,7 +91,6 @@ const Card = () => {
             </div>
           </div>
 
-          {/* Metrics row */}
           <div className="mt-3 grid grid-cols-3 gap-1 md:mt-4 md:gap-2">
             {['Faster Hiring', 'More Candidates', 'Higher ROI'].map((text, i) => (
               <div
@@ -112,12 +104,10 @@ const Card = () => {
             ))}
           </div>
 
-          {/* Progress bar - static */}
           <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-gray-200 md:mt-4 md:h-1.5 dark:bg-white/10">
             <div className="h-full w-[85%] bg-gradient-to-r from-[var(--primary-light-blue)] to-[var(--primary-gold)]" />
           </div>
 
-          {/* Pro badge */}
           <div className="absolute -top-2 -left-2 rounded-full bg-gradient-to-r from-[var(--primary-gold)] to-[var(--primary-light-blue)] px-2 py-0.5 text-[10px] font-bold text-white shadow-lg md:-top-4 md:-left-4 md:px-3 md:py-1 md:text-xs">
             PRO
           </div>
