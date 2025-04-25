@@ -64,6 +64,17 @@ const ShowCase = () => {
 
         gsap.registerPlugin(ScrollTrigger);
         setGsapLoaded(true);
+
+        // prefetch case components in idle time to avoid JIT overhead on first scroll
+        if (typeof window !== 'undefined') {
+          const idle =
+            (window as any).requestIdleCallback ?? ((cb: Function) => setTimeout(cb, 200));
+          idle(() => {
+            import('./CaseOne');
+            import('./CaseTwo');
+            import('./CaseThree');
+          });
+        }
       } catch (error) {
         console.error('Error loading GSAP:', error);
       }
@@ -95,61 +106,49 @@ const ShowCase = () => {
 
   useEffect(() => {
     if (!balancerRef.current || !isClient || !gsapLoaded) return;
-
-    console.log('Setting up subtext scroll animation');
     const paragraphElement = balancerRef.current;
 
-    // Make sure we're working with the original text (not already processed)
-    if (paragraphElement.querySelectorAll('.word-span').length > 0) {
-      console.log('Words already processed, skipping');
-      return;
-    }
+    // prevent double-processing
+    if (paragraphElement.querySelectorAll('.word-span').length) return;
 
-    // Clear the paragraph text and prepare for animation
+    // split into spans
     paragraphElement.innerHTML = '';
     const words = initialText.split(' ');
-
     words.forEach((word, i) => {
-      const wordSpan = document.createElement('span');
-      wordSpan.classList.add('word-span');
-      // Set initial state visibly to confirm the spans are created
-      wordSpan.style.opacity = '0';
-      wordSpan.style.transform = 'translateY(20px)';
-      wordSpan.style.display = 'inline-block';
-      wordSpan.style.marginRight = '0.25em';
-
-      if (word.endsWith('.') || word.endsWith(',') || i === words.length - 1) {
-        wordSpan.style.marginRight = '0';
-      }
-
-      wordSpan.textContent = word;
-      paragraphElement.appendChild(wordSpan);
+      const span = document.createElement('span');
+      span.classList.add('word-span');
+      span.style.opacity = '0';
+      span.style.transform = 'translateY(20px)';
+      span.style.display = 'inline-block';
+      span.style.marginRight =
+        word.endsWith('.') || word.endsWith(',') || i === words.length - 1 ? '0' : '0.25em';
+      span.textContent = word;
+      paragraphElement.appendChild(span);
     });
 
-    const wordElements = paragraphElement.querySelectorAll('.word-span');
-    console.log(`Found ${wordElements.length} words to animate`);
+    const wordElements = paragraphElement.querySelectorAll<HTMLElement>('.word-span');
 
     if (gsap && ScrollTrigger) {
-      // Reset words to initial hidden state
-      gsap.set(wordElements, { opacity: 0, y: 20 });
+      // set initial state with will-change hint
+      gsap.set(wordElements, { opacity: 0, y: 20, willChange: 'opacity, transform' });
 
-      // Flow on scroll with scrub, like AnimatedHeading
-      gsap
-        .timeline({
-          scrollTrigger: {
-            trigger: paragraphElement,
-            start: 'top 85%',
-            end: 'bottom 60%',
-            scrub: 0.6,
-          },
-        })
-        .to(wordElements, {
-          opacity: 1,
-          y: 0,
-          stagger: 0.05,
-          ease: 'power2.out',
-          duration: 0.5,
-        });
+      // batch animations for better perf
+      ScrollTrigger.batch(wordElements, {
+        interval: 0.1,
+        batchMax: 20,
+        start: 'top 85%',
+        end: 'bottom 60%',
+        scrub: 0.6,
+        onEnter: (batch) => {
+          gsap.to(batch, {
+            opacity: 1,
+            y: 0,
+            stagger: 0.05,
+            ease: 'power2.out',
+            overwrite: true,
+          });
+        },
+      });
     }
 
     return () => {
@@ -160,6 +159,13 @@ const ShowCase = () => {
       }
     };
   }, [isClient, gsapLoaded]);
+
+  // once we know we'll render the Cases, trigger a refresh so ScrollTrigger measurements are ready
+  useEffect(() => {
+    if (shouldLoadCases && ScrollTrigger) {
+      ScrollTrigger.refresh(true);
+    }
+  }, [shouldLoadCases]);
 
   return (
     <section
@@ -195,6 +201,12 @@ const ShowCase = () => {
           <CaseThree />
         </Suspense>
       )}
+
+      <style jsx global>{`
+        .word-span {
+          will-change: opacity, transform;
+        }
+      `}</style>
     </section>
   );
 };
