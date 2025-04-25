@@ -112,6 +112,7 @@ const Dashboard = () => {
     <section
       ref={scrollRef}
       className="scrollbar-hide pointer-events-auto flex h-full w-full flex-row overflow-hidden rounded-2xl border-1 border-zinc-300 bg-white select-none"
+      style={{ position: 'relative' }}
     >
       <div className="Navbar scrollbar-hide flex w-5/12 flex-col items-start rounded-2xl bg-white md:w-2/6 2xl:w-2/12">
         <div className="flex items-center px-2 pt-2">
@@ -207,10 +208,14 @@ const Dashboard = () => {
           </span>
         </div>
       </div>
-      <div className="flex h-full w-full gap-12 rounded-r-2xl bg-[#f9f9f9] pt-3 pl-3 sm:px-4 sm:pt-6 md:px-7">
+      <div
+        className="flex h-full w-full gap-12 rounded-r-2xl bg-[#f9f9f9] pt-3 pl-3 sm:px-4 sm:pt-6 md:px-7"
+        style={{ position: 'relative' }}
+      >
         <div
           ref={contentScrollRef}
           className="scrollbar-hide pointer-events-none relative flex max-h-full w-full flex-col items-start gap-4 overflow-y-auto sm:gap-8"
+          style={{ position: 'relative' }}
         >
           <motion.div
             initial="hidden"
@@ -218,6 +223,7 @@ const Dashboard = () => {
             viewport={{ once: true, amount: 0.2 }}
             variants={sectionVariants.section1}
             className="section-1 flex w-full flex-wrap items-center gap-2 sm:gap-3"
+            style={{ position: 'relative' }}
           >
             <motion.span
               variants={itemVariants}
@@ -254,6 +260,7 @@ const Dashboard = () => {
             viewport={{ once: true, amount: 0.1 }}
             variants={sectionVariants.section1}
             className="flex h-fit w-full flex-col items-start gap-6 lg:hidden"
+            style={{ position: 'relative' }}
           >
             <motion.div variants={itemVariants}>
               <span className="rounded-2xl bg-[#fad246] px-3 py-2 font-medium text-[#00253b] shadow-[3px_3px_0px_0px_rgba(0,0,0,0.1)] shadow-[#00253b] max-md:text-[8px]">
@@ -326,6 +333,7 @@ const Dashboard = () => {
             viewport={{ once: true, amount: 0.1, margin: '-100px 0px -100px 0px' }}
             variants={sectionVariants.section2}
             className="section-2 flex h-fit w-full flex-col items-start gap-4 rounded-2xl bg-white px-4 py-4 shadow-xs shadow-gray-500/30 lg:py-8 lg:pb-10"
+            style={{ position: 'relative' }}
           >
             <motion.div variants={itemVariants} className="flex items-center justify-center gap-2">
               <IoIosArrowDown color="#757575" opacity={0.7} className="h-3 w-3 lg:h-5 lg:w-5" />
@@ -360,6 +368,7 @@ const Dashboard = () => {
             viewport={{ once: true, amount: 0.1, margin: '-100px 0px -100px 0px' }}
             variants={sectionVariants.section3}
             className="section-3 flex h-fit w-full flex-col items-start gap-4 rounded-2xl bg-white px-4 py-4 shadow-xs shadow-gray-500/30 lg:py-8 lg:pb-10"
+            style={{ position: 'relative' }}
           >
             <motion.div variants={itemVariants} className="flex items-center justify-center gap-2">
               <IoIosArrowDown color="#757575" opacity={0.7} className="h-3 w-3 lg:h-5 lg:w-5" />
@@ -393,6 +402,7 @@ const Dashboard = () => {
             viewport={{ once: true, amount: 0.1, margin: '-100px 0px -100px 0px' }}
             variants={sectionVariants.section4}
             className="section-4 flex h-fit w-full flex-col items-start gap-4 rounded-2xl bg-white px-4 py-4 shadow-xs shadow-gray-500/30 lg:py-8 lg:pb-10"
+            style={{ position: 'relative' }}
           >
             <motion.div variants={itemVariants} className="flex items-center justify-center gap-2">
               <IoIosArrowDown color="#757575" opacity={0.7} className="h-3 w-3 lg:h-5 lg:w-5" />
@@ -497,6 +507,7 @@ const Dashboard = () => {
           viewport={{ once: true, amount: 0.1 }}
           variants={sectionVariants.section5}
           className="section-5 hidden h-full w-2/5 flex-col items-end gap-10 lg:flex"
+          style={{ position: 'relative' }}
         >
           <motion.div variants={itemVariants}>
             <span className="rounded-2xl bg-[#fad246] px-4 py-2 font-medium text-[#00253b] shadow-[3px_3px_0px_0px_rgba(0,0,0,0.1)] shadow-[#00253b]">

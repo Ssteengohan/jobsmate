@@ -96,7 +96,7 @@ const Footer = () => {
                   alt="Jobsmate Logo"
                   width={140}
                   height={40}
-                  className="dark:brightness-110"
+                  className="dark:brightness-100 h-40 w-40"
                 />
               </div>
               <p className="max-w-xs text-sm text-gray-600 dark:text-gray-300">

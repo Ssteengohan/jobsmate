@@ -129,9 +129,9 @@ const Navbar = () => {
               <Image
                 src="/jobsmate-mob.svg"
                 alt="Jobsmate Logo"
-                width={100}
-                height={250}
-                className="transition-opacity duration-300"
+                width={40}
+                height={40}
+                className="h-18 w-18 transition-opacity duration-300"
               />
               <span className="text-3xl text-black transition-colors duration-300 dark:text-[var(--primary-white)]">
                 Jobsmate

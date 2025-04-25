@@ -122,7 +122,10 @@ export const FadeInDiv = ({
     return tab.value === tabs[0].value;
   };
   return (
-    <div className="relative h-auto min-h-[50vh] sm:min-h-[65vh] w-full lg:w-[90%] mx-auto flex overflow-visible lg:aspect-video">
+    <div
+      className="relative mx-auto flex h-auto min-h-[50vh] w-full overflow-visible sm:min-h-[65vh] lg:aspect-video lg:w-[90%]"
+      style={{ position: 'relative' }}
+    >
       {tabs.map((tab, idx) => (
         <motion.div
           key={tab.value}
@@ -132,6 +135,7 @@ export const FadeInDiv = ({
             top: hovering ? idx * -50 : 0,
             zIndex: -idx,
             opacity: idx < 3 ? 1 - idx * 0.1 : 0,
+            position: 'absolute', // Explicitly set position
           }}
           animate={{
             y: isActive(tab) ? [0, 40, 0] : 0,

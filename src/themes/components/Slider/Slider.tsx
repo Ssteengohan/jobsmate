@@ -69,7 +69,15 @@ const TiltLogo = ({ src, alt }: { src: string; alt: string }) => {
   return (
     <div className="relative" style={{ perspective: '1200px' }}>
       <div ref={imageRef} className="h-full w-full" style={{ transformStyle: 'preserve-3d' }}>
-        <Image src={src} alt={alt} width={210} height={210} className="object-contain" />
+        <Image
+          src={src}
+          alt={alt}
+          width={210}
+          height={210}
+          className="w-full object-contain"
+          style={{ width: 'auto', height: 'auto' }} // Update to maintain aspect ratio for both dimensions
+          sizes="(max-width: 768px) 100vw, 210px" // Add sizes prop for responsive handling
+        />
       </div>
     </div>
   );
