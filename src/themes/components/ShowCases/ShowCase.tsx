@@ -87,8 +87,7 @@ const ShowCase = () => {
           import('./CaseTwo');
           import('./CaseThree');
         });
-      } catch (error) {
-        console.error('Error loading GSAP:', error);
+      } catch {
       }
     };
 

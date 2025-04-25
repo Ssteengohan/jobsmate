@@ -3,61 +3,50 @@ import { SparklesPreview } from './Sparkles';
 import Link from 'next/link';
 import Image from 'next/image';
 
-// Function to get current year for copyright
 const getCurrentYear = () => new Date().getFullYear();
 
 const Footer = () => {
   const [currentYear, setCurrentYear] = useState(getCurrentYear());
   const [email, setEmail] = useState('');
-
-  // Update year if needed (for sites that stay open across year boundaries)
   useEffect(() => {
     setCurrentYear(getCurrentYear());
   }, []);
 
-  // Handle email subscription
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
-    // Add subscription logic here
     console.log('Subscribing email:', email);
     setEmail('');
-    // Show success message or feedback
   };
 
-  // Footer link sections
   const footerSections = [
     {
       title: 'Product',
       links: [
-        { label: 'Features', href: '/features' },
-        { label: 'Pricing', href: '/pricing' },
-        { label: 'Integrations', href: '/integrations' },
-        { label: 'Documentation', href: '/docs' },
+        { label: 'Features', href: '/' },
+        { label: 'Pricing', href: '/' },
+        { label: 'Integrations', href: '/' },
+        { label: 'Documentation', href: '/' },
       ],
     },
     {
       title: 'Company',
       links: [
-        { label: 'About Us', href: '/about' },
-        { label: 'Blog', href: '/blog' },
-        { label: 'Careers', href: '/careers' },
-        { label: 'Contact', href: '/contact' },
+        { label: 'About Us', href: '/' },
+        { label: 'Blog', href: '/' },
+        { label: 'Careers', href: '/' },
+        { label: 'Contact', href: '/' },
       ],
     },
   ];
 
   return (
     <footer className="relative z-10 flex w-full flex-col border-t-1 border-neutral-300 bg-[#f9f5eb] dark:border-[#f0b429]/30 dark:bg-[#1a2637]">
-      {/* Community section with sparkles and newsletter - grouped together */}
       <div className="relative z-10 w-full overflow-hidden py-12">
         <div className="container mx-auto px-4">
           <div className="relative mx-auto max-w-3xl text-center">
-            {/* SparklesPreview as background */}
             <div className="absolute inset-0 -z-10">
               <SparklesPreview />
             </div>
-
-            {/* Community Title */}
             <h3 className="text-center text-2xl font-bold sm:text-3xl md:text-4xl">
               <span className="text-[var(--primary-dark-blue)] drop-shadow-sm dark:text-[var(--primary-white)]">
                 Join our tech{' '}
@@ -68,8 +57,6 @@ const Footer = () => {
                 </span>
               </span>
             </h3>
-
-            {/* Newsletter subscription form */}
             <form
               onSubmit={handleSubscribe}
               className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row"
@@ -99,11 +86,8 @@ const Footer = () => {
           </div>
         </div>
       </div>
-
-      {/* Main footer content */}
       <div className="container mx-auto px-4 py-10">
         <div className="grid grid-cols-1 gap-8 max-sm:pb-5 md:grid-cols-2 lg:grid-cols-12">
-          {/* Logo and company description - now spans 7 columns */}
           <div className="col-span-1 lg:col-span-7">
             <div className="flex flex-col space-y-4">
               <div className="flex items-center">
@@ -130,8 +114,6 @@ const Footer = () => {
               </div>
             </div>
           </div>
-
-          {/* Footer sections with links - each now spans 2 columns and positioned more to the right */}
           {footerSections.map((section, index) => (
             <div
               key={section.title}
@@ -157,26 +139,21 @@ const Footer = () => {
           ))}
         </div>
       </div>
-
-      {/* Copyright section */}
       <div className="border-t border-gray-200 bg-[#f0ece0] py-6 dark:border-gray-700 dark:bg-[#162030]">
         <div className="container mx-auto flex flex-col gap-4 px-4 text-xs text-gray-600 md:flex-row md:items-center md:justify-between dark:text-gray-400">
           <div className="flex flex-wrap items-center gap-2">
             <span>&copy; {currentYear} Jobsmate. All rights reserved.</span>
             <span className="hidden md:inline">•</span>
-            <Link href="/privacy" className="group relative transition-colors duration-200">
+            <Link href="/" className="group relative transition-colors duration-200">
               <span>Privacy Policy</span>
               <span className="absolute -bottom-0.5 left-0 h-[0.5px] w-0 bg-gray-400 opacity-50 transition-all duration-200 group-hover:w-full dark:bg-gray-500"></span>
             </Link>
             <span className="hidden md:inline">•</span>
-            <Link href="/terms" className="group relative transition-colors duration-200">
+            <Link href="/" className="group relative transition-colors duration-200">
               <span>Terms & Conditions</span>
               <span className="absolute -bottom-0.5 left-0 h-[0.5px] w-0 bg-gray-400 opacity-50 transition-all duration-200 group-hover:w-full dark:bg-gray-500"></span>
             </Link>
-
-            {/* Social icons - visible on mobile */}
             <div className="flex space-x-2 md:hidden">
-              {/* LinkedIn icon */}
               <Link
                 href="https://linkedin.com"
                 aria-label="LinkedIn"
@@ -196,7 +173,6 @@ const Footer = () => {
                 </svg>
               </Link>
 
-              {/* Instagram icon */}
               <Link
                 href="https://instagram.com"
                 aria-label="Instagram"
@@ -216,7 +192,6 @@ const Footer = () => {
                 </svg>
               </Link>
 
-              {/* Gmail icon */}
               <Link
                 href="mailto:contact@jobsmate.com"
                 aria-label="Gmail"
@@ -234,9 +209,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Social icons for desktop - positioned on the right */}
           <div className="hidden items-center self-start md:ml-auto md:flex md:self-auto">
-            {/* LinkedIn icon */}
             <Link
               href="https://linkedin.com"
               aria-label="LinkedIn"
@@ -251,7 +224,6 @@ const Footer = () => {
               </svg>
             </Link>
 
-            {/* Instagram icon */}
             <Link
               href="https://instagram.com"
               aria-label="Instagram"
@@ -266,7 +238,6 @@ const Footer = () => {
               </svg>
             </Link>
 
-            {/* Gmail icon */}
             <Link
               href="mailto:contact@jobsmate.com"
               aria-label="Gmail"

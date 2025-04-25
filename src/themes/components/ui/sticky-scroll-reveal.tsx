@@ -47,7 +47,7 @@ export const StickyScroll = ({
 
       // Trigger loading animation when the second card is active
       if (activeIndex === 1) {
-        console.log('Trigger loading animation'); // Replace with actual loading animation logic
+        // console.log('Trigger loading animation'); // Replace with actual loading animation logic
       }
 
       // Call the callback if provided

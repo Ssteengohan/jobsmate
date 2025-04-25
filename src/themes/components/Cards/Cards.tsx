@@ -2,12 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 
-// Register ScrollTrigger plugin
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-// Stats data with numerical values for animation
 const statsData = [
   { value: 10, label: 'Profiles', suffix: 'k+', format: true },
   { value: 120, label: 'Countries', suffix: '+', format: false },
@@ -21,29 +19,23 @@ const Cards = () => {
   const paragraphRef = useRef<HTMLParagraphElement>(null);
   const statsRefs = useRef<Array<HTMLDivElement | null>>([]);
   const countRefs = useRef<Array<HTMLSpanElement | null>>([]);
-
-  // State to track if animations have played
   const [animationsPlayed, setAnimationsPlayed] = useState(false);
-
-  // Function to format numbers with commas
   const formatNumber = (num: number): string => {
     return num.toLocaleString('en-US');
   };
 
   useEffect(() => {
-    // Reset refs arrays
     statsRefs.current = statsRefs.current.slice(0, 4);
     countRefs.current = countRefs.current.slice(0, 4);
 
     const ctx = gsap.context(() => {
-      // Create a master timeline for synchronized number counting
       const counterTl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'center bottom', // Changed from 'top 85%' to ensure animation starts when cards are in view
+          start: 'center bottom', 
           end: 'bottom top',
-          toggleActions: 'play none none reset', // Reset when scrolled out of view
-          once: false, // Allow animation to replay if scrolled back into view
+          toggleActions: 'play none none reset',
+          once: false, 
           onEnter: () => setAnimationsPlayed(true),
         },
         defaults: {
@@ -51,11 +43,7 @@ const Cards = () => {
           ease: 'power2.out',
         },
       });
-
-      // Create counter objects for all stats
       const counterObjects = statsData.map(() => ({ value: 0 }));
-
-      // Add all animations to timeline at once
       statsData.forEach((stat, index) => {
         if (countRefs.current[index]) {
           const countElement = countRefs.current[index];
@@ -76,7 +64,7 @@ const Cards = () => {
                 }
               },
             },
-            0, // All animations start at position 0 in the timeline
+            0,
           );
         }
       });
@@ -90,9 +78,7 @@ const Cards = () => {
       ref={sectionRef}
       className="relative container mx-auto h-[600px] overflow-hidden bg-white px-4 py-20 dark:bg-[var(--neutral-50)]"
     >
-      {/* Content Container with improved spacing */}
       <div className="relative z-10 mx-auto max-w-6xl">
-        {/* Headline and paragraph with enhanced typography */}
         <div className="mb-16 max-w-2xl pt-10 md:mb-20">
           <h2
             ref={headlineRef}
@@ -108,8 +94,6 @@ const Cards = () => {
             challenge and they are ready to showcase it to your company.
           </p>
         </div>
-
-        {/* Stats grid with improved styling - removed hover animations */}
         <div className="grid grid-cols-2 gap-6 sm:gap-8 lg:grid-cols-4">
           {statsData.map((stat, index) => (
             <div
