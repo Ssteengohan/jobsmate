@@ -19,9 +19,9 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
 
   // More responsive spring, especially after first item
   const springyProgress = useSpring(manualProgress, {
-    stiffness: isMobile ? 400 : 100, // Increased stiffness for faster response
-    damping: isMobile ? 15 : 30, // Lower damping for quicker reaction
-    mass: 0.1, // Reduced mass for more responsive movement
+    stiffness: isMobile ? 200 : 100, // Tame the spring on mobile
+    damping: isMobile ? 25 : 30, // Adjust damping for mobile
+    mass: isMobile ? 0.5 : 0.1, // Raise mass for mobile
     restSpeed: 0.01, // Smaller rest speed for more precise stopping
   });
 
@@ -34,44 +34,27 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
     // Update height measurement
     if (ref.current) {
       const rect = ref.current.getBoundingClientRect();
-      // Adjust height for mobile to prevent line extending too far
-      const calculatedHeight = mobileView
-        ? Math.min(rect.height, window.innerHeight * 1.2)
-        : rect.height;
-      setHeight(calculatedHeight);
+      // Always use full timeline height (no clamp) for smooth full‑length line
+      setHeight(rect.height);
     }
   }, []);
 
   // Improved scroll configuration with even broader range
   const { scrollYProgress } = useScroll({
-    target: containerRef,
+    target: isMobile ? ref : containerRef,
     offset: isMobile
-      ? ['start -20%', 'end 150%'] // Much broader range for mobile to ensure full coverage
+      ? ['start start', 'end end'] // Cover entire ref on mobile
       : ['start 10%', 'end 85%'],
   });
 
   // Enhance progress tracking to prevent disappearing line between items 2 and 3
   useEffect(() => {
     const unsubscribe = scrollYProgress.on('change', (latest) => {
-      // Boost progress values on mobile to ensure completion
-      if (isMobile) {
-        // Even more aggressive boosting with custom curve to ensure middle visibility
-        let boostedValue;
-        if (latest > 0.3 && latest < 0.7) {
-          // Extra boost in the middle section (between items 2 and 3)
-          boostedValue = Math.min(1, latest * 1.8);
-        } else {
-          // Normal boost elsewhere
-          boostedValue = Math.min(1, latest * 1.5);
-        }
-        manualProgress.set(boostedValue);
-      } else {
-        manualProgress.set(latest);
-      }
+      manualProgress.set(latest); // Directly sync manualProgress
     });
 
     return unsubscribe;
-  }, [scrollYProgress, manualProgress, isMobile]);
+  }, [scrollYProgress, manualProgress]);
 
   useEffect(() => {
     // Initial check
@@ -100,21 +83,21 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
     [0, 0.2, 0.35, 0.5, 0.65, 0.8, 1],
     [
       0,
-      isMobile ? height * 0.25 : height * 0.2,          // Start
-      isMobile ? height * 0.45 : height * 0.35,         // Before middle
-      isMobile ? height * 0.6 : height * 0.5,           // Middle
-      isMobile ? height * 0.75 : height * 0.65,         // After middle
-      isMobile ? height * 0.9 : height * 0.8,           // Near end
-      height,                                           // Full height
+      isMobile ? height * 0.25 : height * 0.2, // Start
+      isMobile ? height * 0.45 : height * 0.35, // Before middle
+      isMobile ? height * 0.6 : height * 0.5, // Middle
+      isMobile ? height * 0.75 : height * 0.65, // After middle
+      isMobile ? height * 0.9 : height * 0.8, // Near end
+      height, // Full height
     ],
   );
 
   // Ensure line remains visible through the middle sections
   const opacityTransform = useTransform(
-    springyProgress, 
+    springyProgress,
     // Keep full opacity through the middle range
-    [0, 0.03, 0.2, 0.8, 0.97, 1], 
-    [0, 0.8, 1, 1, 0.8, 0], 
+    [0, 0.03, 0.2, 0.8, 0.97, 1],
+    [0, 0.8, 1, 1, 0.8, 0],
   );
 
   return (

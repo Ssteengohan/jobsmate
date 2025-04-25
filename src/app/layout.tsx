@@ -25,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${lexend.variable} antialiased`}>
+      <body className={`${lexend.variable} bg-white antialiased dark:bg-[#202735]`}>
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
       </body>
     </html>
