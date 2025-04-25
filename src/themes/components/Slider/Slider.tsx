@@ -248,7 +248,7 @@ const Slider = () => {
           </div>
 
           {/* Mobile and tablet grid (2 columns) - show only 6 logos */}
-          <div className="mt-12 mb-24 grid w-full grid-cols-2 items-center justify-center gap-8 px-4 md:hidden dark:invert">
+          <div className="mt-0 mb-24 grid w-full grid-cols-2 items-center justify-center gap-8 px-4 md:hidden dark:invert">
             {/* Combine 6 logos (3 from first row, 3 from second row) */}
             {[...firstRowTransforms, ...mobileSecondRowTransforms].map((trans, i) => (
               <motion.div
