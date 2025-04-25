@@ -28,6 +28,18 @@ interface ScrollTriggerInstance {
   create: (options: Record<string, unknown>) => ScrollTriggerObject;
   getAll: () => ScrollTriggerObject[];
   refresh: (hard?: boolean) => void;
+  batch: (
+    targets: GSAPTarget,
+    options: {
+      interval: number;
+      batchMax: number;
+      start: string;
+      end: string;
+      scrub: number;
+      onEnter: (elements: HTMLElement[]) => void;
+      [key: string]: unknown;
+    },
+  ) => void;
 }
 
 interface ScrollTriggerObject {
@@ -66,15 +78,15 @@ const ShowCase = () => {
         setGsapLoaded(true);
 
         // prefetch case components in idle time to avoid JIT overhead on first scroll
-        if (typeof window !== 'undefined') {
-          const idle =
-            (window as any).requestIdleCallback ?? ((cb: Function) => setTimeout(cb, 200));
-          idle(() => {
-            import('./CaseOne');
-            import('./CaseTwo');
-            import('./CaseThree');
-          });
-        }
+        const idle: (cb: () => void) => number =
+          window.requestIdleCallback?.bind(window) ??
+          ((cb: () => void) => window.setTimeout(cb, 200));
+
+        idle(() => {
+          import('./CaseOne');
+          import('./CaseTwo');
+          import('./CaseThree');
+        });
       } catch (error) {
         console.error('Error loading GSAP:', error);
       }
@@ -130,17 +142,17 @@ const ShowCase = () => {
 
     if (gsap && ScrollTrigger) {
       // set initial state with will-change hint
-      gsap.set(wordElements, { opacity: 0, y: 20, willChange: 'opacity, transform' });
+      gsap!.set(wordElements, { opacity: 0, y: 20, willChange: 'opacity, transform' });
 
       // batch animations for better perf
-      ScrollTrigger.batch(wordElements, {
+      ScrollTrigger!.batch(wordElements, {
         interval: 0.1,
         batchMax: 20,
         start: 'top 85%',
         end: 'bottom 60%',
         scrub: 0.6,
-        onEnter: (batch) => {
-          gsap.to(batch, {
+        onEnter: (batch: HTMLElement[]) => {
+          gsap!.to(batch, {
             opacity: 1,
             y: 0,
             stagger: 0.05,
