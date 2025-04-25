@@ -421,13 +421,14 @@ const CaseThree = () => {
                     </div>
                   </div>
 
-                  <div className="relative z-50 mx-auto mt-5 flex w-[85%] flex-col rounded-lg border border-[var(--primary-medium-blue)]/30 bg-gradient-to-r from-[var(--primary-medium-blue)]/15 to-[var(--primary-gold)]/10 p-4 shadow-sm dark:border-[var(--primary-medium-blue)]/40 dark:from-[var(--primary-medium-blue)]/25 dark:to-[var(--primary-gold)]/15">
-                    <h3 className="text-sm font-semibold text-[var(--primary-medium-blue)]">
+                  <div className="relative z-50 mx-auto mt-5 flex w-[85%] flex-col rounded-lg border border-[var(--primary-medium-blue)]/30 bg-gradient-to-r from-[var(--primary-medium-blue)]/15 to-[var(--primary-gold)]/10 p-4 shadow-sm dark:border-[var(--primary-medium-blue)]/80 dark:from-[var(--primary-medium-blue)]/65 dark:to-[var(--primary-gold)]/15">
+                    <h3 className="flex items-center gap-2 rounded-md border-l-4 border-[var(--primary-medium-blue)] bg-[var(--primary-medium-blue)]/10 p-1.5 font-bold text-[var(--primary-medium-blue)] dark:border-[var(--primary-gold)] dark:bg-[var(--primary-medium-blue)]/25 dark:text-[var(--primary-gold)]">
+                      <span className="inline-block animate-pulse">📈</span>
                       How Jobsmate Improves These Metrics:
                     </h3>
                     <ul className="mt-2 space-y-2 text-xs text-gray-600 dark:text-gray-300">
                       <li className="flex items-start">
-                        <span className="mr-2 rounded-full bg-[var(--primary-gold)]/20 p-0.5 text-[var(--primary-gold)]">
+                        <span className="mr-2 rounded-full bg-[var(--primary-gold)]/20 p-0.5 px-1 text-[var(--primary-gold)]">
                           ▲
                         </span>
                         <span className="font-bold text-[#05253c] dark:text-white">
@@ -435,7 +436,7 @@ const CaseThree = () => {
                         </span>
                       </li>
                       <li className="flex items-start">
-                        <span className="mr-2 rounded-full bg-[var(--primary-gold)]/20 p-0.5 text-[var(--primary-gold)]">
+                        <span className="mr-2 rounded-full bg-[var(--primary-gold)]/20 p-0.5 px-1 text-[var(--primary-gold)]">
                           ▲
                         </span>
                         <span className="font-bold text-[#05253c] dark:text-white">
@@ -443,7 +444,7 @@ const CaseThree = () => {
                         </span>
                       </li>
                       <li className="flex items-start">
-                        <span className="mr-2 rounded-full bg-[var(--primary-gold)]/20 p-0.5 text-[var(--primary-gold)]">
+                        <span className="mr-2 rounded-full bg-[var(--primary-gold)]/20 p-0.5 px-1 text-[var(--primary-gold)]">
                           ▲
                         </span>
                         <span className="font-bold text-[#05253c] dark:text-white">

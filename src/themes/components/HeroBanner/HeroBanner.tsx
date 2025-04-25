@@ -4,7 +4,7 @@ import React from 'react';
 
 export function SpotlightPreview() {
   return (
-    <div className="relative z-0 flex h-screen w-full items-center overflow-hidden antialiased transition-colors duration-300 sm:h-[65rem] md:justify-center">
+    <div className="relative z-0 flex h-screen w-full items-center overflow-hidden antialiased transition-colors duration-300 sm:h-[45rem] md:justify-center">
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent to-gray-50/30 transition-colors duration-300 dark:bg-[#202735] dark:bg-none" />
       <div className="relative z-10 mx-auto w-full pt-20 sm:max-w-7xl md:pt-0">
         <h1 className="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-gold)] bg-clip-text text-center text-5xl font-bold text-transparent drop-shadow-[0_0_5px_rgba(0,0,0,0.2)] md:text-8xl dark:drop-shadow-[0_0_8px_rgba(42,151,219,0.3)]">
