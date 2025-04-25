@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 const Card = () => {
   return (
-    <section className="container mx-auto flex h-auto min-h-[650px] w-full flex-col items-center justify-center border-t border-b border-black/20 bg-white p-4 shadow-lg md:h-[40vh] md:flex-row md:p-8 dark:border-white/30 dark:bg-[#1e2635]">
+    <section className="container mx-auto flex h-auto min-h-[700px] w-full flex-col items-center justify-center border-t border-b border-black/20 bg-white p-4 shadow-lg md:h-[40vh] md:flex-row md:p-8 dark:border-white/30 dark:bg-[#1e2635]">
       <div className="mx-auto flex h-full w-full flex-col items-center justify-center py-8 md:w-1/2 md:py-0">
         <div>
           <h3 className="text-center text-2xl font-bold text-[var(--primary-dark-blue)] md:text-left md:text-4xl dark:text-white">
@@ -36,7 +36,7 @@ const Card = () => {
           </Link>
         </div>
       </div>
-      <div className="relative mt-4 flex h-[300px] w-full items-center justify-center overflow-hidden md:mt-0 md:h-full md:w-1/2">
+      <div className="relative mt-4 flex h-[400px] w-full items-center justify-center overflow-hidden md:mt-0 md:h-full md:w-1/2">
         <div className="absolute inset-0 bg-gradient-to-br bg-none from-[var(--primary-light-blue)]/10 to-[var(--primary-gold)]/10 opacity-60 dark:opacity-100"></div>
         <div className="relative z-10 w-full max-w-xs md:max-w-md">
           <div className="absolute -top-6 -right-4 z-20 rounded-lg border border-[var(--primary-light-blue)]/20 bg-white p-2 shadow-lg md:-top-10 md:-right-10 md:p-3 dark:border-[var(--primary-light-blue)]/40 dark:bg-[var(--neutral-50)]">
