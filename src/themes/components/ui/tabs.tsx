@@ -122,7 +122,7 @@ export const FadeInDiv = ({
     return tab.value === tabs[0].value;
   };
   return (
-    <div className="relative h-auto min-h-[50vh] sm:min-h-[80vh] w-full lg:w-[90%] mx-auto flex overflow-visible lg:aspect-video">
+    <div className="relative h-auto min-h-[50vh] sm:min-h-[65vh] w-full lg:w-[90%] mx-auto flex overflow-visible lg:aspect-video">
       {tabs.map((tab, idx) => (
         <motion.div
           key={tab.value}

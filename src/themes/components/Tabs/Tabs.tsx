@@ -47,12 +47,12 @@ export function TabsDemo() {
   return (
     <AnimatePresence>
       <motion.div
-        className=" relative z-50 flex h-[75vh] items-start border-none bg-none sm:min-h-18000px"
+        className=" relative z-50 flex items-start border-none bg-none sm:min-h-18000px"
         initial={{ opacity: 0, y: 50 }}
         animate={showTabs ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
         transition={{
           duration: 0.4,
-          ease: [0.22, 1, 0.36, 1], // Custom ease curve for smooth animation
+          ease: [0.22, 1, 0.36, 1], 
           staggerChildren: 0.2,
         }}
       >

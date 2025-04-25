@@ -898,9 +898,9 @@ const CaseOne = () => {
           </div>
           <div
             ref={rightColumnRef}
-            className="flex w-1/4 flex-col items-center justify-between pb-20"
+            className="flex w-1/4 flex-col items-center justify-between"
           >
-            <div className="flex flex-col justify-center gap-4 px-9 pt-20">
+            <div className="flex flex-col justify-center gap-4 px-9 pt-0">
               <SliderItem
                 icon={
                   <svg
@@ -1161,7 +1161,7 @@ const CaseOne = () => {
                 className="slider-item"
               />
             </div>
-            <div className="mx-auto flex w-full items-center justify-center border-t-2 border-black/10 dark:border-white/30">
+            <div className="mx-auto flex w-full h-full items-center justify-center border-t-2 border-black/10 dark:border-white/30">
               <Image
                 src="jobsmate-mob.svg"
                 alt="Home icon"

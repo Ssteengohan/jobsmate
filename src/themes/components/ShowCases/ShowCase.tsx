@@ -182,10 +182,10 @@ const ShowCase = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative z-10 mx-auto flex h-fit w-full flex-col gap-20 bg-white pb-[850px] dark:bg-[#1e2635]"
+      className="relative z-10 mx-auto flex h-fit w-full flex-col gap-20 bg-white pb-[850px] dark:bg-[#1e2635] pt-10"
       style={{ isolation: 'isolate' }}
     >
-      <div className="container flex max-w-7xl flex-col gap-4 pt-10">
+      <div className="container flex max-w-7xl flex-col gap-4">
         <AnimatedHeading
           text="Talent, Unlocked."
           className="text-3xl font-bold text-nowrap sm:text-6xl"
