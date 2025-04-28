@@ -51,7 +51,11 @@ interface ScrollTriggerObject {
 let gsap: GSAPInstance | undefined;
 let ScrollTrigger: ScrollTriggerInstance | undefined;
 
-const ShowCase = () => {
+interface ShowCaseProps {
+  id?: string;
+}
+
+const ShowCase: React.FC<ShowCaseProps> = ({ id }) => {
   const initialText =
     'Find the right fit, faster. Connect with top candidates, streamline hiring, and collaborate smarter — all in one powerful platform.';
 
@@ -172,7 +176,8 @@ const ShowCase = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative z-10 mx-auto flex h-fit w-full flex-col gap-20 bg-white pt-10 lg:pb-[850px] dark:bg-[#1e2635]"
+      id={id}
+      className="relative z-10 mx-auto flex h-fit w-full flex-col gap-20 bg-white pt-10 lg:pb-[800px] dark:bg-[#1e2635]"
       style={{ isolation: 'isolate' }}
     >
       <div className="container flex max-w-7xl flex-col gap-4">

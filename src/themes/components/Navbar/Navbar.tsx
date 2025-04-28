@@ -64,76 +64,72 @@ const Navbar = () => {
       e.preventDefault();
       e.stopPropagation(); // Stop event propagation
 
-      const targetElement = document.querySelector(href);
-      if (!targetElement) return;
-
       // Close mobile menu if open
       if (mobileMenuOpen) setMobileMenuOpen(false);
 
-      // Special handling for features section
-      if (href === '#features') {
-        // Use different approach for features section
+      // Special handling for about-us and features sections
+      if (href === '#features' || href === '#about-us') {
+        // Use different approach for these specific sections
         const navbarHeight = document.querySelector('header')?.clientHeight || 80;
-        const targetPosition = targetElement.getBoundingClientRect().top;
 
-        // Much larger offset for features section to get past showcase
-        const offset = navbarHeight + 300;
+        // On first page load, we need to scroll enough to get past ShowCase section's lazy loading threshold
+        const initialScrollTarget =
+          href === '#about-us'
+            ? window.innerHeight * 7.5 // Scroll more for about-us since it's farther down
+            : window.innerHeight * 0.8; // Less for features
 
         // Prevent any other scrolling during our custom scroll
         document.body.style.overflow = 'hidden';
 
-        // Perform initial scroll with higher offset to get well past showcase
+        // First, scroll down enough to trigger lazy loading of the sections
         window.scrollTo({
-          top: window.pageYOffset + targetPosition - offset,
+          top: initialScrollTarget,
           behavior: 'smooth',
         });
 
-        // Re-enable scrolling and make multiple correction attempts
-        setTimeout(() => {
-          document.body.style.overflow = '';
+        // Wait for components to load and then try to find and scroll to the target
+        setTimeout(
+          () => {
+            document.body.style.overflow = '';
 
-          // First correction attempt - more aggressive
-          const finalPosition = targetElement.getBoundingClientRect().top;
-          window.scrollBy({
-            top: finalPosition - 50, // Much smaller offset to ensure we get past showcase
-            behavior: 'smooth',
-          });
-
-          // Second correction attempt with delay
-          setTimeout(() => {
-            const secondPosition = targetElement.getBoundingClientRect().top;
-            if (Math.abs(secondPosition) > 20) {
-              window.scrollBy({
-                top: secondPosition - 20,
-                behavior: 'smooth',
-              });
+            const targetElement = document.querySelector(href);
+            if (!targetElement) {
+              // If still not found, try once more after a delay
+              setTimeout(() => {
+                const retryTarget = document.querySelector(href);
+                if (retryTarget) {
+                  const finalPosition =
+                    retryTarget.getBoundingClientRect().top + window.pageYOffset;
+                  window.scrollTo({
+                    top: finalPosition - navbarHeight - 50,
+                    behavior: 'smooth',
+                  });
+                  window.history.replaceState({}, '', href);
+                }
+              }, 500);
+              return;
             }
 
-            // Final correction attempt with longer delay
-            setTimeout(() => {
-              const finalCheck = targetElement.getBoundingClientRect().top;
-              if (Math.abs(finalCheck) > 10) {
-                // Force scroll with enough distance to get past any showcase interference
-                // Fix TypeScript error by using getBoundingClientRect().top + pageYOffset instead of offsetTop
-                const elementPosition =
-                  targetElement.getBoundingClientRect().top + window.pageYOffset;
-                window.scrollTo({
-                  top: elementPosition - navbarHeight - 100,
-                  behavior: 'smooth',
-                });
-              }
+            const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+            window.scrollTo({
+              top: elementPosition - navbarHeight - 50,
+              behavior: 'smooth',
+            });
 
-              // Update URL once we're confident scrolling is complete
-              window.history.replaceState({}, '', href);
-            }, 800);
-          }, 600);
-        }, 800);
+            // Update URL
+            window.history.replaceState({}, '', href);
+          },
+          href === '#about-us' ? 1000 : 800,
+        );
 
         return;
       }
 
       // Regular scroll for other anchor links
       const navbarHeight = document.querySelector('header')?.clientHeight || 80;
+      const targetElement = document.querySelector(href);
+      if (!targetElement) return;
+
       const targetPosition = targetElement.getBoundingClientRect().top;
       const offsetPosition = targetPosition + window.pageYOffset - navbarHeight - 20;
 
@@ -305,6 +301,7 @@ const Navbar = () => {
                 <Link
                   href="#about-us"
                   className="block px-3 py-2 text-black transition-all duration-400 ease-in-out dark:text-[var(--primary-white)]"
+                  onClick={(e) => handleSmoothScroll(e, '#about-us')}
                 >
                   About us
                 </Link>
@@ -409,8 +406,9 @@ const Navbar = () => {
 
               <motion.div variants={itemVariants}>
                 <Link
-                  href="/contact"
+                  href="#about-us"
                   className="block rounded-md px-3 py-2 text-base font-medium text-black transition-colors duration-300 hover:bg-[#f3f4f6] dark:text-[var(--primary-white)] dark:hover:bg-[var(--neutral-200)]"
+                  onClick={(e) => handleSmoothScroll(e, '#about-us')}
                 >
                   About us
                 </Link>
