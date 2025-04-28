@@ -270,7 +270,6 @@ const Navbar = () => {
                 <Link
                   href="#features"
                   className="block px-3 py-2 text-black transition-all duration-400 ease-in-out dark:text-[var(--primary-white)]"
-                  onClick={(e) => handleSmoothScroll(e, '#features')}
                 >
                   Features
                 </Link>
@@ -284,7 +283,7 @@ const Navbar = () => {
                 className="relative z-10"
               >
                 <Link
-                  href="/services"
+                  href="#pricing-card"
                   className="block px-3 py-2 text-black transition-all duration-400 ease-in-out dark:text-[var(--primary-white)]"
                 >
                   Price

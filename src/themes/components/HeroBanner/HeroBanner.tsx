@@ -20,21 +20,21 @@ export function SpotlightPreview() {
         </p>
 
         <div className="mt-8 flex flex-col justify-center gap-4 px-4 sm:flex-row">
-          <input
+          {/* <input
             type="email"
             placeholder="Enter your email"
             className="w-full rounded-full border border-neutral-300 bg-transparent px-4 py-3 text-sm font-medium text-neutral-900 shadow-sm transition-all duration-300 focus:border-[var(--primary-gold)] focus:ring-[var(--primary-gold)] focus:outline-none sm:hidden dark:text-white dark:focus:border-[var(--primary-gold)] dark:focus:ring-[var(--primary-gold)]"
-          />
+          /> */}
 
           <Link
             href="https://platform.jobsmate.global/company/onboarding/preferences?_gl=1*1wymypx*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY3OC4wLjAuMA"
             target="_blank"
-            className="group relative cursor-pointer rounded-full border border-transparent bg-[var(--primary-gold)] px-8 py-3 text-xs font-medium text-[var(--primary-dark-blue)] transition-all duration-300 ease-in-out hover:scale-105 hover:border-transparent hover:shadow-lg focus:ring-2 focus:ring-[var(--primary-gold)] focus:ring-offset-2 focus:outline-none sm:text-sm dark:text-[var(--primary-dark)] dark:hover:shadow-[0_0_15px_rgba(240,180,41,0.4)]"
+            className="group relative cursor-pointer rounded-full border flex items-center justify-center border-transparent bg-[var(--primary-gold)] px-8 py-3 text-xs font-medium text-[var(--primary-dark-blue)] transition-all duration-300 ease-in-out hover:scale-105 hover:border-transparent hover:shadow-lg focus:ring-2 focus:ring-[var(--primary-gold)] focus:ring-offset-2 focus:outline-none sm:text-sm dark:text-[var(--primary-dark)] dark:hover:shadow-[0_0_15px_rgba(240,180,41,0.4)]"
           >
             <div className="via-primary-light-blue absolute inset-x-0 -top-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent to-transparent opacity-70 shadow-sm transition-all duration-300 group-hover:w-3/4 group-hover:opacity-100 group-hover:shadow-md" />
             <div className="via-primary-gold absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent to-transparent opacity-0 shadow-sm transition-all duration-300 group-hover:w-3/4 group-hover:opacity-100" />
             <div className="from-primary-light-blue via-primary-medium-blue to-primary-gold absolute -top-px -right-px -left-px h-[3px] w-0 rounded-t-full bg-gradient-to-r transition-all duration-700 group-hover:w-full" />
-            <span className="relative z-20 transition-all duration-300">Start for free</span>
+            <span className="relative z-20 transition-all text-center duration-300">Start for free</span>
           </Link>
 
           <Link

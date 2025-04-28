@@ -471,7 +471,10 @@ const CaseThree = () => {
 
                 {screenSize.isDesktop && (
                   <Link
-                    href={'/'}
+                    href={
+                      'https://platform.jobsmate.global/company/onboarding/preferences?_gl=1*1wymypx*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY3OC4wLjAuMA'
+                    }
+                    target='_blank'
                     className="group text-foreground relative flex w-fit items-center gap-1 px-4 pb-20 text-sm font-semibold"
                   >
                     <span className="relative inline-block">
@@ -717,8 +720,6 @@ const CaseThree = () => {
                   </div>
                 </div>
               </div>
-
-
             </div>
           </div>
         </div>

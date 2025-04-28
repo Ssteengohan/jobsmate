@@ -522,7 +522,10 @@ const CaseTwo = () => {
                   </ul>
                 </div>
                 <Link
-                  href={'/'}
+                  href={
+                    'https://platform.jobsmate.global/company/onboarding/preferences?_gl=1*1wymypx*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY3OC4wLjAuMA'
+                  }
+                  target='_blank'
                   className="group text-foreground relative flex w-fit items-center gap-1 pt-4 pb-4 text-sm font-semibold sm:pb-20"
                 >
                   <span className="relative inline-block">

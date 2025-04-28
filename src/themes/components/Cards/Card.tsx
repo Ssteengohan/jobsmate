@@ -16,7 +16,8 @@ const Card = () => {
         </div>
         <div className="flex w-full flex-col items-center justify-center gap-4 pt-6 md:flex-row md:flex-wrap md:items-start md:pt-10">
           <Link
-            href={'/'}
+            href={'https://calendly.com/info-jtq/jobsmate-introduction'}
+            target="_blank"
             className="card-button group relative w-full max-w-[240px] cursor-pointer rounded-full border border-transparent bg-[var(--primary-gold)] px-8 py-3 text-center text-xs font-medium text-[var(--primary-dark-blue)] transition-all duration-300 ease-in-out hover:border-transparent hover:shadow-lg focus:ring-2 focus:ring-[var(--primary-gold)] focus:ring-offset-2 focus:outline-none sm:text-sm md:w-auto dark:text-[var(--primary-dark)] dark:hover:shadow-[0_0_15px_rgba(240,180,41,0.4)]"
           >
             <div className="via-primary-light-blue absolute inset-x-0 -top-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent to-transparent opacity-70 shadow-sm transition-all duration-300 group-hover:w-3/4 group-hover:opacity-100 group-hover:shadow-md" />
@@ -26,7 +27,7 @@ const Card = () => {
           </Link>
 
           <Link
-            href={'/'}
+            href={'#pricing-card'}
             className="card-button group relative inline-flex w-full max-w-[240px] cursor-pointer overflow-hidden rounded-full p-[1px] text-center shadow-sm transition-all duration-300 ease-in-out hover:shadow-xl focus:ring-2 focus:ring-[var(--primary-light-blue)] focus:ring-offset-2 focus:outline-none md:w-auto dark:hover:shadow-[0_0_20px_rgba(42,151,219,0.4)]"
           >
             <span className="absolute inset-[-1000%] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,var(--primary-light-blue)_0%,var(--primary-medium-blue)_40%,var(--primary-gold)_70%,var(--primary-dark)_100%)] opacity-80 transition-all duration-300 ease-in-out group-hover:animate-[spin_3s_linear_infinite] group-hover:opacity-100" />

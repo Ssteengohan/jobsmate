@@ -786,7 +786,7 @@ const CaseOne = () => {
   }, [isScrolling, animationReady, screenSize.isDesktop, screenSize.width]);
 
   return (
-    <div className="relative" id='about-us' ref={stickyWrapperRef}>
+    <div className="relative" id="about-us" ref={stickyWrapperRef}>
       <div className={screenSize.isDesktop ? 'h-[100vh]' : 'h-auto min-h-[100vh]'}>
         <div
           className={`translate-z-0 border-t border-b border-black/20 dark:border-white/30 ${
@@ -807,7 +807,10 @@ const CaseOne = () => {
               </Balancer>
             </div>
             <Link
-              href={'/'}
+              href={
+                'https://platform.jobsmate.global/company/onboarding/preferences?_gl=1*1wymypx*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY3OC4wLjAuMA'
+              }
+              target='_blank'
               className="group relative flex w-fit items-center gap-1 px-4 font-semibold md:pb-20"
             >
               <span className="relative inline-block">
@@ -834,7 +837,7 @@ const CaseOne = () => {
 
             {screenSize.isDesktop && (
               <>
-                <div className="pointer-events-none hidden lg:block absolute inset-0 z-[15]">
+                <div className="pointer-events-none absolute inset-0 z-[15] hidden lg:block">
                   <svg
                     id="svg1"
                     width="100%"
