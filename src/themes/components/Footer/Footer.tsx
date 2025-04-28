@@ -3,6 +3,18 @@ import { SparklesPreview } from './Sparkles';
 import Link from 'next/link';
 import Image from 'next/image';
 
+// Define interfaces for our components
+interface FooterLink {
+  label: string;
+  href: string;
+  isExternal?: boolean;
+}
+
+interface FooterSection {
+  title: string;
+  links: FooterLink[];
+}
+
 const getCurrentYear = () => new Date().getFullYear();
 
 const Footer = () => {
@@ -18,7 +30,7 @@ const Footer = () => {
     setEmail('');
   };
 
-  const footerSections = [
+  const footerSections: FooterSection[] = [
     {
       title: 'Product',
       links: [
@@ -35,6 +47,21 @@ const Footer = () => {
         { label: 'Blog', href: '/' },
         { label: 'Careers', href: '/' },
         { label: 'Contact', href: '/' },
+      ],
+    },
+    {
+      title: 'Contact',
+      links: [
+        {
+          label: 'Abberdaan 56, 1064 AA Amsterdam',
+          href: 'https://maps.app.goo.gl/Z1YWD6nBfJsPJt776',
+          isExternal: true,
+        },
+        {
+          label: '+31 6 38 27 51 70',
+          href: 'tel:+31638275170',
+          isExternal: true,
+        },
       ],
     },
   ];
@@ -88,7 +115,7 @@ const Footer = () => {
       </div>
       <div className="container mx-auto px-4 py-10">
         <div className="grid grid-cols-1 gap-8 max-sm:pb-5 md:grid-cols-2 lg:grid-cols-12">
-          <div className="col-span-1 lg:col-span-7">
+          <div className="col-span-1 lg:col-span-5">
             <div className="flex flex-col space-y-4">
               <div className="flex items-center">
                 <Image
@@ -96,7 +123,7 @@ const Footer = () => {
                   alt="Jobsmate Logo"
                   width={140}
                   height={40}
-                  className="dark:brightness-100 h-40 w-40"
+                  className="h-40 w-40 dark:brightness-100"
                 />
               </div>
               <p className="max-w-xs text-sm text-gray-600 dark:text-gray-300">
@@ -117,7 +144,9 @@ const Footer = () => {
           {footerSections.map((section, index) => (
             <div
               key={section.title}
-              className={`col-span-1 lg:col-span-2 ${index === 0 ? 'lg:col-start-9' : 'lg:col-start-11'}`}
+              className={`col-span-1 lg:col-span-2 ${
+                index === 0 ? 'lg:col-start-7' : index === 1 ? 'lg:col-start-9' : 'lg:col-start-11'
+              }`}
             >
               <h3 className="mb-4 text-sm font-semibold text-[var(--primary-dark-blue)] dark:text-[var(--primary-light-blue)]">
                 {section.title}
@@ -127,6 +156,8 @@ const Footer = () => {
                   <li key={link.label}>
                     <Link
                       href={link.href}
+                      target={link.isExternal ? '_blank' : undefined}
+                      rel={link.isExternal ? 'noopener noreferrer' : undefined}
                       className="group relative text-sm text-gray-600 transition-colors duration-200 dark:text-gray-300"
                     >
                       <span className="relative">{link.label}</span>
