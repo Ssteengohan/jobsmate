@@ -59,6 +59,115 @@ const Navbar = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
+  const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith('#')) {
+      e.preventDefault();
+      e.stopPropagation(); // Stop event propagation
+
+      const targetElement = document.querySelector(href);
+      if (!targetElement) return;
+
+      // Close mobile menu if open
+      if (mobileMenuOpen) setMobileMenuOpen(false);
+
+      // Special handling for features section
+      if (href === '#features') {
+        // Use different approach for features section
+        const navbarHeight = document.querySelector('header')?.clientHeight || 80;
+        const targetPosition = targetElement.getBoundingClientRect().top;
+
+        // Much larger offset for features section to get past showcase
+        const offset = navbarHeight + 300;
+
+        // Prevent any other scrolling during our custom scroll
+        document.body.style.overflow = 'hidden';
+
+        // Perform initial scroll with higher offset to get well past showcase
+        window.scrollTo({
+          top: window.pageYOffset + targetPosition - offset,
+          behavior: 'smooth',
+        });
+
+        // Re-enable scrolling and make multiple correction attempts
+        setTimeout(() => {
+          document.body.style.overflow = '';
+
+          // First correction attempt - more aggressive
+          const finalPosition = targetElement.getBoundingClientRect().top;
+          window.scrollBy({
+            top: finalPosition - 50, // Much smaller offset to ensure we get past showcase
+            behavior: 'smooth',
+          });
+
+          // Second correction attempt with delay
+          setTimeout(() => {
+            const secondPosition = targetElement.getBoundingClientRect().top;
+            if (Math.abs(secondPosition) > 20) {
+              window.scrollBy({
+                top: secondPosition - 20,
+                behavior: 'smooth',
+              });
+            }
+
+            // Final correction attempt with longer delay
+            setTimeout(() => {
+              const finalCheck = targetElement.getBoundingClientRect().top;
+              if (Math.abs(finalCheck) > 10) {
+                // Force scroll with enough distance to get past any showcase interference
+                // Fix TypeScript error by using getBoundingClientRect().top + pageYOffset instead of offsetTop
+                const elementPosition =
+                  targetElement.getBoundingClientRect().top + window.pageYOffset;
+                window.scrollTo({
+                  top: elementPosition - navbarHeight - 100,
+                  behavior: 'smooth',
+                });
+              }
+
+              // Update URL once we're confident scrolling is complete
+              window.history.replaceState({}, '', href);
+            }, 800);
+          }, 600);
+        }, 800);
+
+        return;
+      }
+
+      // Regular scroll for other anchor links
+      const navbarHeight = document.querySelector('header')?.clientHeight || 80;
+      const targetPosition = targetElement.getBoundingClientRect().top;
+      const offsetPosition = targetPosition + window.pageYOffset - navbarHeight - 20;
+
+      const startPosition = window.pageYOffset;
+      const distance = offsetPosition - startPosition;
+      const duration = 800;
+      let startTime: number | null = null;
+
+      const easeOutQuart = (t: number): number => {
+        return 1 - Math.pow(1 - t, 4);
+      };
+
+      const scrollAnimation = (currentTime: number) => {
+        if (startTime === null) startTime = currentTime;
+        const timeElapsed = currentTime - startTime;
+        const progress = Math.min(timeElapsed / duration, 1);
+        const easedProgress = easeOutQuart(progress);
+
+        window.scrollTo(0, startPosition + distance * easedProgress);
+
+        if (timeElapsed < duration) {
+          requestAnimationFrame(scrollAnimation);
+        } else {
+          // Update URL after animation completes
+          setTimeout(() => {
+            window.history.replaceState({}, '', href);
+          }, 100);
+        }
+      };
+
+      requestAnimationFrame(scrollAnimation);
+    }
+  };
+
   const menuVariants = {
     closed: {
       opacity: 0,
@@ -163,8 +272,9 @@ const Navbar = () => {
                 className="relative z-10"
               >
                 <Link
-                  href="/about"
+                  href="#features"
                   className="block px-3 py-2 text-black transition-all duration-400 ease-in-out dark:text-[var(--primary-white)]"
+                  onClick={(e) => handleSmoothScroll(e, '#features')}
                 >
                   Features
                 </Link>
@@ -193,7 +303,7 @@ const Navbar = () => {
                 className="relative z-10"
               >
                 <Link
-                  href="/contact"
+                  href="#about-us"
                   className="block px-3 py-2 text-black transition-all duration-400 ease-in-out dark:text-[var(--primary-white)]"
                 >
                   About us
@@ -205,7 +315,8 @@ const Navbar = () => {
 
         <div className="hidden items-center gap-4 lg:flex">
           <Link
-            href="/"
+            href="https://platform.jobsmate.global/company/onboarding/preferences?_gl=1*1wymypx*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY3OC4wLjAuMA"
+            target="_black"
             className="group relative rounded-full border border-slate-300 bg-white px-8 py-2 text-sm font-medium text-black transition-all duration-300 ease-in-out hover:scale-105 hover:border-transparent hover:shadow-lg dark:border-[var(--neutral-200)] dark:bg-[var(--neutral-50)] dark:text-[var(--primary-white)] dark:hover:shadow-[0_4px_20px_rgba(42,151,219,0.2)]"
           >
             <div className="via-primary-light-blue absolute inset-x-0 -top-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent to-transparent opacity-70 shadow-sm transition-all duration-300 group-hover:w-3/4 group-hover:opacity-100 group-hover:shadow-md" />
@@ -216,8 +327,9 @@ const Navbar = () => {
             </span>
           </Link>
           <Link
-            href="/"
+            href="https://platform.jobsmate.global/candidate/onboarding?_gl=1*3v7v81*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY4Mi4wLjAuMA"
             className="group relative inline-flex h-10 overflow-hidden rounded-full p-[1px] shadow-sm transition-all duration-300 ease-in-out hover:shadow-md focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 focus:outline-none dark:hover:shadow-[0_4px_20px_rgba(42,151,219,0.2)]"
+            target="_blank"
           >
             <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,var(--primary-light-blue)_0%,var(--primary-medium-blue)_40%,var(--primary-gold)_70%,var(--primary-dark)_100%)] transition-transform duration-300 ease-in-out group-hover:scale-110 group-hover:animate-[spin_1.5s_linear_infinite]" />
             <span className="group-hover:text-primary-medium-blue inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-white px-3 py-1 text-sm font-medium text-black backdrop-blur-3xl transition-all duration-300 ease-in-out group-hover:bg-gray-50 dark:bg-[var(--neutral-50)] dark:text-[var(--primary-white)] dark:group-hover:bg-[var(--neutral-200)]">
@@ -278,8 +390,9 @@ const Navbar = () => {
             <div className="flex flex-col space-y-1 px-4 pt-2 pb-3">
               <motion.div variants={itemVariants}>
                 <Link
-                  href="/about"
+                  href="#features"
                   className="block rounded-md px-3 py-2 text-base font-medium text-black transition-colors duration-300 hover:bg-[#f3f4f6] dark:text-[var(--primary-white)] dark:hover:bg-[var(--neutral-200)]"
+                  onClick={(e) => handleSmoothScroll(e, '#features')}
                 >
                   Features
                 </Link>

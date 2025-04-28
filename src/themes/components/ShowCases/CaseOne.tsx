@@ -786,7 +786,7 @@ const CaseOne = () => {
   }, [isScrolling, animationReady, screenSize.isDesktop, screenSize.width]);
 
   return (
-    <div className="relative" ref={stickyWrapperRef}>
+    <div className="relative" id='about-us' ref={stickyWrapperRef}>
       <div className={screenSize.isDesktop ? 'h-[100vh]' : 'h-auto min-h-[100vh]'}>
         <div
           className={`translate-z-0 border-t border-b border-black/20 dark:border-white/30 ${
