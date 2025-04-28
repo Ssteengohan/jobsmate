@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SparklesPreview } from './Sparkles';
+// import { SparklesPreview } from './Sparkles';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -19,16 +19,16 @@ const getCurrentYear = () => new Date().getFullYear();
 
 const Footer = () => {
   const [currentYear, setCurrentYear] = useState(getCurrentYear());
-  const [email, setEmail] = useState('');
+  // const [email, setEmail] = useState('');
   useEffect(() => {
     setCurrentYear(getCurrentYear());
   }, []);
 
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Subscribing email:', email);
-    setEmail('');
-  };
+  // const handleSubscribe = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   console.log('Subscribing email:', email);
+  //   setEmail('');
+  // };
 
   const footerSections: FooterSection[] = [
     {
