@@ -3,6 +3,18 @@ import { SparklesPreview } from './Sparkles';
 import Link from 'next/link';
 import Image from 'next/image';
 
+// Define interfaces for our components
+interface FooterLink {
+  label: string;
+  href: string;
+  isExternal?: boolean;
+}
+
+interface FooterSection {
+  title: string;
+  links: FooterLink[];
+}
+
 const getCurrentYear = () => new Date().getFullYear();
 
 const Footer = () => {
@@ -18,23 +30,28 @@ const Footer = () => {
     setEmail('');
   };
 
-  const footerSections = [
+  const footerSections: FooterSection[] = [
     {
-      title: 'Product',
+      title: 'Platform',
       links: [
-        { label: 'Features', href: '/' },
-        { label: 'Pricing', href: '/' },
-        { label: 'Integrations', href: '/' },
-        { label: 'Documentation', href: '/' },
+        { label: 'Features', href: '#features' },
+        { label: 'Pricing', href: '#pricing-card' },
+        { label: 'About us', href: '#about-us' },
       ],
     },
     {
-      title: 'Company',
+      title: 'Contact',
       links: [
-        { label: 'About Us', href: '/' },
-        { label: 'Blog', href: '/' },
-        { label: 'Careers', href: '/' },
-        { label: 'Contact', href: '/' },
+        {
+          label: 'Abberdaan 56, 1064 AA Amsterdam',
+          href: 'https://maps.app.goo.gl/Z1YWD6nBfJsPJt776',
+          isExternal: true,
+        },
+        {
+          label: '+31 6 38 27 51 70',
+          href: 'tel:+31638275170',
+          isExternal: true,
+        },
       ],
     },
   ];
@@ -43,7 +60,7 @@ const Footer = () => {
     <footer className="relative z-10 flex w-full flex-col border-t-1 border-neutral-300 bg-[#f9f5eb] dark:border-[#f0b429]/30 dark:bg-[#1a2637]">
       <div className="relative z-10 w-full overflow-hidden py-12">
         <div className="container mx-auto px-4">
-          <div className="relative mx-auto max-w-3xl text-center">
+          {/* <div className="relative mx-auto max-w-3xl text-center">
             <div className="absolute inset-0 -z-10">
               <SparklesPreview />
             </div>
@@ -83,12 +100,12 @@ const Footer = () => {
                 </button>
               </div>
             </form>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="container mx-auto px-4 py-10">
         <div className="grid grid-cols-1 gap-8 max-sm:pb-5 md:grid-cols-2 lg:grid-cols-12">
-          <div className="col-span-1 lg:col-span-7">
+          <div className="col-span-1 lg:col-span-5">
             <div className="flex flex-col space-y-4">
               <div className="flex items-center">
                 <Image
@@ -96,7 +113,7 @@ const Footer = () => {
                   alt="Jobsmate Logo"
                   width={140}
                   height={40}
-                  className="dark:brightness-100 h-40 w-40"
+                  className="h-40 w-40 dark:brightness-100"
                 />
               </div>
               <p className="max-w-xs text-sm text-gray-600 dark:text-gray-300">
@@ -117,7 +134,9 @@ const Footer = () => {
           {footerSections.map((section, index) => (
             <div
               key={section.title}
-              className={`col-span-1 lg:col-span-2 ${index === 0 ? 'lg:col-start-9' : 'lg:col-start-11'}`}
+              className={`col-span-1 lg:col-span-2 ${
+                index === 0 ? 'lg:col-start-7' : index === 1 ? 'lg:col-start-9' : 'lg:col-start-11'
+              }`}
             >
               <h3 className="mb-4 text-sm font-semibold text-[var(--primary-dark-blue)] dark:text-[var(--primary-light-blue)]">
                 {section.title}
@@ -127,6 +146,8 @@ const Footer = () => {
                   <li key={link.label}>
                     <Link
                       href={link.href}
+                      target={link.isExternal ? '_blank' : undefined}
+                      rel={link.isExternal ? 'noopener noreferrer' : undefined}
                       className="group relative text-sm text-gray-600 transition-colors duration-200 dark:text-gray-300"
                     >
                       <span className="relative">{link.label}</span>
@@ -144,18 +165,24 @@ const Footer = () => {
           <div className="flex flex-wrap items-center gap-2">
             <span>&copy; {currentYear} Jobsmate. All rights reserved.</span>
             <span className="hidden md:inline">•</span>
-            <Link href="/" className="group relative transition-colors duration-200">
+            <Link
+              href="https://jobsmate.global/acceptable-use-policy/"
+              className="group relative transition-colors duration-200"
+            >
               <span>Privacy Policy</span>
               <span className="absolute -bottom-0.5 left-0 h-[0.5px] w-0 bg-gray-400 opacity-50 transition-all duration-200 group-hover:w-full dark:bg-gray-500"></span>
             </Link>
             <span className="hidden md:inline">•</span>
-            <Link href="/" className="group relative transition-colors duration-200">
+            <Link
+              href="https://jobsmate.global/terms-and-conditions-employees"
+              className="group relative transition-colors duration-200"
+            >
               <span>Terms & Conditions</span>
               <span className="absolute -bottom-0.5 left-0 h-[0.5px] w-0 bg-gray-400 opacity-50 transition-all duration-200 group-hover:w-full dark:bg-gray-500"></span>
             </Link>
             <div className="flex space-x-2 md:hidden">
               <Link
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/company/jobsmate"
                 aria-label="LinkedIn"
                 className="transform rounded-full p-1.5 text-gray-500 transition-all duration-300 hover:scale-110 hover:bg-gray-100 hover:text-[var(--primary-light-blue)] dark:hover:bg-gray-800"
               >
@@ -174,7 +201,7 @@ const Footer = () => {
               </Link>
 
               <Link
-                href="https://instagram.com"
+                href="https://www.instagram.com/jobsmateglobal/"
                 aria-label="Instagram"
                 className="transform rounded-full p-1.5 text-gray-500 transition-all duration-300 hover:scale-110 hover:bg-gray-100 hover:text-[var(--primary-light-blue)] dark:hover:bg-gray-800"
               >
@@ -193,7 +220,7 @@ const Footer = () => {
               </Link>
 
               <Link
-                href="mailto:contact@jobsmate.com"
+                href="mailto:info@jobsmate.nl"
                 aria-label="Gmail"
                 className="transform rounded-full p-1.5 text-gray-500 transition-all duration-300 hover:scale-110 hover:bg-gray-100 hover:text-[var(--primary-light-blue)] dark:hover:bg-gray-800"
               >
@@ -211,7 +238,7 @@ const Footer = () => {
 
           <div className="hidden items-center self-start md:ml-auto md:flex md:self-auto">
             <Link
-              href="https://linkedin.com"
+              href="https://www.linkedin.com/company/jobsmate?originalSubdomain=nl"
               aria-label="LinkedIn"
               className="transform rounded-full p-1.5 text-gray-500 transition-all duration-300 hover:scale-110 hover:bg-gray-100 hover:text-[var(--primary-light-blue)] dark:hover:bg-gray-800"
             >
@@ -225,7 +252,7 @@ const Footer = () => {
             </Link>
 
             <Link
-              href="https://instagram.com"
+              href="https://www.instagram.com/jobsmateglobal/"
               aria-label="Instagram"
               className="transform rounded-full p-1.5 text-gray-500 transition-all duration-300 hover:scale-110 hover:bg-gray-100 hover:text-[var(--primary-light-blue)] dark:hover:bg-gray-800"
             >
@@ -239,7 +266,7 @@ const Footer = () => {
             </Link>
 
             <Link
-              href="mailto:contact@jobsmate.com"
+              href="mailto:info@jobsmate.nl"
               aria-label="Gmail"
               className="transform rounded-full p-1.5 text-gray-500 transition-all duration-300 hover:scale-110 hover:bg-gray-100 hover:text-[var(--primary-light-blue)] dark:hover:bg-gray-800"
             >

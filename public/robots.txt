@@ -1,0 +1,23 @@
+# Robots.txt file for Jobsmate.global
+User-agent: *
+Allow: /
+
+# Disallow access to admin areas
+Disallow: /admin/
+Disallow: /dashboard/admin/
+Disallow: /wp-admin/
+
+# Disallow specific files
+Disallow: /private/
+Disallow: /*.json$
+Disallow: /*?debug=*
+
+# Sitemap
+Sitemap: https://jobsmate.global/sitemap.xml
+
+# Crawl-delay for specific bots to prevent overloading the server
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10

@@ -4,9 +4,12 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { motion, useInView, AnimatePresence, MotionValue } from 'framer-motion';
 import { CodeBlock } from '../ui/code-block';
 
-// Initial code template for the applicant tracker component
 const INITIAL_CODE = `const ApplicantTracker = () => {
-  // State will be defined here
+  const [applicants, setApplicants] = React.useState(0);
+
+  const handleAddApplicant = () => {
+    setApplicants(prev => prev + 1);
+  };
 
   return (
     <div className="p-4 border rounded-lg">
@@ -32,26 +35,20 @@ export function CodeBlockDemo({ scrollProgress }: CodeBlockDemoProps) {
   const [isMobile, setIsMobile] = useState(false);
   const animationStarted = useRef(false);
 
-  // Check for mobile viewport on mount and resize
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
 
-    // Initial check
     checkMobile();
-
-    // Set up event listener for window resize
     window.addEventListener('resize', checkMobile);
-
-    // Clean up
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const editOperations = useCallback(
     () => [
       {
-        find: '  // State will be defined here',
+        find: '  const [applicants, setApplicants] = React.useState(0);\n\n  const handleAddApplicant = () => {\n    setApplicants(prev => prev + 1);\n  };',
         replace:
           '  const [applicants, setApplicants] = React.useState(0);\n\n  const handleAddApplicant = () => {\n    setApplicants(prev => prev + 1);\n  };',
         line: 1,
@@ -74,14 +71,11 @@ export function CodeBlockDemo({ scrollProgress }: CodeBlockDemoProps) {
     [],
   );
 
-  // Set initial code content
   useEffect(() => {
     setCodeContent(INITIAL_CODE);
   }, []);
 
-  // Start animation when component comes into view
   useEffect(() => {
-    // Only run animation when element is in view and animation hasn't started yet
     if (isInView && !animationStarted.current) {
       animationStarted.current = true;
 
@@ -93,7 +87,6 @@ export function CodeBlockDemo({ scrollProgress }: CodeBlockDemoProps) {
       return () => clearTimeout(timer);
     }
 
-    // Reset animation when completely out of view
     if (!isInView && !scrollProgress) {
       animationStarted.current = false;
       setCurrentOperation(null);
@@ -101,7 +94,6 @@ export function CodeBlockDemo({ scrollProgress }: CodeBlockDemoProps) {
     }
   }, [isInView, scrollProgress]);
 
-  // Handle the typing animation based on current operation
   useEffect(() => {
     if (!isTyping || currentOperation === null) return;
 
@@ -115,17 +107,14 @@ export function CodeBlockDemo({ scrollProgress }: CodeBlockDemoProps) {
     const findIndex = codeContent.indexOf(currentOp.find);
 
     if (findIndex === -1) {
-      // Move to next operation if current one is completed
       setCurrentOperation((prev) => (prev !== null ? prev + 1 : null));
       return;
     }
 
-    // Replace the content (simulate typing by replacing at once to avoid complexity)
     const newContent = codeContent.replace(currentOp.find, currentOp.replace);
 
     const timer = setTimeout(() => {
       setCodeContent(newContent);
-      // Move to next operation after a delay
       setTimeout(() => {
         setCurrentOperation((prev) => (prev !== null ? prev + 1 : null));
       }, 800);
@@ -134,7 +123,6 @@ export function CodeBlockDemo({ scrollProgress }: CodeBlockDemoProps) {
     return () => clearTimeout(timer);
   }, [isTyping, currentOperation, codeContent, editOperations]);
 
-  // Get the current line to highlight
   const getHighlightLines = useCallback(() => {
     if (currentOperation === null || !isTyping) return [];
     const operations = editOperations();
@@ -142,7 +130,6 @@ export function CodeBlockDemo({ scrollProgress }: CodeBlockDemoProps) {
     return [operations[currentOperation].line];
   }, [currentOperation, isTyping, editOperations]);
 
-  // Calculate line height based on mobile or desktop
   const lineHeight = isMobile ? 20 : 24;
 
   return (
@@ -169,7 +156,6 @@ export function CodeBlockDemo({ scrollProgress }: CodeBlockDemoProps) {
             />
           </div>
 
-          {/* Active editor effect: blinking cursor line */}
           <AnimatePresence>
             {isTyping && currentOperation !== null && (
               <motion.div

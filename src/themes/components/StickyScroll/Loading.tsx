@@ -6,18 +6,16 @@ const Loading = () => {
   const controls = useAnimation();
 
   useEffect(() => {
-    // Reset progress and animation when the component mounts
     setProgress(0);
     controls.set({ strokeDashoffset: 565.49 });
 
-    // Start the animation
     controls.start({
-      strokeDashoffset: 565.49 * 0.28, // 72% filled
+      strokeDashoffset: 565.49 * 0.28,
       transition: { duration: 2, ease: 'easeInOut' },
     });
 
     let startTime: number | null = null;
-    const duration = 2000; // 2 seconds
+    const duration = 2000;
     const targetProgress = 72;
 
     const animate = (timestamp: number) => {
@@ -42,7 +40,6 @@ const Loading = () => {
     <section className="relative z-20 flex h-full w-full items-center justify-center">
       <div className="relative flex aspect-square w-full max-w-[160px] items-center justify-center rounded-full bg-[#02253b] sm:max-w-[15rem] md:max-w-[240px]">
         <div className="relative flex h-full w-full items-center justify-center rounded-full">
-          {/* Background circle (non-animated) */}
           <svg className="absolute h-full w-full" viewBox="0 0 240 240">
             <circle
               cx="120"
@@ -54,8 +51,6 @@ const Loading = () => {
               transform="rotate(-90 120 120)"
             />
           </svg>
-
-          {/* SVG for circular progress */}
           <motion.svg className="absolute h-full w-full" viewBox="0 0 240 240">
             <motion.circle
               cx="120"
@@ -66,7 +61,7 @@ const Loading = () => {
               strokeWidth="60"
               strokeLinecap="round"
               transform="rotate(-90 120 120)"
-              strokeDasharray="565.49" // 2 * PI * r (90)
+              strokeDasharray="565.49"
               initial={{ strokeDashoffset: 565.49 }}
               animate={controls}
             />

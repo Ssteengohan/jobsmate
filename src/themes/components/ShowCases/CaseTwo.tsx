@@ -7,9 +7,15 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import WorldMap from '../../../components/WorldMap';
 
-// Register GSAP plugins if we're in browser environment
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
+}
+
+interface ScreenSize {
+  width: number;
+  isMobile: boolean;
+  isTablet: boolean;
+  isDesktop: boolean;
 }
 
 interface SaasIconProps {
@@ -27,6 +33,12 @@ const SaasIcon = ({ children, className = '' }: SaasIconProps) => (
 
 const CaseTwo = () => {
   const [animationReady, setAnimationReady] = useState(false);
+  const [screenSize, setScreenSize] = useState<ScreenSize>({
+    width: typeof window !== 'undefined' ? window.innerWidth : 1200,
+    isMobile: false,
+    isTablet: false,
+    isDesktop: true,
+  });
   const containerRef = useRef<HTMLDivElement>(null);
   const stickyWrapperRef = useRef<HTMLDivElement>(null);
   const pathRefs = useRef<(SVGPathElement | null)[]>([]);
@@ -37,7 +49,23 @@ const CaseTwo = () => {
   const rightColumnRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLSpanElement>(null);
 
-  // Set up animation readiness
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      setScreenSize({
+        width,
+        isMobile: width < 768,
+        isTablet: width >= 768 && width < 1024,
+        isDesktop: width >= 1024,
+      });
+    };
+
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   useEffect(() => {
     if (typeof document !== 'undefined') {
       document.documentElement.classList.add('js-animation-ready');
@@ -46,16 +74,21 @@ const CaseTwo = () => {
     }
   }, []);
 
-  // Animation effect for connecting lines and arrows
   useEffect(() => {
     if (typeof window === 'undefined' || !animationReady) return;
 
     const ctx = gsap.context(() => {
+      gsap.set(
+        [leftColumnRef.current, middleColumnRef.current, rightColumnRef.current].filter(Boolean),
+        {
+          clearProps: 'all',
+        },
+      );
+
       const paths = pathRefs.current.filter(Boolean);
       const arrows = arrowRefs.current.filter(Boolean);
       const cards = cardsRef.current.filter(Boolean);
 
-      // Create a main timeline for better sequencing
       const mainTl = gsap.timeline({
         paused: true,
         smoothChildTiming: true,
@@ -65,19 +98,16 @@ const CaseTwo = () => {
         },
       });
 
-      // Initial state for columns
       gsap.set([leftColumnRef.current, rightColumnRef.current], {
         autoAlpha: 0,
         y: 20,
       });
 
-      // Initial state for the title
       gsap.set(titleRef.current, {
         autoAlpha: 0,
         y: -15,
       });
 
-      // Set initial state of paths
       paths.forEach((path) => {
         if (!path) return;
         try {
@@ -86,12 +116,9 @@ const CaseTwo = () => {
             strokeDasharray: pathLength,
             strokeDashoffset: pathLength,
           });
-        } catch {
-          // console.error('Error setting up path', err);
-        }
+        } catch {}
       });
 
-      // Set initial state for arrows and cards
       gsap.set(arrows, {
         autoAlpha: 0,
         scale: 0,
@@ -99,14 +126,12 @@ const CaseTwo = () => {
         visibility: 'hidden',
       });
 
-      // Set initial state for the arrow triangles specifically
       gsap.set('#arrowTriangle1, #arrowTriangle2, #arrowTriangle3', {
         autoAlpha: 0,
         scale: 0,
         visibility: 'hidden',
       });
 
-      // Ensure cards are completely hidden initially
       gsap.set('.info-container', {
         autoAlpha: 0,
         y: 30,
@@ -115,7 +140,6 @@ const CaseTwo = () => {
         clearProps: 'filter',
       });
 
-      // Setup WorldMap animations
       const worldMapElement = document.querySelector('.world-map-container');
       if (worldMapElement) {
         gsap.set(worldMapElement, {
@@ -143,7 +167,6 @@ const CaseTwo = () => {
         }
       }
 
-      // Animate side columns first
       mainTl
         .to(
           leftColumnRef.current,
@@ -161,10 +184,9 @@ const CaseTwo = () => {
             y: 0,
             duration: 0.6,
           },
-          0.2,
+          screenSize.isDesktop ? 0.2 : 0.4,
         );
 
-      // Show the world map immediately at the start
       mainTl.to(
         '.world-map-container',
         {
@@ -176,7 +198,6 @@ const CaseTwo = () => {
         0,
       );
 
-      // Add title animation
       mainTl.to(
         titleRef.current,
         {
@@ -188,7 +209,6 @@ const CaseTwo = () => {
         0.2,
       );
 
-      // Animate map markers with staggered effect
       mainTl.to(
         '.pulse-circle',
         {
@@ -201,7 +221,6 @@ const CaseTwo = () => {
         0.1,
       );
 
-      // Animate map connections with staggered effect
       mainTl.to(
         '.map-connection',
         {
@@ -214,7 +233,6 @@ const CaseTwo = () => {
         0.2,
       );
 
-      // Create animations for each path, arrow, and card
       interface ArrowPulseTimeline {
         timeline: gsap.core.Timeline;
         arrow: SVGGElement | null;
@@ -263,7 +281,7 @@ const CaseTwo = () => {
       paths.forEach((path, index) => {
         if (!path) return;
 
-        const startTime = index * 0.7 + 0.7;
+        const startTime = screenSize.isDesktop ? index * 0.7 + 0.7 : index * 0.5 + 0.5;
 
         mainTl.fromTo(
           path,
@@ -366,76 +384,126 @@ const CaseTwo = () => {
         }
       });
 
-      if (stickyWrapperRef.current && containerRef.current) {
+      if (screenSize.isDesktop) {
+        if (stickyWrapperRef.current && containerRef.current) {
+          ScrollTrigger.create({
+            trigger: stickyWrapperRef.current,
+            start: 'top 10%',
+            end: 'bottom 10%',
+            pin: containerRef.current,
+            pinSpacing: true,
+            anticipatePin: 1,
+            pinReparent: false,
+            refreshPriority: 1,
+            id: 'case-two-pin',
+            onLeaveBack: () => {
+              mainTl.progress(0);
+              arrows.forEach((arrow, index) => {
+                if (arrow) {
+                  gsap.set(arrow, { autoAlpha: 0, visibility: 'hidden', scale: 0 });
+
+                  const triangleId = `#arrowTriangle${index + 1}`;
+                  const triangle =
+                    arrow.querySelector(triangleId) || document.querySelector(triangleId);
+                  if (triangle) {
+                    gsap.set(triangle, { autoAlpha: 0, visibility: 'hidden', scale: 0 });
+                  }
+                }
+              });
+            },
+            onLeave: () => {
+              mainTl.progress(1);
+            },
+            markers: false,
+          });
+        }
+
         ScrollTrigger.create({
           trigger: stickyWrapperRef.current,
-          start: 'top 10%',
-          end: 'bottom 10%',
-          pin: containerRef.current,
-          pinSpacing: true,
-          anticipatePin: 1,
-          pinReparent: false,
-          refreshPriority: 1,
-          id: 'case-two-pin',
-          onLeaveBack: () => {
-            mainTl.progress(0);
-            arrows.forEach((arrow, index) => {
-              if (arrow) {
-                gsap.set(arrow, { autoAlpha: 0, visibility: 'hidden', scale: 0 });
-
-                const triangleId = `#arrowTriangle${index + 1}`;
-                const triangle =
-                  arrow.querySelector(triangleId) || document.querySelector(triangleId);
-                if (triangle) {
-                  gsap.set(triangle, { autoAlpha: 0, visibility: 'hidden', scale: 0 });
-                }
-              }
-            });
+          start: 'top 70%',
+          end: 'bottom 30%',
+          onUpdate: (self) => {
+            const rawProgress = Math.min(self.progress, 1);
+            const easedProgress =
+              rawProgress < 0.5
+                ? 2 * rawProgress * rawProgress
+                : 1 - Math.pow(-2 * rawProgress + 2, 2) / 2;
+            mainTl.progress(easedProgress);
           },
-          onLeave: () => {
-            mainTl.progress(1);
-          },
+          scrub: 0.6,
+          preventOverlaps: true,
+          fastScrollEnd: true,
           markers: false,
+          id: 'case-two-animation',
+        });
+      } else {
+        ScrollTrigger.create({
+          trigger: containerRef.current,
+          start: 'top 85%',
+          end: 'bottom 10%',
+          onUpdate: (self) => {
+            const progress = Math.min(self.progress * 1.8, 1);
+            mainTl.progress(progress);
+          },
+          scrub: 0.3,
+          markers: false,
+          id: 'case-two-mobile-animation',
+        });
+
+        const svgContainer = document.querySelector(
+          '.pointer-events-none.absolute.inset-0.z-\\[5\\]',
+        );
+        if (svgContainer) {
+          gsap.set(svgContainer, { autoAlpha: 0 });
+        }
+
+        cards.forEach((card, index) => {
+          if (card) {
+            gsap.killTweensOf(card);
+
+            const startDelay = index * 0.2 + 0.2;
+            mainTl.fromTo(
+              card,
+              {
+                autoAlpha: 0,
+                y: 20,
+                scale: 0.95,
+              },
+              {
+                autoAlpha: 1,
+                y: 0,
+                scale: 1,
+                duration: 0.5,
+                ease: 'back.out(1.2)',
+              },
+              startDelay,
+            );
+          }
         });
       }
-
-      ScrollTrigger.create({
-        trigger: stickyWrapperRef.current,
-        start: 'top 70%',
-        end: 'bottom 30%',
-        onUpdate: (self) => {
-          const rawProgress = Math.min(self.progress, 1);
-          const easedProgress =
-            rawProgress < 0.5
-              ? 2 * rawProgress * rawProgress
-              : 1 - Math.pow(-2 * rawProgress + 2, 2) / 2;
-          mainTl.progress(easedProgress);
-        },
-        scrub: 0.6,
-        preventOverlaps: true,
-        fastScrollEnd: true,
-        markers: false,
-        id: 'case-two-animation',
-      });
     }, containerRef);
 
     return () => ctx.revert();
-  }, [animationReady]);
+  }, [animationReady, screenSize.isDesktop, screenSize.width]);
 
   return (
-    <div className="relative z-50 mt-[720px]" ref={stickyWrapperRef}>
-      <div className="h-[105vh]">
+    <div className="relative z-50 -mt-20 lg:mt-[720px]" ref={stickyWrapperRef}>
+      <div className={screenSize.isDesktop ? 'h-[105vh]' : 'h-auto min-h-[90vh]'}>
         <div
           ref={containerRef}
-          className="relative h-[800px] border-t border-b border-black/20 dark:border-white/30"
+          className={`relative border-t border-b border-black/20 dark:border-white/30 ${
+            screenSize.isDesktop ? 'h-[800px]' : 'h-auto py-10'
+          }`}
         >
           <div className="mx-auto h-full">
-            <div className="flex h-full">
+            <div className={`${screenSize.isDesktop ? 'flex' : 'flex flex-col'} h-full`}>
               <div
                 ref={leftColumnRef}
-                className="flex w-1/4 flex-col justify-between pt-20 text-gray-600 md:text-base dark:text-gray-400"
+                className={`flex flex-col justify-between text-gray-600 sm:pt-10 md:text-base dark:text-gray-400 ${
+                  screenSize.isDesktop ? 'w-1/4 pt-20' : 'w-full px-4'
+                }`}
               >
-                <div className="px-4">
+                <div className="sm:px-4">
                   <h3 className="text-foreground text-xl font-bold">Build Your Global Team</h3>
                   <Balancer className="pt-5">
                     Hire Globally with ease - Matching of skills, experience & job description
@@ -454,8 +522,11 @@ const CaseTwo = () => {
                   </ul>
                 </div>
                 <Link
-                  href={'/'}
-                  className="group text-foreground relative flex w-fit items-center gap-1 px-4 pb-20 text-sm font-semibold"
+                  href={
+                    'https://platform.jobsmate.global/company/onboarding/preferences?_gl=1*1wymypx*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY3OC4wLjAuMA'
+                  }
+                  target='_blank'
+                  className="group text-foreground relative flex w-fit items-center gap-1 pt-4 pb-4 text-sm font-semibold sm:pb-20"
                 >
                   <span className="relative inline-block">
                     Explore Ranked matches
@@ -466,7 +537,11 @@ const CaseTwo = () => {
               </div>
               <div
                 ref={middleColumnRef}
-                className="relative w-2/4 overflow-hidden border-r border-l border-black/20 dark:border-white/30"
+                className={`relative overflow-hidden ${
+                  screenSize.isDesktop
+                    ? 'w-2/4 border-r border-l'
+                    : 'h-[90vh] w-full border-t border-b'
+                } border-black/20 dark:border-white/30`}
               >
                 <div className="absolute inset-0 overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary-medium-blue)]/5 via-transparent to-[var(--primary-gold)]/5"></div>
@@ -589,12 +664,16 @@ const CaseTwo = () => {
                       Matched & Ranked
                     </span>
                   </div>
-                  <div className="flex flex-col gap-4 pt-10 pl-30">
+                  <div
+                    className={`flex flex-col gap-4 ${
+                      screenSize.isDesktop ? 'pt-10 pl-30' : 'px-4 pt-4'
+                    }`}
+                  >
                     <div
                       ref={(el) => {
                         cardsRef.current[0] = el;
                       }}
-                      className="info-container relative flex w-[90%] flex-row items-center rounded-2xl border-1 border-[#7f9cf5]/50 bg-white px-2 py-2 max-md:flex-wrap md:pr-2"
+                      className="info-container relative hidden w-[90%] flex-row items-center rounded-2xl border-1 border-[#7f9cf5]/50 bg-white px-2 py-2 max-md:flex-wrap md:pr-2 lg:flex"
                     >
                       <div className="flex items-center max-md:w-full max-md:justify-evenly">
                         <svg
@@ -831,17 +910,31 @@ const CaseTwo = () => {
                     </div>
                   </div>
                 </div>
-                <div className="absolute top-[35%] z-10 flex h-full w-full items-center justify-center">
-                  <WorldMap className="world-map-container h-fit w-[95%]" />
+                <div
+                  className={`absolute ${
+                    screenSize.isDesktop ? 'top-[35%]' : 'top-[20%]'
+                  } z-10 flex h-full w-full items-center justify-center`}
+                >
+                  <WorldMap
+                    className={`world-map-container h-fit max-lg:pt-20 ${
+                      screenSize.isDesktop ? 'w-[95%]' : 'w-[90%]'
+                    }`}
+                  />
                 </div>
               </div>
-              <div ref={rightColumnRef} className="w-1/4">
-                <div className="flex h-full flex-col justify-between pt-20 pb-10">
+              <div
+                ref={rightColumnRef}
+                className={`${screenSize.isDesktop ? 'w-1/4' : 'w-full px-4 py-6'}`}
+              >
+                <div
+                  className={`flex flex-col ${
+                    screenSize.isDesktop ? 'h-full justify-between pt-20 pb-10' : 'gap-6'
+                  }`}
+                >
                   <div className="flex flex-col gap-5 px-5">
                     <h3 className="text-foreground text-xl font-bold">Hiring Process</h3>
 
                     <div className="mt-2 flex flex-col gap-3">
-                      {/* Hiring Process Steps */}
                       <div className="flex items-center gap-3 rounded-lg border-1 border-gray-400/30 bg-gradient-to-r from-white to-gray-50 px-6 py-3 shadow-[0_0px_15px_0px_rgba(0,0,0,0.1)] dark:from-gray-800 dark:to-gray-900">
                         <div className="flex h-9 w-9 items-center justify-center rounded-md bg-[#38b6ff]/20">
                           <span className="text-lg font-bold text-[#38b6ff]">1</span>
@@ -864,7 +957,6 @@ const CaseTwo = () => {
                       </div>
                     </div>
 
-                    {/* Stats */}
                     <div className="mt-6">
                       <h4 className="text-foreground mb-3 font-semibold">Global Talent Pool</h4>
                       <div className="grid grid-cols-2 gap-3">
@@ -884,7 +976,6 @@ const CaseTwo = () => {
                     </div>
                   </div>
 
-                  {/* Information Elements (Non-clickable) */}
                   <div className="mt-6 flex flex-col gap-3 px-5">
                     <div className="flex items-center justify-center gap-2 rounded-lg bg-[var(--primary-medium-blue)]/80 px-4 py-2 text-white">
                       <Briefcase className="h-4 w-4" />
@@ -924,6 +1015,33 @@ const CaseTwo = () => {
           opacity: 0;
           transform: translateY(-15px);
           will-change: opacity, transform;
+        }
+
+        @media (max-width: 1023px) {
+          .map-connection {
+            stroke-width: 1px !important;
+          }
+
+          .pulse-circle {
+            transform: scale(0.7);
+          }
+
+          .info-container {
+            max-width: 100%;
+            margin-left: 0;
+            margin-right: 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition:
+              opacity 0.3s,
+              transform 0.3s;
+          }
+
+          @media (max-width: 767px) {
+            .pointer-events-none.absolute.inset-0.z-\\[5\\] {
+              display: none;
+            }
+          }
         }
       `}</style>
     </div>

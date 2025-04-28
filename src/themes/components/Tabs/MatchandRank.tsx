@@ -13,19 +13,16 @@ const MatchandRank = () => {
   const contentScrollRef = useRef<HTMLDivElement>(null);
   const favoriteTabRef = useRef<HTMLDivElement>(null);
 
-  // Call useScroll without storing the return value since we don't use it
   useScroll({
     target: scrollRef,
     offset: ['start start', 'end end'],
   });
 
-  // Multi-phase animation sequence
   useEffect(() => {
     if (!contentScrollRef.current) return;
 
     const element = contentScrollRef.current;
 
-    // Phase 1: Initial scroll down animation (after animations finish)
     const initialScrollDown = () => {
       setTimeout(() => {
         if (!element) return;

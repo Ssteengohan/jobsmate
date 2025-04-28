@@ -10,19 +10,8 @@ import PricingCard from '@/themes/components/PricingCard/PricingCard';
 import ShowCase from '@/themes/components/ShowCases/ShowCase';
 import Footer from '@/themes/components/Footer/Footer';
 import Card from '@/themes/components/Cards/Card';
-import { useEffect, useState } from 'react';
 
 export default function Home() {
-  const [isLargeScreen, setIsLargeScreen] = useState(false);
-  useEffect(() => {
-    const checkScreenSize = () => {
-      setIsLargeScreen(window.innerWidth >= 1024);
-    };
-    checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-    return () => window.removeEventListener('resize', checkScreenSize);
-  }, []);
-
   return (
     <main className="mx-auto min-h-screen overflow-hidden bg-gradient-to-b from-white via-[#f9f9f9] to-[var(--primary-gold)]/15 transition-colors duration-300 dark:bg-[var(--neutral-50)] dark:bg-none">
       <Navbar />
@@ -60,9 +49,8 @@ export default function Home() {
         <div className="absolute inset-y-0 left-[99%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]/90"></div>
         <Slider />
 
-        {/* Only render ShowCase on larger screens */}
-        {isLargeScreen && <ShowCase />}
         <TimelineDemo />
+        <ShowCase />
         <Card />
         <PricingCard />
       </div>

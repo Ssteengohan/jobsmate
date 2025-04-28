@@ -10,8 +10,8 @@ export const TextGenerateEffect = ({
   duration = 0.5,
   html = false,
   animate = true,
-  scrollProgress, // New prop to control animation based on scroll
-  tag = 'div', // New prop to control the HTML tag
+  scrollProgress,
+  tag = 'div',
 }: {
   words: string;
   className?: string;
@@ -20,7 +20,7 @@ export const TextGenerateEffect = ({
   html?: boolean;
   animate?: boolean;
   scrollProgress?: MotionValue<number>;
-  tag?: ElementType; // Changed from string to ElementType
+  tag?: ElementType;
 }) => {
   const [scope, animateFunc] = useAnimate();
   const [isReady, setIsReady] = useState(false);
@@ -28,44 +28,31 @@ export const TextGenerateEffect = ({
   const elementsRef = useRef<NodeListOf<Element> | null>(null);
   const wordsArray = words.split(' ');
 
-  // Initialize animation when component is ready
   useEffect(() => {
     setIsReady(true);
   }, []);
 
-  // Handle scroll-based word animation
   useEffect(() => {
     if (!isReady || !animate || !scrollProgress) return;
 
-    // Get all word elements
     if (html && scope.current) {
       elementsRef.current = scope.current.querySelectorAll('.text-word');
     }
 
-    // Setup scroll progress listener
     const unsubscribe = scrollProgress.on('change', (progress) => {
       if (!elementsRef.current) return;
 
       const totalWords = elementsRef.current.length;
-
-      // Create a more staggered effect by spreading out the word appearances
-      // This applies a power function to create more delay between words
-      // Higher exponent = more delay between words
-      const spreadFactor = 2.5; // Increase this value for more delay
+      const spreadFactor = 2.5;
       const adjustedProgress = Math.pow(progress, spreadFactor);
-
-      // Calculate how many words should be visible based on adjusted progress
       const visibleWordCount = Math.ceil(adjustedProgress * totalWords);
 
-      // Update each word's visibility
       elementsRef.current.forEach((element, index) => {
         if (index < visibleWordCount) {
-          // Word should be visible
           (element as HTMLElement).style.opacity = '1';
           (element as HTMLElement).style.filter = filter ? 'blur(0px)' : 'none';
           (element as HTMLElement).style.transform = 'translateY(0)';
         } else {
-          // Word should be hidden
           (element as HTMLElement).style.opacity = '0';
           (element as HTMLElement).style.filter = filter ? 'blur(4px)' : 'none';
           (element as HTMLElement).style.transform = 'translateY(10px)';
@@ -76,7 +63,6 @@ export const TextGenerateEffect = ({
     return () => unsubscribe();
   }, [isReady, animate, scrollProgress, filter, html, scope]);
 
-  // Legacy animation effect for non-scroll scenarios
   const startAnimation = useCallback(() => {
     if (!isReady || !animate || hasAnimated || scrollProgress) return;
 
@@ -135,9 +121,8 @@ export const TextGenerateEffect = ({
     }
   }, [isReady, animate, startAnimation, scrollProgress]);
 
-  // Improved HTML rendering with transition properties for smooth animation
   const renderHTML = () => {
-    const Tag = tag; // No need for type casting with ElementType
+    const Tag = tag;
 
     return (
       <Tag ref={scope} className="text-[#05253c] dark:text-white" style={{ opacity: 1 }}>

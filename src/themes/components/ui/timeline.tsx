@@ -14,60 +14,47 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
   const [height, setHeight] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Create a manual progress value for smoother updates
   const manualProgress = useMotionValue(0);
 
-  // More responsive spring, especially after first item
   const springyProgress = useSpring(manualProgress, {
-    stiffness: isMobile ? 200 : 100, // Tame the spring on mobile
-    damping: isMobile ? 25 : 30, // Adjust damping for mobile
-    mass: isMobile ? 0.5 : 0.1, // Raise mass for mobile
-    restSpeed: 0.01, // Smaller rest speed for more precise stopping
+    stiffness: isMobile ? 200 : 100,
+    damping: isMobile ? 25 : 30,
+    mass: isMobile ? 0.5 : 0.1,
+    restSpeed: 0.01,
   });
 
-  // Memoize resize handler to improve performance
   const handleResize = React.useCallback(() => {
-    // Check if we're on a mobile device
     const mobileView = window.innerWidth < 768;
     setIsMobile(mobileView);
 
-    // Update height measurement
     if (ref.current) {
       const rect = ref.current.getBoundingClientRect();
-      // Always use full timeline height (no clamp) for smooth full‑length line
       setHeight(rect.height);
     }
   }, []);
 
-  // Improved scroll configuration with even broader range
   const { scrollYProgress } = useScroll({
     target: isMobile ? ref : containerRef,
-    offset: isMobile
-      ? ['start start', 'end end'] // Cover entire ref on mobile
-      : ['start 10%', 'end 85%'],
+    offset: isMobile ? ['start start', 'end end'] : ['start 10%', 'end 85%'],
   });
 
-  // Enhance progress tracking to prevent disappearing line between items 2 and 3
   useEffect(() => {
     const unsubscribe = scrollYProgress.on('change', (latest) => {
-      manualProgress.set(latest); // Directly sync manualProgress
+      manualProgress.set(latest);
     });
 
     return unsubscribe;
   }, [scrollYProgress, manualProgress]);
 
   useEffect(() => {
-    // Initial check
     handleResize();
 
-    // Optimize resize listener with requestAnimationFrame for smoother updates
     let resizeFrame: number;
     const smoothResize = () => {
       cancelAnimationFrame(resizeFrame);
       resizeFrame = requestAnimationFrame(handleResize);
     };
 
-    // Add optimized resize listener
     window.addEventListener('resize', smoothResize);
 
     return () => {
@@ -76,26 +63,22 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
     };
   }, [handleResize]);
 
-  // Fixed transform mapping with better middle section visibility
   const heightTransform = useTransform(
     springyProgress,
-    // More control points with finer gradations in the middle
     [0, 0.2, 0.35, 0.5, 0.65, 0.8, 1],
     [
       0,
-      isMobile ? height * 0.25 : height * 0.2, // Start
-      isMobile ? height * 0.45 : height * 0.35, // Before middle
-      isMobile ? height * 0.6 : height * 0.5, // Middle
-      isMobile ? height * 0.75 : height * 0.65, // After middle
-      isMobile ? height * 0.9 : height * 0.8, // Near end
-      height, // Full height
+      isMobile ? height * 0.25 : height * 0.2,
+      isMobile ? height * 0.45 : height * 0.35,
+      isMobile ? height * 0.6 : height * 0.5,
+      isMobile ? height * 0.75 : height * 0.65,
+      isMobile ? height * 0.9 : height * 0.8,
+      height,
     ],
   );
 
-  // Ensure line remains visible through the middle sections
   const opacityTransform = useTransform(
     springyProgress,
-    // Keep full opacity through the middle range
     [0, 0.03, 0.2, 0.8, 0.97, 1],
     [0, 0.8, 1, 1, 0.8, 0],
   );
@@ -146,20 +129,20 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
         <div
           style={{
             height: height + 'px',
-            maxHeight: 'none', // Remove height constraint completely
+            maxHeight: 'none',
           }}
           className="absolute top-0 left-8 w-[2px] overflow-visible bg-[linear-gradient(to_bottom,var(--tw-gradient-stops))] from-transparent from-[0%] via-[var(--neutral-200)] to-transparent to-[99%] transition-colors duration-300 [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)] md:left-8 dark:via-[var(--neutral-200)]"
         >
           <motion.div
             transition={{
-              duration: 0.01, // Very fast updates for all devices
+              duration: 0.01,
               ease: 'linear',
               type: 'tween',
             }}
             style={{
               height: heightTransform,
               opacity: opacityTransform,
-              maxHeight: '500%', // Much more room to grow
+              maxHeight: '500%',
               willChange: 'transform, opacity',
               translateZ: 0,
               position: 'absolute',

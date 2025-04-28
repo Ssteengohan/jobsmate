@@ -2,23 +2,18 @@ import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-// Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
 
-// Define a type for Lenis to avoid using 'any'
 interface LenisInstance {
   destroy: () => void;
-  // Add other methods/properties as needed
 }
 
-// Type declaration for global Lenis constructor
 declare global {
   interface Window {
     Lenis: new (options: { autoRaf: boolean }) => LenisInstance;
   }
 }
 
-// Utility function to wrap words in spans
 const wrapWordsInSpan = (element: HTMLElement | null): void => {
   if (!element) return;
   const text = element.textContent;
@@ -41,7 +36,6 @@ const TextScroll = () => {
   const scrollRef = useRef<HTMLParagraphElement | null>(null);
 
   useEffect(() => {
-    // Initialize Lenis for smooth scrolling using the global instance
     let lenis: LenisInstance | null = null;
     try {
       if (typeof window !== 'undefined' && window.Lenis) {
@@ -53,9 +47,7 @@ const TextScroll = () => {
       console.error('Failed to initialize Lenis:', error);
     }
 
-    // Wait for DOM to be fully loaded
     const setupAnimation = () => {
-      // Create GSAP animations once component mounts
       if (scrollRef.current) {
         gsap.to(scrollRef.current, {
           autoAlpha: 0,
@@ -69,19 +61,14 @@ const TextScroll = () => {
         });
       }
 
-      // Process paragraph text to wrap words in spans
       if (paragraphRef.current) {
         wrapWordsInSpan(paragraphRef.current);
 
-        // Get all the word elements after they've been created
         const words = sectionRef.current?.querySelectorAll('.word');
 
-        // Only proceed if words exist
         if (words && words.length > 0) {
-          // Set initial position for the words (off-screen)
           gsap.set(words, { x: '100vw' });
 
-          // Animate the words
           gsap.to(words, {
             x: 0,
             stagger: 0.02,
@@ -98,10 +85,8 @@ const TextScroll = () => {
       }
     };
 
-    // Run after a short delay to ensure refs are properly set
     const timeoutId = setTimeout(setupAnimation, 100);
 
-    // Cleanup function
     return () => {
       clearTimeout(timeoutId);
       if (lenis) lenis.destroy();
@@ -114,8 +99,7 @@ const TextScroll = () => {
       <p
         className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform"
         ref={scrollRef}
-      >
-      </p>
+      ></p>
 
       <div className="h-[500vh]" ref={pinHeightRef}>
         <div className="flex h-screen items-center overflow-hidden px-6 md:px-6" ref={containerRef}>
