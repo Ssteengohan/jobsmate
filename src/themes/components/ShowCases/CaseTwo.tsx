@@ -499,7 +499,7 @@ const CaseTwo = () => {
             <div className={`${screenSize.isDesktop ? 'flex' : 'flex flex-col'} h-full`}>
               <div
                 ref={leftColumnRef}
-                className={`flex flex-col justify-between sm:pt-10 text-gray-600 md:text-base dark:text-gray-400 ${
+                className={`flex flex-col justify-between text-gray-600 sm:pt-10 md:text-base dark:text-gray-400 ${
                   screenSize.isDesktop ? 'w-1/4 pt-20' : 'w-full px-4'
                 }`}
               >
@@ -523,7 +523,7 @@ const CaseTwo = () => {
                 </div>
                 <Link
                   href={'/'}
-                  className="group text-foreground relative flex w-fit items-center gap-1 pt-4 pb-4 sm:pb-20 text-sm font-semibold"
+                  className="group text-foreground relative flex w-fit items-center gap-1 pt-4 pb-4 text-sm font-semibold sm:pb-20"
                 >
                   <span className="relative inline-block">
                     Explore Ranked matches
@@ -535,7 +535,9 @@ const CaseTwo = () => {
               <div
                 ref={middleColumnRef}
                 className={`relative overflow-hidden ${
-                  screenSize.isDesktop ? 'w-2/4 border-r border-l' : 'w-full border-t border-b h-[90vh] '
+                  screenSize.isDesktop
+                    ? 'w-2/4 border-r border-l'
+                    : 'h-[90vh] w-full border-t border-b'
                 } border-black/20 dark:border-white/30`}
               >
                 <div className="absolute inset-0 overflow-hidden">
@@ -546,12 +548,7 @@ const CaseTwo = () => {
                 </div>
 
                 <div className="pointer-events-none absolute inset-0 z-[5]">
-                  <svg
-                    width="100%"
-                    height="100%"
-                    className={`overflow-visible ${!screenSize.isDesktop ? 'hidden md:block md:opacity-30' : ''}`}
-                    viewBox={screenSize.isDesktop ? '0 0 500 500' : '0 0 300 400'}
-                  >
+                  <svg width="100%" height="100%" className="overflow-visible">
                     <defs>
                       <linearGradient
                         id="gradientFlow"
@@ -673,7 +670,7 @@ const CaseTwo = () => {
                       ref={(el) => {
                         cardsRef.current[0] = el;
                       }}
-                      className="info-container hidden relative lg:flex w-[90%] flex-row items-center rounded-2xl border-1 border-[#7f9cf5]/50 bg-white px-2 py-2 max-md:flex-wrap md:pr-2"
+                      className="info-container relative hidden w-[90%] flex-row items-center rounded-2xl border-1 border-[#7f9cf5]/50 bg-white px-2 py-2 max-md:flex-wrap md:pr-2 lg:flex"
                     >
                       <div className="flex items-center max-md:w-full max-md:justify-evenly">
                         <svg
@@ -916,7 +913,7 @@ const CaseTwo = () => {
                   } z-10 flex h-full w-full items-center justify-center`}
                 >
                   <WorldMap
-                    className={`world-map-container max-lg:pt-20  h-fit ${
+                    className={`world-map-container h-fit max-lg:pt-20 ${
                       screenSize.isDesktop ? 'w-[95%]' : 'w-[90%]'
                     }`}
                   />

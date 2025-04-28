@@ -2,8 +2,8 @@ import React, { useRef, useEffect, useState, lazy, Suspense } from 'react';
 import AnimatedHeading from '../AnimatedHeading';
 
 const CaseOne = lazy(() => import('./CaseOne'));
-// const CaseTwo = lazy(() => import('./CaseTwo'));
-// const CaseThree = lazy(() => import('./CaseThree'));
+const CaseTwo = lazy(() => import('./CaseTwo'));
+const CaseThree = lazy(() => import('./CaseThree'));
 
 type GSAPTarget = Element | string | Element[] | NodeList | null | undefined;
 type GSAPVars = Record<string, unknown>;
@@ -199,8 +199,8 @@ const ShowCase = () => {
           }
         >
           <CaseOne />
-          {/* <CaseTwo />
-          <CaseThree /> */}
+          <CaseTwo />
+          <CaseThree />
         </Suspense>
       )}
 

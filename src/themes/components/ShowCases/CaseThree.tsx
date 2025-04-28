@@ -270,91 +270,152 @@ const CaseThree = () => {
     return ctx;
   }, [screenSize.isDesktop]); // Add screenSize.isDesktop to dependencies
 
-  // Add mobile animation effect
+  // Update mobile animation effect with better timing and sequencing
   useEffect(() => {
     if (typeof window === 'undefined' || !animationReady) return;
 
     if (!screenSize.isDesktop) {
       const ctx = gsap.context(() => {
-        // Make everything visible initially
-        gsap.set([contentRef.current, titleRef.current, chartRef.current, logoRef.current], {
-          autoAlpha: 1,
-          y: 0,
-          scale: 1,
+        // Initially hide elements for smoother entrance
+        gsap.set([titleRef.current, chartRef.current, logoRef.current], {
+          autoAlpha: 0,
+          y: 15,
+          willChange: 'opacity, transform',
         });
 
-        gsap.set('.analytics-card', { autoAlpha: 1, x: 0, scale: 1 });
-        gsap.set('.chart-line', { scaleY: 1 });
-        gsap.set('.metric-label', { autoAlpha: 1, y: 0 });
+        gsap.set('.analytics-card', {
+          autoAlpha: 0,
+          y: 20,
+          stagger: 0.08,
+          willChange: 'opacity, transform',
+        });
 
-        // Simple entrance animations for mobile
-        const mobileTl = gsap.timeline();
+        gsap.set('.chart-line', {
+          scaleY: 0,
+          transformOrigin: 'bottom',
+          willChange: 'transform',
+        });
 
-        mobileTl
-          .from(titleRef.current, {
-            autoAlpha: 0,
-            y: -20,
-            duration: 0.6,
-            ease: 'back.out(1.1)',
-          })
-          .from(
-            chartRef.current,
-            {
-              autoAlpha: 0,
-              y: 20,
-              scale: 0.95,
+        gsap.set('.metric-label', {
+          autoAlpha: 0,
+          y: 10,
+          willChange: 'opacity, transform',
+        });
+
+        // Smooth entry for title section with better timing
+        ScrollTrigger.create({
+          trigger: titleRef.current,
+          start: 'top 85%', // Start animation earlier
+          onEnter: () => {
+            gsap.to(titleRef.current, {
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.6,
+              ease: 'back.out(1.7)',
+              clearProps: 'willChange',
+            });
+          },
+          once: true,
+        });
+
+        // Smoother animation for chart with proper timing
+        ScrollTrigger.create({
+          trigger: chartRef.current,
+          start: 'top 80%', // Start when approaching viewport
+          onEnter: () => {
+            // First animate the chart container
+            gsap.to(chartRef.current, {
+              autoAlpha: 1,
+              y: 0,
               duration: 0.7,
-              ease: 'back.out(1.1)',
-            },
-            '-=0.3',
-          )
-          .from(
-            '.chart-line',
-            {
-              scaleY: 0,
-              stagger: 0.04,
-              duration: 0.5,
               ease: 'power3.out',
-            },
-            '-=0.2',
-          )
-          .from(
-            '.metric-label',
-            {
-              autoAlpha: 0,
-              y: 10,
-              stagger: 0.03,
-              duration: 0.3,
-            },
-            '-=0.2',
-          )
-          .from(
-            logoRef.current,
-            {
-              autoAlpha: 0,
-              scale: 0.9,
-              duration: 0.5,
-            },
-            '-=0.1',
-          )
-          .from(
-            '.analytics-card',
-            {
-              autoAlpha: 0,
-              y: 15,
-              stagger: 0.08,
-              duration: 0.5,
-            },
-            '-=0.4',
-          );
+              clearProps: 'willChange',
+              onComplete: () => {
+                // Then animate chart lines with subtle staggering
+                gsap.to('.chart-line', {
+                  scaleY: 1,
+                  stagger: 0.1,
+                  duration: 0.5,
+                  ease: 'power2.out',
+                  clearProps: 'willChange',
+                });
 
-        // Continue animations
-        gsap.to('.pulse-element', {
-          scale: 1.03,
+                // Finally animate the labels with slight delay
+                gsap.to('.metric-label', {
+                  autoAlpha: 1,
+                  y: 0,
+                  stagger: 0.06,
+                  duration: 0.4,
+                  delay: 0.3,
+                  ease: 'power2.out',
+                  clearProps: 'willChange',
+                });
+              },
+            });
+          },
+          once: true,
+        });
+
+        // Logo animation with pulse effect
+        ScrollTrigger.create({
+          trigger: logoRef.current,
+          start: 'top 85%',
+          onEnter: () => {
+            gsap.to(logoRef.current, {
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.6,
+              ease: 'back.out(1.4)',
+              clearProps: 'willChange',
+            });
+
+            // Add pulse animation after logo appears
+            gsap.to('.pulse-element', {
+              scale: 1.03,
+              repeat: -1,
+              yoyo: true,
+              duration: 1.8,
+              ease: 'sine.inOut',
+              delay: 0.3,
+            });
+          },
+          once: true,
+        });
+
+        // Analytics cards with staggered entrance and smoother animation
+        const cards = gsap.utils.toArray('.analytics-card');
+        ScrollTrigger.create({
+          trigger: analyticsRef.current,
+          start: 'top 80%',
+          onEnter: () => {
+            gsap.to(cards, {
+              autoAlpha: 1,
+              y: 0,
+              stagger: {
+                each: 0.12,
+                ease: 'power2.out',
+              },
+              duration: 0.6,
+              ease: 'back.out(1.2)',
+              clearProps: 'willChange',
+            });
+          },
+          once: true,
+        });
+
+        // Background animations
+        gsap.to('.pattern-grid', {
+          backgroundPosition: '14px 14px',
+          duration: 25,
           repeat: -1,
-          yoyo: true,
-          duration: 1.8,
-          ease: 'sine.inOut',
+          ease: 'none',
+        });
+
+        gsap.to('.pattern-dots', {
+          backgroundPosition: '18px 18px',
+          duration: 30,
+          repeat: -1,
+          ease: 'none',
         });
       }, containerRef);
 
@@ -379,7 +440,7 @@ const CaseThree = () => {
 
   return (
     <div
-      className={`relative z-40 ${screenSize.isDesktop ? 'mt-[719px]' : 'mt-16'}`}
+      className={`relative z-40 ${screenSize.isDesktop ? 'mt-[719px]' : '-mt-20 sm:mt-16'}`}
       ref={stickyWrapperRef}
       style={{ position: 'relative', top: 0 }}
     >
@@ -461,7 +522,7 @@ const CaseThree = () => {
 
                   <div
                     ref={chartRef}
-                    className="relative z-50 mx-auto mt-8 flex w-full max-w-[500px] flex-col items-center justify-center rounded-lg bg-white/90 p-4 shadow-lg sm:p-6 dark:bg-gray-800/90"
+                    className="relative z-50 mx-auto mt-4 flex w-full max-w-[500px] flex-col items-center justify-center rounded-lg bg-white/90 p-4 shadow-lg sm:mt-8 sm:p-6 dark:bg-gray-800/90"
                   >
                     <div className="mb-6 flex w-full flex-col space-y-3 sm:mb-8">
                       <span className="text-sm font-medium text-gray-500">
@@ -531,7 +592,7 @@ const CaseThree = () => {
                     </div>
                   </div>
 
-                  <div className="relative z-50 mx-auto mt-5 flex w-full max-w-[500px] flex-col rounded-lg border border-[var(--primary-medium-blue)]/30 bg-gradient-to-r from-[var(--primary-medium-blue)]/15 to-[var(--primary-gold)]/10 p-3 shadow-sm sm:p-4 dark:border-[var(--primary-medium-blue)]/80 dark:from-[var(--primary-medium-blue)]/65 dark:to-[var(--primary-gold)]/15">
+                  <div className="relative z-50 mx-auto mt-4 flex w-full max-w-[500px] flex-col rounded-lg border border-[var(--primary-medium-blue)]/30 bg-gradient-to-r from-[var(--primary-medium-blue)]/15 to-[var(--primary-gold)]/10 p-3 shadow-sm sm:mt-5 sm:p-4 dark:border-[var(--primary-medium-blue)]/80 dark:from-[var(--primary-medium-blue)]/65 dark:to-[var(--primary-gold)]/15">
                     <h3 className="flex items-center gap-2 rounded-md border-l-4 border-[var(--primary-medium-blue)] bg-[var(--primary-medium-blue)]/10 p-1.5 text-sm font-bold text-[var(--primary-medium-blue)] sm:text-base dark:border-[var(--primary-gold)] dark:bg-[var(--primary-medium-blue)]/25 dark:text-[var(--primary-gold)]">
                       <span className="inline-block animate-pulse">📈</span>
                       How Jobsmate Improves These Metrics:
@@ -657,21 +718,7 @@ const CaseThree = () => {
                 </div>
               </div>
 
-              {/* Mobile-only call-to-action link */}
-              {!screenSize.isDesktop && (
-                <div className="flex w-full justify-center border-t border-black/10 px-4 py-6 dark:border-white/10">
-                  <Link
-                    href={'/'}
-                    className="group text-foreground relative flex w-fit items-center gap-1 text-sm font-semibold"
-                  >
-                    <span className="relative inline-block">
-                      Explore platform
-                      <span className="absolute bottom-[-4px] left-0 h-[1px] w-0 bg-current transition-all duration-300 ease-out group-hover:w-full"></span>
-                    </span>
-                    <ArrowRight className="inline h-4 w-4 transform transition-transform duration-300 ease-out group-hover:translate-x-1" />
-                  </Link>
-                </div>
-              )}
+
             </div>
           </div>
         </div>
@@ -685,30 +732,60 @@ const CaseThree = () => {
           perspective: 1000;
         }
 
-        /* Override animation settings for mobile/tablet */
+        /* Override animation settings for mobile/tablet but keep them animatable */
         @media (max-width: 1023px) {
-          .js-animation-ready .chart-line {
-            transform: scaleY(1) !important;
-          }
-
+          .js-animation-ready .chart-line,
           .js-animation-ready .analytics-card,
           .js-animation-ready .metric-label {
-            opacity: 1 !important;
-            transform: none !important;
-            filter: none !important;
+            opacity: 0;
+            transition:
+              transform 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+              opacity 0.6s ease-out;
+          }
+
+          /* Improve chart appearance on small screens */
+          .chart-line {
+            min-width: 4px;
+          }
+
+          /* Improve text readability on small screens */
+          .text-[10px] {
+            font-size: 9px;
+          }
+
+          /* Reduce animation jank on mobile */
+          .analytics-card,
+          .chart-line,
+          .metric-label,
+          .pulse-element {
+            backface-visibility: hidden;
           }
         }
 
-        .js-animation-ready .analytics-card {
-          will-change: opacity, transform;
-          backface-visibility: hidden;
-          perspective: 1000;
-        }
+        /* Optimize mobile performance */
+        @media (max-width: 768px) {
+          html,
+          body {
+            scroll-behavior: auto;
+          }
 
-        .pulse-element {
-          will-change: transform;
-          backface-visibility: hidden;
-          perspective: 1000;
+          /* Better touch scrolling */
+          .chart-line,
+          .analytics-card,
+          .metric-label {
+            -webkit-tap-highlight-color: transparent;
+          }
+
+          /* Reduce motion for users who prefer it */
+          @media (prefers-reduced-motion: reduce) {
+            .chart-line,
+            .analytics-card,
+            .metric-label,
+            .pulse-element {
+              transition-duration: 0.1s !important;
+              animation-duration: 0.1s !important;
+            }
+          }
         }
 
         @media (prefers-color-scheme: dark) {
