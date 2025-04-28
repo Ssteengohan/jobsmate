@@ -49,9 +49,8 @@ export default function Home() {
         <div className="absolute inset-y-0 left-[99%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]/90"></div>
         <Slider />
 
-        {/* ShowCase component with responsive SVG paths */}
-        <ShowCase />
         <TimelineDemo />
+        <ShowCase />
         <Card />
         <PricingCard />
       </div>
