@@ -145,455 +145,35 @@ const CaseOne = () => {
   }, []);
 
   useEffect(() => {
-    if (typeof window === 'undefined' || !animationReady || !screenSize.isDesktop) return;
-
-    const ctx = gsap.context(() => {
-      const mainTl = gsap.timeline({
-        paused: true,
-        smoothChildTiming: true,
-        defaults: {
-          ease: 'power2.out',
-          duration: 0.4,
-        },
-      });
-
-      const containers = [
-        container1Ref.current,
-        container2Ref.current,
-        container3Ref.current,
-        container4Ref.current,
-        container5Ref.current,
-      ].filter(Boolean);
-
-      const badges = [badge1Ref.current, badge2Ref.current].filter(Boolean);
-
-      const columns = [
-        leftColumnRef.current,
-        middleColumnRef.current,
-        rightColumnRef.current,
-      ].filter(Boolean);
-
-      const startCircle = document.querySelector('#svg1 circle[cx="152"][cy="180"]');
-      const midCircle = document.querySelector('#svg2 circle[cx="355"][cy="25"]');
-      const endCircle = document.querySelector('#svg3 circle[cx="338"][cy="15"]');
-      const circles = [startCircle, midCircle, endCircle].filter(Boolean);
-
-      const arrows = [
-        arrowRef1.current,
-        arrowRef2.current,
-        arrowRef3.current,
-        arrowRef4.current,
-      ].filter(Boolean);
-
-      const paths = [path1Ref.current, path2Ref.current, path3Ref.current, path4Ref.current].filter(
-        Boolean,
-      );
-
-      const sliderItems = document.querySelectorAll('.slider-item');
-      gsap.set(sliderItems, {
-        autoAlpha: 0,
-        x: 15,
-        filter: 'blur(2px)',
-      });
-
-      gsap.set(columns, {
-        autoAlpha: 0,
-        y: 20,
-      });
-
-      gsap.set(containers, {
-        autoAlpha: 0,
-        y: 20,
-        filter: 'blur(5px)',
-      });
-
-      gsap.set(badges, {
-        autoAlpha: 0,
-        y: 15,
-        filter: 'blur(3px)',
-      });
-
-      gsap.set(circles, {
-        autoAlpha: 0,
-        scale: 0,
-        transformOrigin: 'center center',
-      });
-
-      gsap.set(arrows, {
-        autoAlpha: 0,
-        scale: 0,
-        transformOrigin: 'center center',
-      });
-
-      paths.forEach((path) => {
-        if (!path) return;
-        try {
-          const pathLength = path.getTotalLength() || 300;
-          gsap.set(path, {
-            strokeDasharray: pathLength,
-            strokeDashoffset: pathLength,
-          });
-        } catch {}
-      });
-
-      mainTl
-        .to(
-          leftColumnRef.current,
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.6,
-            ease: 'power2.out',
-          },
-          0,
-        )
-        .to(
-          middleColumnRef.current,
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.6,
-            ease: 'power2.out',
-          },
-          0.15,
-        )
-        .to(
-          rightColumnRef.current,
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.6,
-            ease: 'power2.out',
-          },
-          0.3,
-        );
-
-      mainTl.to(
-        sliderItems,
-        {
-          autoAlpha: 1,
-          x: 0,
-          filter: 'blur(0px)',
-          duration: 0.4,
-          stagger: 0.1,
-          ease: 'back.out(1.2)',
-        },
-        0.4,
-      );
-
-      mainTl
-        .to(
-          container1Ref.current,
-          {
-            autoAlpha: 1,
-            y: 0,
-            filter: 'blur(0px)',
-            duration: 0.5,
-          },
-          0.5,
-        )
-        .to(
-          badge1Ref.current,
-          {
-            autoAlpha: 1,
-            y: 0,
-            filter: 'blur(0px)',
-            duration: 0.4,
-          },
-          0.7,
-        )
-        .to(
-          startCircle,
-          {
-            autoAlpha: 1,
-            scale: 1,
-            duration: 0.4,
-            ease: 'back.out(1.7)',
-          },
-          0.8,
-        )
-        .to(
-          path1Ref.current,
-          {
-            strokeDashoffset: 0,
-            duration: 0.8,
-            ease: 'power2.inOut',
-          },
-          0.9,
-        );
-
-      if (path1Ref.current && arrowRef1.current) {
-        mainTl
-          .set(
-            arrowRef1.current,
-            {
-              autoAlpha: 0,
-              scale: 0,
-            },
-            0.9,
-          )
-          .to(
-            arrowRef1.current,
-            {
-              autoAlpha: 1,
-              scale: 1,
-              duration: 0.8,
-              motionPath: {
-                path: path1Ref.current,
-                align: path1Ref.current,
-                alignOrigin: [0.5, 0.5],
-                autoRotate: false,
-                start: 0,
-                end: 1,
-              },
-              ease: 'power2.inOut',
-            },
-            0.9,
-          );
-      }
-
-      mainTl
-        .to(
-          container2Ref.current,
-          {
-            autoAlpha: 1,
-            y: 0,
-            filter: 'blur(0px)',
-            duration: 0.5,
-          },
-          1.6,
-        )
-        .to(
-          badge2Ref.current,
-          {
-            autoAlpha: 1,
-            y: 0,
-            filter: 'blur(0px)',
-            duration: 0.4,
-          },
-          1.8,
-        )
-        .to(
-          midCircle,
-          {
-            autoAlpha: 1,
-            scale: 1,
-            duration: 0.4,
-            ease: 'back.out(1.7)',
-          },
-          1.9,
-        )
-        .to(
-          path2Ref.current,
-          {
-            strokeDashoffset: 0,
-            duration: 0.8,
-            ease: 'power2.inOut',
-          },
-          2.0,
-        );
-
-      if (path2Ref.current && arrowRef2.current) {
-        mainTl
-          .set(
-            arrowRef2.current,
-            {
-              autoAlpha: 0,
-              scale: 0,
-            },
-            2.0,
-          )
-          .to(
-            arrowRef2.current,
-            {
-              autoAlpha: 1,
-              scale: 1,
-              duration: 0.8,
-              motionPath: {
-                path: path2Ref.current,
-                align: path2Ref.current,
-                alignOrigin: [0.5, 0.5],
-                autoRotate: false,
-                start: 0,
-                end: 1,
-              },
-              ease: 'power2.inOut',
-            },
-            2.0,
-          );
-      }
-
-      mainTl.to(
-        container3Ref.current,
-        {
-          autoAlpha: 1,
-          y: 0,
-          filter: 'blur(0px)',
-          duration: 0.5,
-        },
-        2.7,
-      );
-
-      mainTl
-        .to(
-          container4Ref.current,
-          {
-            autoAlpha: 1,
-            y: 0,
-            filter: 'blur(0px)',
-            duration: 0.5,
-          },
-          2.9,
-        )
-        .to(
-          container5Ref.current,
-          {
-            autoAlpha: 0.8,
-            y: 0,
-            filter: 'blur(0px)',
-            duration: 0.5,
-          },
-          3.0,
-        )
-        .to(
-          endCircle,
-          {
-            autoAlpha: 1,
-            scale: 1,
-            duration: 0.4,
-            ease: 'back.out(1.7)',
-          },
-          3.1,
-        )
-        .to(
-          path3Ref.current,
-          {
-            strokeDashoffset: 0,
-            duration: 0.8,
-            ease: 'power2.inOut',
-          },
-          3.2,
-        )
-        .to(
-          path4Ref.current,
-          {
-            strokeDashoffset: 0,
-            duration: 0.8,
-            ease: 'power2.inOut',
-          },
-          3.2,
-        );
-
-      if (path3Ref.current && arrowRef3.current) {
-        mainTl
-          .set(
-            arrowRef3.current,
-            {
-              autoAlpha: 0,
-              scale: 0,
-            },
-            3.2,
-          )
-          .to(
-            arrowRef3.current,
-            {
-              autoAlpha: 1,
-              scale: 1,
-              duration: 0.8,
-              motionPath: {
-                path: path3Ref.current,
-                align: path3Ref.current,
-                alignOrigin: [0.5, 0.5],
-                autoRotate: true,
-                start: 0,
-                end: 1,
-              },
-              ease: 'power2.inOut',
-            },
-            3.2,
-          );
-      }
-
-      if (path4Ref.current && arrowRef4.current) {
-        mainTl
-          .set(
-            arrowRef4.current,
-            {
-              autoAlpha: 0,
-              scale: 0,
-            },
-            3.2,
-          )
-          .to(
-            arrowRef4.current,
-            {
-              autoAlpha: 1,
-              scale: 1,
-              duration: 0.8,
-              motionPath: {
-                path: path4Ref.current,
-                align: path4Ref.current,
-                alignOrigin: [0.5, 0.5],
-                autoRotate: true,
-                start: 0,
-                end: 1,
-              },
-              ease: 'power2.inOut',
-            },
-            3.2,
-          );
-      }
-
-      if (stickyWrapperRef.current && containerRef.current) {
-        ScrollTrigger.create({
-          trigger: stickyWrapperRef.current,
-          start: 'top 10%',
-          end: 'bottom 10%',
-          pin: containerRef.current,
-          pinSpacing: true,
-          anticipatePin: 1,
-          pinReparent: false,
-          refreshPriority: 1,
-          id: 'case-one-pin',
-          onLeaveBack: () => {
-            mainTl.progress(0);
-          },
-          onLeave: () => {
-            mainTl.progress(1);
-          },
-          markers: false,
-        });
-      }
-
-      ScrollTrigger.create({
-        trigger: stickyWrapperRef.current,
-        start: 'top 60%',
-        end: 'bottom 20%',
-        onUpdate: (self) => {
-          const rawProgress = Math.min(self.progress, 1);
-          const easedProgress =
-            rawProgress < 0.5
-              ? 2 * rawProgress * rawProgress
-              : 1 - Math.pow(-2 * rawProgress + 2, 2) / 2;
-          mainTl.progress(easedProgress);
-        },
-        scrub: 0.8,
-        preventOverlaps: true,
-        fastScrollEnd: true,
-        markers: false,
-        id: 'case-one-animation',
-      });
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, [isScrolling, animationReady, screenSize.isDesktop]);
-
-  useEffect(() => {
     if (typeof window === 'undefined' || !animationReady) return;
 
-    if (!screenSize.isDesktop) {
-      const ctx = gsap.context(() => {
-        gsap.set('.slider-item', { autoAlpha: 1, x: 0, filter: 'blur(0px)' });
+    const ctx = gsap.context(() => {
+      gsap.set('.slider-item', { clearProps: 'all' });
+      gsap.set(
+        [
+          container1Ref.current,
+          container2Ref.current,
+          container3Ref.current,
+          container4Ref.current,
+          container5Ref.current,
+          badge1Ref.current,
+          badge2Ref.current,
+          leftColumnRef.current,
+          middleColumnRef.current,
+          rightColumnRef.current,
+        ].filter(Boolean),
+        { clearProps: 'all' },
+      );
+
+      if (screenSize.isDesktop) {
+        const mainTl = gsap.timeline({
+          paused: true,
+          smoothChildTiming: true,
+          defaults: {
+            ease: 'power2.out',
+            duration: 0.4,
+          },
+        });
 
         const containers = [
           container1Ref.current,
@@ -603,23 +183,25 @@ const CaseOne = () => {
           container5Ref.current,
         ].filter(Boolean);
 
-        gsap.set(containers, { autoAlpha: 1, y: 0, filter: 'blur(0px)' });
-
         const badges = [badge1Ref.current, badge2Ref.current].filter(Boolean);
-        gsap.set(badges, { autoAlpha: 1, y: 0, filter: 'blur(0px)' });
 
         const columns = [
           leftColumnRef.current,
           middleColumnRef.current,
           rightColumnRef.current,
         ].filter(Boolean);
-        gsap.set(columns, { autoAlpha: 1, y: 0 });
 
         const startCircle = document.querySelector('#svg1 circle[cx="152"][cy="180"]');
         const midCircle = document.querySelector('#svg2 circle[cx="355"][cy="25"]');
         const endCircle = document.querySelector('#svg3 circle[cx="338"][cy="15"]');
         const circles = [startCircle, midCircle, endCircle].filter(Boolean);
-        gsap.set(circles, { autoAlpha: 1, scale: 1 });
+
+        const arrows = [
+          arrowRef1.current,
+          arrowRef2.current,
+          arrowRef3.current,
+          arrowRef4.current,
+        ].filter(Boolean);
 
         const paths = [
           path1Ref.current,
@@ -627,58 +209,585 @@ const CaseOne = () => {
           path3Ref.current,
           path4Ref.current,
         ].filter(Boolean);
+
+        const sliderItems = document.querySelectorAll('.slider-item');
+        gsap.set(sliderItems, {
+          autoAlpha: 0,
+          x: 15,
+          filter: 'blur(2px)',
+        });
+
+        gsap.set(columns, {
+          autoAlpha: 0,
+          y: 20,
+        });
+
+        gsap.set(containers, {
+          autoAlpha: 0,
+          y: 20,
+          filter: 'blur(5px)',
+        });
+
+        gsap.set(badges, {
+          autoAlpha: 0,
+          y: 15,
+          filter: 'blur(3px)',
+        });
+
+        gsap.set(circles, {
+          autoAlpha: 0,
+          scale: 0,
+          transformOrigin: 'center center',
+        });
+
+        gsap.set(arrows, {
+          autoAlpha: 0,
+          scale: 0,
+          transformOrigin: 'center center',
+        });
+
         paths.forEach((path) => {
           if (!path) return;
           try {
-            gsap.set(path, { strokeDashoffset: 0 });
+            const pathLength = path.getTotalLength() || 300;
+            gsap.set(path, {
+              strokeDasharray: pathLength,
+              strokeDashoffset: pathLength,
+            });
           } catch {}
         });
 
-        gsap
-          .timeline()
-          .from(containers, {
-            autoAlpha: 0,
-            y: 10,
-            duration: 0.5,
-            stagger: 0.15,
-            ease: 'power2.out',
-          })
-          .from(
-            circles,
+        mainTl
+          .to(
+            leftColumnRef.current,
             {
-              autoAlpha: 0,
-              scale: 0,
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.6,
+              ease: 'power2.out',
+            },
+            0,
+          )
+          .to(
+            middleColumnRef.current,
+            {
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.6,
+              ease: 'power2.out',
+            },
+            0.15,
+          )
+          .to(
+            rightColumnRef.current,
+            {
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.6,
+              ease: 'power2.out',
+            },
+            0.3,
+          );
+
+        mainTl.to(
+          sliderItems,
+          {
+            autoAlpha: 1,
+            x: 0,
+            filter: 'blur(0px)',
+            duration: 0.4,
+            stagger: 0.1,
+            ease: 'back.out(1.2)',
+          },
+          0.4,
+        );
+
+        mainTl
+          .to(
+            container1Ref.current,
+            {
+              autoAlpha: 1,
+              y: 0,
+              filter: 'blur(0px)',
+              duration: 0.5,
+            },
+            0.5,
+          )
+          .to(
+            badge1Ref.current,
+            {
+              autoAlpha: 1,
+              y: 0,
+              filter: 'blur(0px)',
               duration: 0.4,
-              stagger: 0.1,
+            },
+            0.7,
+          )
+          .to(
+            startCircle,
+            {
+              autoAlpha: 1,
+              scale: 1,
+              duration: 0.4,
               ease: 'back.out(1.7)',
             },
-            '-=0.3',
+            0.8,
           )
-          .from(
-            paths,
+          .to(
+            path1Ref.current,
             {
-              strokeDashoffset: (i, target) => {
-                try {
-                  return target.getTotalLength() || 300;
-                } catch {
-                  return 300;
-                }
-              },
-              duration: 0.6,
-              stagger: 0.1,
+              strokeDashoffset: 0,
+              duration: 0.8,
               ease: 'power2.inOut',
             },
-            '-=0.2',
+            0.9,
           );
-      });
 
-      return () => ctx.revert();
-    }
-  }, [animationReady, screenSize.isDesktop]);
+        if (path1Ref.current && arrowRef1.current) {
+          mainTl
+            .set(
+              arrowRef1.current,
+              {
+                autoAlpha: 0,
+                scale: 0,
+              },
+              0.9,
+            )
+            .to(
+              arrowRef1.current,
+              {
+                autoAlpha: 1,
+                scale: 1,
+                duration: 0.8,
+                motionPath: {
+                  path: path1Ref.current,
+                  align: path1Ref.current,
+                  alignOrigin: [0.5, 0.5],
+                  autoRotate: false,
+                  start: 0,
+                  end: 1,
+                },
+                ease: 'power2.inOut',
+              },
+              0.9,
+            );
+        }
+
+        mainTl
+          .to(
+            container2Ref.current,
+            {
+              autoAlpha: 1,
+              y: 0,
+              filter: 'blur(0px)',
+              duration: 0.5,
+            },
+            1.6,
+          )
+          .to(
+            badge2Ref.current,
+            {
+              autoAlpha: 1,
+              y: 0,
+              filter: 'blur(0px)',
+              duration: 0.4,
+            },
+            1.8,
+          )
+          .to(
+            midCircle,
+            {
+              autoAlpha: 1,
+              scale: 1,
+              duration: 0.4,
+              ease: 'back.out(1.7)',
+            },
+            1.9,
+          )
+          .to(
+            path2Ref.current,
+            {
+              strokeDashoffset: 0,
+              duration: 0.8,
+              ease: 'power2.inOut',
+            },
+            2.0,
+          );
+
+        if (path2Ref.current && arrowRef2.current) {
+          mainTl
+            .set(
+              arrowRef2.current,
+              {
+                autoAlpha: 0,
+                scale: 0,
+              },
+              2.0,
+            )
+            .to(
+              arrowRef2.current,
+              {
+                autoAlpha: 1,
+                scale: 1,
+                duration: 0.8,
+                motionPath: {
+                  path: path2Ref.current,
+                  align: path2Ref.current,
+                  alignOrigin: [0.5, 0.5],
+                  autoRotate: false,
+                  start: 0,
+                  end: 1,
+                },
+                ease: 'power2.inOut',
+              },
+              2.0,
+            );
+        }
+
+        mainTl.to(
+          container3Ref.current,
+          {
+            autoAlpha: 1,
+            y: 0,
+            filter: 'blur(0px)',
+            duration: 0.5,
+          },
+          2.7,
+        );
+
+        mainTl
+          .to(
+            container4Ref.current,
+            {
+              autoAlpha: 1,
+              y: 0,
+              filter: 'blur(0px)',
+              duration: 0.5,
+            },
+            2.9,
+          )
+          .to(
+            container5Ref.current,
+            {
+              autoAlpha: 0.8,
+              y: 0,
+              filter: 'blur(0px)',
+              duration: 0.5,
+            },
+            3.0,
+          )
+          .to(
+            endCircle,
+            {
+              autoAlpha: 1,
+              scale: 1,
+              duration: 0.4,
+              ease: 'back.out(1.7)',
+            },
+            3.1,
+          )
+          .to(
+            path3Ref.current,
+            {
+              strokeDashoffset: 0,
+              duration: 0.8,
+              ease: 'power2.inOut',
+            },
+            3.2,
+          )
+          .to(
+            path4Ref.current,
+            {
+              strokeDashoffset: 0,
+              duration: 0.8,
+              ease: 'power2.inOut',
+            },
+            3.2,
+          );
+
+        if (path3Ref.current && arrowRef3.current) {
+          mainTl
+            .set(
+              arrowRef3.current,
+              {
+                autoAlpha: 0,
+                scale: 0,
+              },
+              3.2,
+            )
+            .to(
+              arrowRef3.current,
+              {
+                autoAlpha: 1,
+                scale: 1,
+                duration: 0.8,
+                motionPath: {
+                  path: path3Ref.current,
+                  align: path3Ref.current,
+                  alignOrigin: [0.5, 0.5],
+                  autoRotate: true,
+                  start: 0,
+                  end: 1,
+                },
+                ease: 'power2.inOut',
+              },
+              3.2,
+            );
+        }
+
+        if (path4Ref.current && arrowRef4.current) {
+          mainTl
+            .set(
+              arrowRef4.current,
+              {
+                autoAlpha: 0,
+                scale: 0,
+              },
+              3.2,
+            )
+            .to(
+              arrowRef4.current,
+              {
+                autoAlpha: 1,
+                scale: 1,
+                duration: 0.8,
+                motionPath: {
+                  path: path4Ref.current,
+                  align: path4Ref.current,
+                  alignOrigin: [0.5, 0.5],
+                  autoRotate: true,
+                  start: 0,
+                  end: 1,
+                },
+                ease: 'power2.inOut',
+              },
+              3.2,
+            );
+        }
+
+        if (stickyWrapperRef.current && containerRef.current) {
+          ScrollTrigger.create({
+            trigger: stickyWrapperRef.current,
+            start: 'top 10%',
+            end: 'bottom 10%',
+            pin: containerRef.current,
+            pinSpacing: true,
+            anticipatePin: 1,
+            pinReparent: false,
+            refreshPriority: 1,
+            id: 'case-one-pin',
+            onLeaveBack: () => {
+              mainTl.progress(0);
+            },
+            onLeave: () => {
+              mainTl.progress(1);
+            },
+            markers: false,
+          });
+        }
+
+        ScrollTrigger.create({
+          trigger: stickyWrapperRef.current,
+          start: 'top 60%',
+          end: 'bottom 20%',
+          onUpdate: (self) => {
+            const rawProgress = Math.min(self.progress, 1);
+            const easedProgress =
+              rawProgress < 0.5
+                ? 2 * rawProgress * rawProgress
+                : 1 - Math.pow(-2 * rawProgress + 2, 2) / 2;
+            mainTl.progress(easedProgress);
+          },
+          scrub: 0.8,
+          preventOverlaps: true,
+          fastScrollEnd: true,
+          markers: false,
+          id: 'case-one-animation',
+        });
+      } else {
+        const mainTl = gsap.timeline({
+          paused: true,
+          smoothChildTiming: true,
+          defaults: {
+            ease: 'power2.out',
+            duration: 0.4,
+          },
+        });
+
+        const containers = [
+          container1Ref.current,
+          container2Ref.current,
+          container3Ref.current,
+          container4Ref.current,
+          container5Ref.current,
+        ].filter(Boolean);
+
+        const badges = [badge1Ref.current, badge2Ref.current].filter(Boolean);
+
+        const columns = [
+          leftColumnRef.current,
+          middleColumnRef.current,
+          rightColumnRef.current,
+        ].filter(Boolean);
+
+        const sliderItems = document.querySelectorAll('.slider-item');
+
+        gsap.set(sliderItems, {
+          autoAlpha: 0,
+          y: 15,
+          filter: 'blur(2px)',
+        });
+
+        gsap.set(columns, {
+          autoAlpha: 0,
+          y: 15,
+        });
+
+        gsap.set(containers, {
+          autoAlpha: 0,
+          y: 20,
+          filter: 'blur(3px)',
+        });
+
+        gsap.set(badges, {
+          autoAlpha: 0,
+          y: 10,
+          filter: 'blur(2px)',
+        });
+
+        mainTl
+          .to(
+            leftColumnRef.current,
+            {
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.6,
+            },
+            0,
+          )
+          .to(
+            sliderItems,
+            {
+              autoAlpha: 1,
+              y: 0,
+              filter: 'blur(0px)',
+              stagger: 0.1,
+              duration: 0.4,
+            },
+            0.3,
+          )
+          .to(
+            middleColumnRef.current,
+            {
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.6,
+            },
+            0.2,
+          )
+          .to(
+            container1Ref.current,
+            {
+              autoAlpha: 1,
+              y: 0,
+              filter: 'blur(0px)',
+              duration: 0.5,
+            },
+            0.4,
+          )
+          .to(
+            badge1Ref.current,
+            {
+              autoAlpha: 1,
+              y: 0,
+              filter: 'blur(0px)',
+              duration: 0.4,
+            },
+            0.5,
+          )
+          .to(
+            container2Ref.current,
+            {
+              autoAlpha: 1,
+              y: 0,
+              filter: 'blur(0px)',
+              duration: 0.5,
+            },
+            0.7,
+          )
+          .to(
+            badge2Ref.current,
+            {
+              autoAlpha: 1,
+              y: 0,
+              filter: 'blur(0px)',
+              duration: 0.4,
+            },
+            0.8,
+          )
+          .to(
+            rightColumnRef.current,
+            {
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.6,
+            },
+            0.9,
+          )
+          .to(
+            container3Ref.current,
+            {
+              autoAlpha: 1,
+              y: 0,
+              filter: 'blur(0px)',
+              duration: 0.5,
+            },
+            1.0,
+          )
+          .to(
+            container4Ref.current,
+            {
+              autoAlpha: 1,
+              y: 0,
+              filter: 'blur(0px)',
+              duration: 0.5,
+            },
+            1.2,
+          )
+          .to(
+            container5Ref.current,
+            {
+              autoAlpha: 0.8,
+              y: 0,
+              filter: 'blur(0px)',
+              duration: 0.5,
+            },
+            1.4,
+          );
+
+        if (containerRef.current) {
+          ScrollTrigger.create({
+            trigger: containerRef.current,
+            start: 'top 80%',
+            end: 'bottom 20%',
+            onUpdate: (self) => {
+              const progress = Math.min(self.progress * 1.5, 1);
+              mainTl.progress(progress);
+            },
+            scrub: 0.5,
+            markers: false,
+            id: 'case-one-mobile-animation',
+          });
+        }
+      }
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, [isScrolling, animationReady, screenSize.isDesktop, screenSize.width]);
 
   return (
     <div className="relative" ref={stickyWrapperRef}>
-      <div className={screenSize.isDesktop ? 'h-[100vh]' : 'h-auto'}>
+      <div className={screenSize.isDesktop ? 'h-[100vh]' : 'h-auto min-h-[100vh]'}>
         <div
           className={`translate-z-0 border-t border-b border-black/20 dark:border-white/30 ${
             screenSize.isDesktop ? 'flex h-[800px]' : 'flex h-auto flex-col py-8'
@@ -713,7 +822,7 @@ const CaseOne = () => {
             className={`relative flex flex-col overflow-hidden border-black/20 dark:border-white/30 ${
               screenSize.isDesktop
                 ? 'w-2/4 gap-32 border-r border-l'
-                : 'w-full gap-4 sm:gap-16 border-t border-b px-4 py-8'
+                : 'w-full gap-4 border-t border-b px-4 py-8 sm:gap-16'
             }`}
           >
             <div className="absolute inset-0 overflow-hidden">
@@ -725,7 +834,7 @@ const CaseOne = () => {
 
             {screenSize.isDesktop && (
               <>
-                <div className="pointer-events-none absolute inset-0 z-[15]">
+                <div className="pointer-events-none hidden lg:block absolute inset-0 z-[15]">
                   <svg
                     id="svg1"
                     width="100%"
@@ -956,7 +1065,9 @@ const CaseOne = () => {
             </div>
             <div
               ref={container2Ref}
-              className={`container-2 relative z-10 flex w-fit flex-col items-end gap-2 ${screenSize.isDesktop ? 'pl-64' : 'pl-6 sm:pl-12'}`}
+              className={`container-2 relative z-10 flex w-fit flex-col items-end gap-2 ${
+                screenSize.isDesktop ? 'pl-64' : 'pl-6 sm:pl-12'
+              }`}
             >
               <span
                 ref={badge2Ref}
@@ -999,7 +1110,11 @@ const CaseOne = () => {
                 </div>
               </div>
               <div
-                className={`flex ${screenSize.isDesktop ? 'flex-col gap-12' : 'flex-row flex-wrap pl-6 sm:pl-12 gap-6'}`}
+                className={`flex ${
+                  screenSize.isDesktop
+                    ? 'flex-col gap-12'
+                    : 'flex-row flex-wrap gap-6 pl-6 sm:pl-12'
+                }`}
               >
                 <div
                   ref={container4Ref}
@@ -1040,10 +1155,14 @@ const CaseOne = () => {
           </div>
           <div
             ref={rightColumnRef}
-            className={`flex flex-col ${screenSize.isDesktop ? 'w-1/4' : 'w-full px-4 py-8'} items-center justify-between`}
+            className={`flex flex-col ${
+              screenSize.isDesktop ? 'w-1/4' : 'w-full px-4 py-8'
+            } items-center justify-between`}
           >
             <div
-              className={`flex ${screenSize.isDesktop ? 'flex-col' : 'flex-row flex-wrap'} justify-center gap-4 px-2 pt-0 sm:px-9`}
+              className={`flex ${
+                screenSize.isDesktop ? 'flex-col' : 'flex-row flex-wrap'
+              } justify-center gap-4 px-2 pt-0 sm:px-9`}
             >
               <SliderItem
                 icon={
@@ -1326,30 +1445,20 @@ const CaseOne = () => {
               will-change: opacity, transform;
             }
 
-            @media (max-width: 1023px) {
-              .js-animation-ready .container-1,
-              .js-animation-ready .container-2,
-              .js-animation-ready .container-3,
-              .js-animation-ready .container-4,
-              .js-animation-ready .container-5 {
-                opacity: 1 !important;
-                visibility: visible !important;
-                transform: none !important;
-                filter: none !important;
-              }
-            }
-
             .js-animation-ready .slider-item {
               opacity: 0;
-              transform: translateX(15px);
               will-change: opacity, transform;
             }
 
             @media (max-width: 1023px) {
               .js-animation-ready .slider-item {
-                opacity: 1 !important;
-                transform: none !important;
-                filter: none !important;
+                transform: translateY(15px);
+              }
+            }
+
+            @media (min-width: 1024px) {
+              .js-animation-ready .slider-item {
+                transform: translateX(15px);
               }
             }
 
