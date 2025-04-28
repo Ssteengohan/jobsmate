@@ -7,7 +7,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import WorldMap from '../../../components/WorldMap';
 
-// Register GSAP plugins if we're in browser environment
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 }
@@ -37,7 +36,6 @@ const CaseTwo = () => {
   const rightColumnRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLSpanElement>(null);
 
-  // Set up animation readiness
   useEffect(() => {
     if (typeof document !== 'undefined') {
       document.documentElement.classList.add('js-animation-ready');
@@ -46,7 +44,6 @@ const CaseTwo = () => {
     }
   }, []);
 
-  // Animation effect for connecting lines and arrows
   useEffect(() => {
     if (typeof window === 'undefined' || !animationReady) return;
 
@@ -55,7 +52,6 @@ const CaseTwo = () => {
       const arrows = arrowRefs.current.filter(Boolean);
       const cards = cardsRef.current.filter(Boolean);
 
-      // Create a main timeline for better sequencing
       const mainTl = gsap.timeline({
         paused: true,
         smoothChildTiming: true,
@@ -65,19 +61,16 @@ const CaseTwo = () => {
         },
       });
 
-      // Initial state for columns
       gsap.set([leftColumnRef.current, rightColumnRef.current], {
         autoAlpha: 0,
         y: 20,
       });
 
-      // Initial state for the title
       gsap.set(titleRef.current, {
         autoAlpha: 0,
         y: -15,
       });
 
-      // Set initial state of paths
       paths.forEach((path) => {
         if (!path) return;
         try {
@@ -86,12 +79,9 @@ const CaseTwo = () => {
             strokeDasharray: pathLength,
             strokeDashoffset: pathLength,
           });
-        } catch {
-          // console.error('Error setting up path', err);
-        }
+        } catch {}
       });
 
-      // Set initial state for arrows and cards
       gsap.set(arrows, {
         autoAlpha: 0,
         scale: 0,
@@ -99,14 +89,12 @@ const CaseTwo = () => {
         visibility: 'hidden',
       });
 
-      // Set initial state for the arrow triangles specifically
       gsap.set('#arrowTriangle1, #arrowTriangle2, #arrowTriangle3', {
         autoAlpha: 0,
         scale: 0,
         visibility: 'hidden',
       });
 
-      // Ensure cards are completely hidden initially
       gsap.set('.info-container', {
         autoAlpha: 0,
         y: 30,
@@ -115,7 +103,6 @@ const CaseTwo = () => {
         clearProps: 'filter',
       });
 
-      // Setup WorldMap animations
       const worldMapElement = document.querySelector('.world-map-container');
       if (worldMapElement) {
         gsap.set(worldMapElement, {
@@ -143,7 +130,6 @@ const CaseTwo = () => {
         }
       }
 
-      // Animate side columns first
       mainTl
         .to(
           leftColumnRef.current,
@@ -164,7 +150,6 @@ const CaseTwo = () => {
           0.2,
         );
 
-      // Show the world map immediately at the start
       mainTl.to(
         '.world-map-container',
         {
@@ -176,7 +161,6 @@ const CaseTwo = () => {
         0,
       );
 
-      // Add title animation
       mainTl.to(
         titleRef.current,
         {
@@ -188,7 +172,6 @@ const CaseTwo = () => {
         0.2,
       );
 
-      // Animate map markers with staggered effect
       mainTl.to(
         '.pulse-circle',
         {
@@ -201,7 +184,6 @@ const CaseTwo = () => {
         0.1,
       );
 
-      // Animate map connections with staggered effect
       mainTl.to(
         '.map-connection',
         {
@@ -214,7 +196,6 @@ const CaseTwo = () => {
         0.2,
       );
 
-      // Create animations for each path, arrow, and card
       interface ArrowPulseTimeline {
         timeline: gsap.core.Timeline;
         arrow: SVGGElement | null;
@@ -841,7 +822,6 @@ const CaseTwo = () => {
                     <h3 className="text-foreground text-xl font-bold">Hiring Process</h3>
 
                     <div className="mt-2 flex flex-col gap-3">
-                      {/* Hiring Process Steps */}
                       <div className="flex items-center gap-3 rounded-lg border-1 border-gray-400/30 bg-gradient-to-r from-white to-gray-50 px-6 py-3 shadow-[0_0px_15px_0px_rgba(0,0,0,0.1)] dark:from-gray-800 dark:to-gray-900">
                         <div className="flex h-9 w-9 items-center justify-center rounded-md bg-[#38b6ff]/20">
                           <span className="text-lg font-bold text-[#38b6ff]">1</span>
@@ -864,7 +844,6 @@ const CaseTwo = () => {
                       </div>
                     </div>
 
-                    {/* Stats */}
                     <div className="mt-6">
                       <h4 className="text-foreground mb-3 font-semibold">Global Talent Pool</h4>
                       <div className="grid grid-cols-2 gap-3">
@@ -884,7 +863,6 @@ const CaseTwo = () => {
                     </div>
                   </div>
 
-                  {/* Information Elements (Non-clickable) */}
                   <div className="mt-6 flex flex-col gap-3 px-5">
                     <div className="flex items-center justify-center gap-2 rounded-lg bg-[var(--primary-medium-blue)]/80 px-4 py-2 text-white">
                       <Briefcase className="h-4 w-4" />

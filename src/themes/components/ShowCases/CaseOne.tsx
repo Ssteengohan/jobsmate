@@ -21,6 +21,13 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 }
 
+interface ScreenSize {
+  width: number;
+  isMobile: boolean;
+  isTablet: boolean;
+  isDesktop: boolean;
+}
+
 interface SaasIconProps {
   children: ReactNode;
   className?: string;
@@ -79,6 +86,12 @@ const SliderItem = ({
 const CaseOne = () => {
   const { isScrolling } = useScrollData();
   const [animationReady, setAnimationReady] = useState(false);
+  const [screenSize, setScreenSize] = useState<ScreenSize>({
+    width: typeof window !== 'undefined' ? window.innerWidth : 1200,
+    isMobile: false,
+    isTablet: false,
+    isDesktop: true,
+  });
 
   const containerRef = useRef<HTMLDivElement>(null);
   const stickyWrapperRef = useRef<HTMLDivElement>(null);
@@ -107,6 +120,23 @@ const CaseOne = () => {
   const rightColumnRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      setScreenSize({
+        width,
+        isMobile: width < 768,
+        isTablet: width >= 768 && width < 1024,
+        isDesktop: width >= 1024,
+      });
+    };
+
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
     if (typeof document !== 'undefined') {
       document.documentElement.classList.add('js-animation-ready');
       const timer = setTimeout(() => setAnimationReady(true), 100);
@@ -115,7 +145,7 @@ const CaseOne = () => {
   }, []);
 
   useEffect(() => {
-    if (typeof window === 'undefined' || !animationReady) return;
+    if (typeof window === 'undefined' || !animationReady || !screenSize.isDesktop) return;
 
     const ctx = gsap.context(() => {
       const mainTl = gsap.timeline({
@@ -203,9 +233,7 @@ const CaseOne = () => {
             strokeDasharray: pathLength,
             strokeDashoffset: pathLength,
           });
-        } catch {
-          // Error handling logic can be added here if needed
-        }
+        } catch {}
       });
 
       mainTl
@@ -253,7 +281,6 @@ const CaseOne = () => {
         0.4,
       );
 
-      // Container 1 animations
       mainTl
         .to(
           container1Ref.current,
@@ -285,7 +312,6 @@ const CaseOne = () => {
           },
           0.8,
         )
-        // Path 1 animation
         .to(
           path1Ref.current,
           {
@@ -296,7 +322,6 @@ const CaseOne = () => {
           0.9,
         );
 
-      // Arrow 1 animation - set initial state then animate with motion path
       if (path1Ref.current && arrowRef1.current) {
         mainTl
           .set(
@@ -327,7 +352,6 @@ const CaseOne = () => {
           );
       }
 
-      // Container 2 animations
       mainTl
         .to(
           container2Ref.current,
@@ -359,7 +383,6 @@ const CaseOne = () => {
           },
           1.9,
         )
-        // Path 2 animation
         .to(
           path2Ref.current,
           {
@@ -370,7 +393,6 @@ const CaseOne = () => {
           2.0,
         );
 
-      // Arrow 2 animation
       if (path2Ref.current && arrowRef2.current) {
         mainTl
           .set(
@@ -401,7 +423,6 @@ const CaseOne = () => {
           );
       }
 
-      // Container 3 animations
       mainTl.to(
         container3Ref.current,
         {
@@ -413,7 +434,6 @@ const CaseOne = () => {
         2.7,
       );
 
-      // Container 4 & 5 animations
       mainTl
         .to(
           container4Ref.current,
@@ -445,7 +465,6 @@ const CaseOne = () => {
           },
           3.1,
         )
-        // Path 3 animation
         .to(
           path3Ref.current,
           {
@@ -455,7 +474,6 @@ const CaseOne = () => {
           },
           3.2,
         )
-        // Path 4 animation
         .to(
           path4Ref.current,
           {
@@ -466,7 +484,6 @@ const CaseOne = () => {
           3.2,
         );
 
-      // Arrow 3 animation
       if (path3Ref.current && arrowRef3.current) {
         mainTl
           .set(
@@ -497,7 +514,6 @@ const CaseOne = () => {
           );
       }
 
-      // Arrow 4 animation
       if (path4Ref.current && arrowRef4.current) {
         mainTl
           .set(
@@ -570,28 +586,120 @@ const CaseOne = () => {
     }, containerRef);
 
     return () => ctx.revert();
-  }, [isScrolling, animationReady]);
+  }, [isScrolling, animationReady, screenSize.isDesktop]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !animationReady) return;
+
+    if (!screenSize.isDesktop) {
+      const ctx = gsap.context(() => {
+        gsap.set('.slider-item', { autoAlpha: 1, x: 0, filter: 'blur(0px)' });
+
+        const containers = [
+          container1Ref.current,
+          container2Ref.current,
+          container3Ref.current,
+          container4Ref.current,
+          container5Ref.current,
+        ].filter(Boolean);
+
+        gsap.set(containers, { autoAlpha: 1, y: 0, filter: 'blur(0px)' });
+
+        const badges = [badge1Ref.current, badge2Ref.current].filter(Boolean);
+        gsap.set(badges, { autoAlpha: 1, y: 0, filter: 'blur(0px)' });
+
+        const columns = [
+          leftColumnRef.current,
+          middleColumnRef.current,
+          rightColumnRef.current,
+        ].filter(Boolean);
+        gsap.set(columns, { autoAlpha: 1, y: 0 });
+
+        const startCircle = document.querySelector('#svg1 circle[cx="152"][cy="180"]');
+        const midCircle = document.querySelector('#svg2 circle[cx="355"][cy="25"]');
+        const endCircle = document.querySelector('#svg3 circle[cx="338"][cy="15"]');
+        const circles = [startCircle, midCircle, endCircle].filter(Boolean);
+        gsap.set(circles, { autoAlpha: 1, scale: 1 });
+
+        const paths = [
+          path1Ref.current,
+          path2Ref.current,
+          path3Ref.current,
+          path4Ref.current,
+        ].filter(Boolean);
+        paths.forEach((path) => {
+          if (!path) return;
+          try {
+            gsap.set(path, { strokeDashoffset: 0 });
+          } catch {}
+        });
+
+        gsap
+          .timeline()
+          .from(containers, {
+            autoAlpha: 0,
+            y: 10,
+            duration: 0.5,
+            stagger: 0.15,
+            ease: 'power2.out',
+          })
+          .from(
+            circles,
+            {
+              autoAlpha: 0,
+              scale: 0,
+              duration: 0.4,
+              stagger: 0.1,
+              ease: 'back.out(1.7)',
+            },
+            '-=0.3',
+          )
+          .from(
+            paths,
+            {
+              strokeDashoffset: (i, target) => {
+                try {
+                  return target.getTotalLength() || 300;
+                } catch {
+                  return 300;
+                }
+              },
+              duration: 0.6,
+              stagger: 0.1,
+              ease: 'power2.inOut',
+            },
+            '-=0.2',
+          );
+      });
+
+      return () => ctx.revert();
+    }
+  }, [animationReady, screenSize.isDesktop]);
 
   return (
     <div className="relative" ref={stickyWrapperRef}>
-      <div className="h-[100vh]">
+      <div className={screenSize.isDesktop ? 'h-[100vh]' : 'h-auto'}>
         <div
-          className="flex h-[800px] translate-z-0 border-t border-b border-black/20 dark:border-white/30"
+          className={`translate-z-0 border-t border-b border-black/20 dark:border-white/30 ${
+            screenSize.isDesktop ? 'flex h-[800px]' : 'flex h-auto flex-col py-8'
+          }`}
           ref={containerRef}
         >
           <div
             ref={leftColumnRef}
-            className="flex h-full w-1/4 flex-col justify-between gap-2 pt-10"
+            className={`flex flex-col justify-between gap-2 lg:pt-10 ${
+              screenSize.isDesktop ? 'h-full w-1/4' : 'mb-8 h-auto w-full'
+            }`}
           >
             <div className="container flex w-full flex-col gap-2">
               <h2 className="text-xl font-semibold">Hire local or global</h2>
-              <Balancer className="w-3/4 text-gray-600 *:text-sm md:text-base dark:text-gray-400">
+              <Balancer className="w-full text-gray-600 *:text-sm sm:w-3/4 md:text-base dark:text-gray-400">
                 Streamline your hiring process with our tools and integrations to attract talent.
               </Balancer>
             </div>
             <Link
               href={'/'}
-              className="group relative flex w-fit items-center gap-1 px-4 pb-20 text-sm font-semibold"
+              className="group relative flex w-fit items-center gap-1 px-4 font-semibold md:pb-20"
             >
               <span className="relative inline-block">
                 Explore platform
@@ -602,7 +710,11 @@ const CaseOne = () => {
           </div>
           <div
             ref={middleColumnRef}
-            className="relative flex w-2/4 flex-col gap-32 overflow-hidden border-r border-l border-black/20 dark:border-white/30"
+            className={`relative flex flex-col overflow-hidden border-black/20 dark:border-white/30 ${
+              screenSize.isDesktop
+                ? 'w-2/4 gap-32 border-r border-l'
+                : 'w-full gap-4 sm:gap-16 border-t border-b px-4 py-8'
+            }`}
           >
             <div className="absolute inset-0 overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary-medium-blue)]/5 via-transparent to-[var(--primary-gold)]/5"></div>
@@ -611,186 +723,214 @@ const CaseOne = () => {
               <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white/40 [mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)] dark:bg-[var(--neutral-50)]/30"></div>
             </div>
 
-            <div className="pointer-events-none absolute inset-0 z-[15]">
-              <svg id="svg1" width="100%" height="60%" className="overflow-visible" ref={svgRef1}>
-                <defs>
-                  <linearGradient
-                    id="gradientFlow1"
-                    x1="0%"
-                    y1="0%"
-                    x2="100%"
-                    y2="0%"
-                    gradientUnits="userSpaceOnUse"
+            {screenSize.isDesktop && (
+              <>
+                <div className="pointer-events-none absolute inset-0 z-[15]">
+                  <svg
+                    id="svg1"
+                    width="100%"
+                    height="60%"
+                    className="overflow-visible"
+                    ref={svgRef1}
                   >
-                    <stop id="gradientStop1" offset="0" stopColor="#4dabf7" />
-                    <stop offset="0.3" stopColor="#74c0fc" />
-                    <stop id="gradientStop2" offset="0.5" stopColor="var(--primary-gold)" />
-                    <stop offset="0.7" stopColor="#74c0fc" />
-                    <stop offset="1" stopColor="#4dabf7" />
-                  </linearGradient>
-                </defs>
+                    <defs>
+                      <linearGradient
+                        id="gradientFlow1"
+                        x1="0%"
+                        y1="0%"
+                        x2="100%"
+                        y2="0%"
+                        gradientUnits="userSpaceOnUse"
+                      >
+                        <stop id="gradientStop1" offset="0" stopColor="#4dabf7" />
+                        <stop offset="0.3" stopColor="#74c0fc" />
+                        <stop id="gradientStop2" offset="0.5" stopColor="var(--primary-gold)" />
+                        <stop offset="0.7" stopColor="#74c0fc" />
+                        <stop offset="1" stopColor="#4dabf7" />
+                      </linearGradient>
+                    </defs>
 
-                <circle cx="152" cy="180" r="8" fill="white" stroke="#4dabf7" strokeWidth="2" />
+                    <circle cx="152" cy="180" r="8" fill="white" stroke="#4dabf7" strokeWidth="2" />
 
-                <path
-                  ref={path1Ref}
-                  d="M 152 195 
-                     L 152 190 
-                     C 145 280, 180 260, 280 260
-                     S 345 355, 355 340"
-                  fill="none"
-                  stroke="url(#gradientFlow1)"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  className="opacity-90"
-                />
+                    <path
+                      ref={path1Ref}
+                      d="M 152 195 
+                        L 152 190 
+                        C 145 280, 180 260, 280 260
+                        S 345 355, 355 340"
+                      fill="none"
+                      stroke="url(#gradientFlow1)"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      className="opacity-90"
+                    />
 
-                <g id="arrowGroup1" ref={arrowRef1} opacity="0">
-                  <polygon
-                    id="arrowTriangle1"
-                    points="-4,-4 6,-4 0,6"
-                    fill="var(--primary-gold)"
-                    fillOpacity="0.9"
-                    filter="drop-shadow(0 0 2px rgba(240, 180, 41, 0.5))"
-                  />
-                </g>
-              </svg>
-            </div>
+                    <g id="arrowGroup1" ref={arrowRef1} opacity="0">
+                      <polygon
+                        id="arrowTriangle1"
+                        points="-4,-4 6,-4 0,6"
+                        fill="var(--primary-gold)"
+                        fillOpacity="0.9"
+                        filter="drop-shadow(0 0 2px rgba(240, 180, 41, 0.5))"
+                      />
+                    </g>
+                  </svg>
+                </div>
 
-            <div className="pointer-events-none absolute inset-x-0 top-[50%] bottom-0 z-[15]">
-              <svg id="svg2" width="100%" height="100%" className="overflow-visible" ref={svgRef2}>
-                <defs>
-                  <linearGradient
-                    id="gradientFlow2"
-                    x1="0%"
-                    y1="0%"
-                    x2="100%"
-                    y2="0%"
-                    gradientUnits="userSpaceOnUse"
+                <div className="pointer-events-none absolute inset-x-0 top-[50%] bottom-0 z-[15]">
+                  <svg
+                    id="svg2"
+                    width="100%"
+                    height="100%"
+                    className="overflow-visible"
+                    ref={svgRef2}
                   >
-                    <stop id="gradientStop3" offset="0" stopColor="#4dabf7" />
-                    <stop offset="0.3" stopColor="#74c0fc" />
-                    <stop id="gradientStop4" offset="0.5" stopColor="var(--primary-gold)" />
-                    <stop offset="0.7" stopColor="#74c0fc" />
-                    <stop offset="1" stopColor="#4dabf7" />
-                  </linearGradient>
-                </defs>
+                    <defs>
+                      <linearGradient
+                        id="gradientFlow2"
+                        x1="0%"
+                        y1="0%"
+                        x2="100%"
+                        y2="0%"
+                        gradientUnits="userSpaceOnUse"
+                      >
+                        <stop id="gradientStop3" offset="0" stopColor="#4dabf7" />
+                        <stop offset="0.3" stopColor="#74c0fc" />
+                        <stop id="gradientStop4" offset="0.5" stopColor="var(--primary-gold)" />
+                        <stop offset="0.7" stopColor="#74c0fc" />
+                        <stop offset="1" stopColor="#4dabf7" />
+                      </linearGradient>
+                    </defs>
 
-                <circle cx="355" cy="25" r="8" fill="white" stroke="#4dabf7" strokeWidth="2" />
+                    <circle cx="355" cy="25" r="8" fill="white" stroke="#4dabf7" strokeWidth="2" />
 
-                <path
-                  ref={path2Ref}
-                  d="M 355 33
-                    C 345 170, 190 80, 190 125
-                    S 190 210, 190, 215"
-                  fill="none"
-                  stroke="url(#gradientFlow2)"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  className="opacity-90"
-                />
+                    <path
+                      ref={path2Ref}
+                      d="M 355 33
+                        C 345 170, 190 80, 190 125
+                        S 190 210, 190, 215"
+                      fill="none"
+                      stroke="url(#gradientFlow2)"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      className="opacity-90"
+                    />
 
-                <g id="arrowGroup2" ref={arrowRef2} opacity="0">
-                  <polygon
-                    id="arrowTriangle2"
-                    points="-4,-4 4,-4 0,6"
-                    fill="var(--primary-gold)"
-                    fillOpacity="0.9"
-                    filter="drop-shadow(0 0 2px rgba(240, 180, 41, 0.5))"
-                  />
-                </g>
-              </svg>
-            </div>
+                    <g id="arrowGroup2" ref={arrowRef2} opacity="0">
+                      <polygon
+                        id="arrowTriangle2"
+                        points="-4,-4 4,-4 0,6"
+                        fill="var(--primary-gold)"
+                        fillOpacity="0.9"
+                        filter="drop-shadow(0 0 2px rgba(240, 180, 41, 0.5))"
+                      />
+                    </g>
+                  </svg>
+                </div>
 
-            <div className="pointer-events-none absolute inset-x-0 top-[80%] bottom-0 z-[15]">
-              <svg id="svg3" width="100%" height="10%" className="overflow-visible" ref={svgRef3}>
-                <defs>
-                  <linearGradient
-                    id="gradientFlow3"
-                    x1="0%"
-                    y1="0%"
-                    x2="100%"
-                    y2="0%"
-                    gradientUnits="userSpaceOnUse"
+                <div className="pointer-events-none absolute inset-x-0 top-[80%] bottom-0 z-[15]">
+                  <svg
+                    id="svg3"
+                    width="100%"
+                    height="10%"
+                    className="overflow-visible"
+                    ref={svgRef3}
                   >
-                    <stop id="gradientStop5" offset="0" stopColor="#4dabf7" />
-                    <stop offset="0.3" stopColor="#74c0fc" />
-                    <stop id="gradientStop6" offset="0.5" stopColor="var(--primary-gold)" />
-                    <stop offset="0.7" stopColor="#74c0fc" />
-                    <stop offset="1" stopColor="#4dabf7" />
-                  </linearGradient>
-                </defs>
+                    <defs>
+                      <linearGradient
+                        id="gradientFlow3"
+                        x1="0%"
+                        y1="0%"
+                        x2="100%"
+                        y2="0%"
+                        gradientUnits="userSpaceOnUse"
+                      >
+                        <stop id="gradientStop5" offset="0" stopColor="#4dabf7" />
+                        <stop offset="0.3" stopColor="#74c0fc" />
+                        <stop id="gradientStop6" offset="0.5" stopColor="var(--primary-gold)" />
+                        <stop offset="0.7" stopColor="#74c0fc" />
+                        <stop offset="1" stopColor="#4dabf7" />
+                      </linearGradient>
+                    </defs>
 
-                <circle cx="338" cy="15" r="8" fill="white" stroke="#4dabf7" strokeWidth="2" />
+                    <circle cx="338" cy="15" r="8" fill="white" stroke="#4dabf7" strokeWidth="2" />
 
-                <path
-                  ref={path3Ref}
-                  d="M 345 15 C 380 15 445 -25 485 -50"
-                  fill="none"
-                  stroke="url(#gradientFlow3)"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  className="opacity-90"
-                />
+                    <path
+                      ref={path3Ref}
+                      d="M 345 15 C 380 15 445 -25 485 -50"
+                      fill="none"
+                      stroke="url(#gradientFlow3)"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      className="opacity-90"
+                    />
 
-                <g id="arrowGroup3" ref={arrowRef3} opacity="0">
-                  <polygon
-                    id="arrowTriangle3"
-                    points="-4,-4 -4,4 6,0"
-                    fill="var(--primary-gold)"
-                    fillOpacity="0.9"
-                    filter="drop-shadow(0 0 4px rgba(240, 180, 41, 0.7))"
-                  />
-                </g>
-              </svg>
-            </div>
+                    <g id="arrowGroup3" ref={arrowRef3} opacity="0">
+                      <polygon
+                        id="arrowTriangle3"
+                        points="-4,-4 -4,4 6,0"
+                        fill="var(--primary-gold)"
+                        fillOpacity="0.9"
+                        filter="drop-shadow(0 0 4px rgba(240, 180, 41, 0.7))"
+                      />
+                    </g>
+                  </svg>
+                </div>
 
-            <div className="pointer-events-none absolute inset-x-0 top-[80%] bottom-0 z-[15]">
-              <svg id="svg4" width="100%" height="10%" className="overflow-visible" ref={svgRef4}>
-                <defs>
-                  <linearGradient
-                    id="gradientFlow4"
-                    x1="0%"
-                    y1="0%"
-                    x2="100%"
-                    y2="0%"
-                    gradientUnits="userSpaceOnUse"
-                    className="opacity-50"
+                <div className="pointer-events-none absolute inset-x-0 top-[80%] bottom-0 z-[15]">
+                  <svg
+                    id="svg4"
+                    width="100%"
+                    height="10%"
+                    className="overflow-visible"
+                    ref={svgRef4}
                   >
-                    <stop id="gradientStop7" offset="0" stopColor="#4dabf7" />
-                    <stop offset="0.3" stopColor="#74c0fc" />
-                    <stop id="gradientStop8" offset="0.5" stopColor="var(--primary-gold)" />
-                    <stop offset="0.7" stopColor="#74c0fc" />
-                    <stop offset="1" stopColor="#4dabf7" />
-                  </linearGradient>
-                </defs>
+                    <defs>
+                      <linearGradient
+                        id="gradientFlow4"
+                        x1="0%"
+                        y1="0%"
+                        x2="100%"
+                        y2="0%"
+                        gradientUnits="userSpaceOnUse"
+                        className="opacity-50"
+                      >
+                        <stop id="gradientStop7" offset="0" stopColor="#4dabf7" />
+                        <stop offset="0.3" stopColor="#74c0fc" />
+                        <stop id="gradientStop8" offset="0.5" stopColor="var(--primary-gold)" />
+                        <stop offset="0.7" stopColor="#74c0fc" />
+                        <stop offset="1" stopColor="#4dabf7" />
+                      </linearGradient>
+                    </defs>
 
-                <path
-                  ref={path4Ref}
-                  d="M 344 14 C 380 60 380 80 485 85"
-                  fill="none"
-                  stroke="url(#gradientFlow4)"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  className="opacity-50"
-                  style={{ filter: 'grayscale(40%)' }}
-                />
+                    <path
+                      ref={path4Ref}
+                      d="M 344 14 C 380 60 380 80 485 85"
+                      fill="none"
+                      stroke="url(#gradientFlow4)"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      className="opacity-50"
+                      style={{ filter: 'grayscale(40%)' }}
+                    />
 
-                <g id="arrowGroup4" ref={arrowRef4} opacity="0">
-                  <polygon
-                    id="arrowTriangle4"
-                    points="-4,-4 -4,4 6,0"
-                    fill="var(--primary-gold)"
-                    fillOpacity="0.7"
-                    filter="drop-shadow(0 0 4px rgba(240, 180, 41, 0.5)) grayscale(40%)"
-                  />
-                </g>
-              </svg>
-            </div>
+                    <g id="arrowGroup4" ref={arrowRef4} opacity="0">
+                      <polygon
+                        id="arrowTriangle4"
+                        points="-4,-4 -4,4 6,0"
+                        fill="var(--primary-gold)"
+                        fillOpacity="0.7"
+                        filter="drop-shadow(0 0 4px rgba(240, 180, 41, 0.5)) grayscale(40%)"
+                      />
+                    </g>
+                  </svg>
+                </div>
+              </>
+            )}
 
             <div
               ref={container1Ref}
-              className="container-1 relative z-10 flex w-fit flex-col items-end gap-2 pt-15 pl-12"
+              className="container-1 relative z-10 flex w-fit flex-col items-end gap-2 pt-6 pl-6 sm:pt-15 sm:pl-12"
             >
               <span
                 ref={badge1Ref}
@@ -816,7 +956,7 @@ const CaseOne = () => {
             </div>
             <div
               ref={container2Ref}
-              className="container-2 relative z-10 flex w-fit flex-col items-end gap-2 pl-64"
+              className={`container-2 relative z-10 flex w-fit flex-col items-end gap-2 ${screenSize.isDesktop ? 'pl-64' : 'pl-6 sm:pl-12'}`}
             >
               <span
                 ref={badge2Ref}
@@ -840,10 +980,10 @@ const CaseOne = () => {
                 </span>
               </div>
             </div>
-            <div className="flex justify-between">
+            <div className={`flex ${screenSize.isDesktop ? 'justify-between' : 'flex-col gap-8'}`}>
               <div
                 ref={container3Ref}
-                className="container-3 relative z-10 flex w-fit flex-col items-end gap-2 pt-17 pl-15"
+                className="container-3 relative z-10 flex w-fit flex-col items-end gap-2 pl-6 sm:pl-12 lg:pt-17 lg:pl-15"
               >
                 <div className="flex w-fit flex-col gap-0.5 rounded-2xl border-[0.5px] border-black/40 bg-white px-3 py-3">
                   <span className="flex items-center justify-center text-center font-bold text-[#05253c]">
@@ -858,10 +998,12 @@ const CaseOne = () => {
                   </span>
                 </div>
               </div>
-              <div className="flex flex-col gap-12">
+              <div
+                className={`flex ${screenSize.isDesktop ? 'flex-col gap-12' : 'flex-row flex-wrap pl-6 sm:pl-12 gap-6'}`}
+              >
                 <div
                   ref={container4Ref}
-                  className="container-3 relative z-10 flex w-fit flex-col items-end gap-2 pr-6"
+                  className="container-3 relative z-10 flex w-fit flex-col items-end gap-2 pr-2 sm:pr-6"
                 >
                   <div className="flex w-fit flex-col gap-0.5 rounded-2xl border-[0.5px] border-black/40 bg-white px-3 py-3">
                     <span className="flex items-center justify-center text-center font-bold text-[#05253c]">
@@ -878,7 +1020,7 @@ const CaseOne = () => {
                 </div>
                 <div
                   ref={container5Ref}
-                  className="container-5 relative z-10 flex w-fit flex-col items-end gap-2 pr-6 opacity-80"
+                  className="container-5 relative z-10 flex w-fit flex-col items-end gap-2 pr-2 opacity-80 sm:pr-6"
                 >
                   <div className="flex w-fit flex-col gap-0.5 rounded-2xl border-[0.5px] border-black/30 bg-white/90 px-3 py-3 grayscale-[30%] filter">
                     <span className="flex items-center justify-center text-center font-bold text-[#05253c]">
@@ -896,8 +1038,13 @@ const CaseOne = () => {
               </div>
             </div>
           </div>
-          <div ref={rightColumnRef} className="flex w-1/4 flex-col items-center justify-between">
-            <div className="flex flex-col justify-center gap-4 px-9 pt-0">
+          <div
+            ref={rightColumnRef}
+            className={`flex flex-col ${screenSize.isDesktop ? 'w-1/4' : 'w-full px-4 py-8'} items-center justify-between`}
+          >
+            <div
+              className={`flex ${screenSize.isDesktop ? 'flex-col' : 'flex-row flex-wrap'} justify-center gap-4 px-2 pt-0 sm:px-9`}
+            >
               <SliderItem
                 icon={
                   <svg
@@ -1158,7 +1305,13 @@ const CaseOne = () => {
                 className="slider-item"
               />
             </div>
-            <div className="mx-auto flex h-full w-full items-center justify-center border-t-2 border-black/10 dark:border-white/30">
+            <div
+              className={`mx-auto flex w-full items-center justify-center ${
+                screenSize.isDesktop
+                  ? 'h-full border-t-2 border-black/10 dark:border-white/30'
+                  : 'mt-4 h-auto border-t border-black/10 py-8 dark:border-white/30'
+              }`}
+            >
               <Image src="jobsmate-mob.svg" alt="Home icon" width={200} height={200} />
             </div>
           </div>
@@ -1173,10 +1326,31 @@ const CaseOne = () => {
               will-change: opacity, transform;
             }
 
+            @media (max-width: 1023px) {
+              .js-animation-ready .container-1,
+              .js-animation-ready .container-2,
+              .js-animation-ready .container-3,
+              .js-animation-ready .container-4,
+              .js-animation-ready .container-5 {
+                opacity: 1 !important;
+                visibility: visible !important;
+                transform: none !important;
+                filter: none !important;
+              }
+            }
+
             .js-animation-ready .slider-item {
               opacity: 0;
               transform: translateX(15px);
               will-change: opacity, transform;
+            }
+
+            @media (max-width: 1023px) {
+              .js-animation-ready .slider-item {
+                opacity: 1 !important;
+                transform: none !important;
+                filter: none !important;
+              }
             }
 
             @keyframes customPulse {
@@ -1193,6 +1367,25 @@ const CaseOne = () => {
 
             .custom-pulse {
               animation: customPulse 2s ease-in-out infinite;
+            }
+
+            @media (max-width: 768px) {
+              #svg1,
+              #svg2,
+              #svg3,
+              #svg4 {
+                transform-origin: center;
+                transform: scale(0.9);
+              }
+            }
+
+            @media (max-width: 640px) {
+              #svg1,
+              #svg2,
+              #svg3,
+              #svg4 {
+                transform: scale(0.85);
+              }
             }
           `}</style>
         </div>

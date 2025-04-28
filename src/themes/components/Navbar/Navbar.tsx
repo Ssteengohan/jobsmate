@@ -15,19 +15,15 @@ const Navbar = () => {
   const scrollDebounceRef = useRef<NodeJS.Timeout | null>(null);
   const scrollDirectionBufferRef = useRef(0);
 
-  // Get scroll data from Lenis context
   const { scroll, direction } = useScrollData();
 
-  // Debounced scroll handler with more robust direction detection
   const handleScroll = useCallback(
     (scrollPosition: number, scrollDirection: number) => {
-      // Clear any existing timeout to debounce frequent updates
       if (scrollDebounceRef.current) {
         clearTimeout(scrollDebounceRef.current);
       }
 
       scrollDebounceRef.current = setTimeout(() => {
-        // Always show navbar immediately on ANY upward scroll
         if (scrollDirection < 0) {
           setIsVisible(true);
           scrollDirectionBufferRef.current = 0;
@@ -35,27 +31,23 @@ const Navbar = () => {
           return;
         }
 
-        // Hide navbar on downward scroll after passing threshold
         if (scrollPosition > 80 && scrollDirection > 0 && scrollPosition > lastScroll) {
           setIsVisible(false);
         }
 
-        // Always show at top of page
         if (scrollPosition <= 80) {
           setIsVisible(true);
         }
 
         setLastScroll(scrollPosition);
-      }, 10); // Small debounce for smoother transitions
+      }, 10);
     },
     [lastScroll],
   );
 
   useEffect(() => {
-    // Apply the improved scroll handler
     handleScroll(scroll, direction);
 
-    // Cleanup
     return () => {
       if (scrollDebounceRef.current) {
         clearTimeout(scrollDebounceRef.current);
@@ -149,7 +141,7 @@ const Navbar = () => {
                     width: navRefs.current[activeItem]?.offsetWidth,
                     height: navRefs.current[activeItem]?.offsetHeight,
                     x: navRefs.current[activeItem]?.offsetLeft,
-                    scale: 1, // Fixed: removed array of values to avoid the error
+                    scale: 1,
                     opacity: 1,
                   }}
                   transition={{
@@ -211,7 +203,6 @@ const Navbar = () => {
           </nav>
         </div>
 
-        {/* Action buttons */}
         <div className="hidden items-center gap-4 lg:flex">
           <Link
             href="/"
@@ -235,7 +226,6 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Mobile menu button */}
         <button
           type="button"
           className="mt-2 inline-flex items-center justify-center rounded-md p-2 text-gray-600 transition-colors duration-300 lg:hidden dark:text-gray-300"
@@ -275,7 +265,6 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile menu with animation */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div

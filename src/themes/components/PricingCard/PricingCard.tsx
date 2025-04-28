@@ -95,7 +95,7 @@ const PricingCard: React.FC<PricingCardProps> = ({ tiers = defaultTiers }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="pt-12 pb-1 text-center text-3xl leading-tight font-bold tracking-tight sm:pb-2 sm:leading-relaxed md:text-6xl"
+            className="sm:pt-12 pb-1 text-center text-3xl leading-tight font-bold tracking-tight sm:pb-2 sm:leading-relaxed md:text-6xl"
           >
             Simple, transparent{' '}
             <span className="bg-[var(--primary-gold)] bg-clip-text text-transparent">pricing</span>

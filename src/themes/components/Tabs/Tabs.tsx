@@ -51,7 +51,7 @@ export function TabsDemo() {
     >
       <div
         ref={tabsRef}
-        className="sticky top-0 z-50 container mx-auto flex w-full flex-col items-start justify-start bg-white/95 py-4 backdrop-blur-sm transition-all duration-300 sm:mt-0 md:gap-12 dark:bg-[var(--neutral-50)]/95"
+        className="sticky top-0 z-50 sm:container mx-auto flex w-full flex-col items-start justify-start bg-white/95 py-4 backdrop-blur-sm transition-all duration-300 sm:mt-0 md:gap-12 dark:bg-[var(--neutral-50)]/95"
         style={{ position: 'relative' }}
       >
         <Tabs tabs={tabs} />
