@@ -49,8 +49,8 @@ export default function Home() {
         <div className="absolute inset-y-0 left-[99%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]/90"></div>
         <Slider />
 
-        <TimelineDemo />
         <ShowCase />
+        <TimelineDemo />
         <Card />
         <PricingCard />
       </div>
