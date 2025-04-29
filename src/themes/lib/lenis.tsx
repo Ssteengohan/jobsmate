@@ -45,19 +45,19 @@ export default function useLenis() {
 
     // Adjust parameters based on device type with correct types
     const config: LenisOptions = {
-      duration: deviceType === 'desktop' ? 1.0 : 0.8,
+      duration: deviceType === 'desktop' ? 1.0 : 0.5, // Reduced from 0.8 to 0.5 for faster mobile scrolling
       easing: (t: number) => {
         return t === 1 ? 1 : 1 - Math.pow(1 - t, 3);
       },
       orientation: 'vertical' as Orientation,
       gestureOrientation: 'vertical' as Orientation,
       smoothWheel: true,
-      wheelMultiplier: deviceType === 'desktop' ? 1.0 : 0.9,
-      touchMultiplier: deviceType === 'mobile' ? 1.5 : deviceType === 'tablet' ? 1.4 : 1.2,
+      wheelMultiplier: deviceType === 'desktop' ? 1.0 : 1.2, // Increased from 0.9 to 1.2 for faster scrolling
+      touchMultiplier: deviceType === 'mobile' ? 2.0 : deviceType === 'tablet' ? 1.8 : 1.2, // Increased from 1.5 to 2.0 for mobile
       infinite: false,
-      lerp: deviceType === 'desktop' ? 0.08 : 0.06, // Lower lerp for more responsive feel on mobile
+      lerp: deviceType === 'desktop' ? 0.08 : 0.04, // Reduced from 0.06 to 0.04 for more responsive feel on mobile
       syncTouch: true,
-      touchInertiaMultiplier: deviceType === 'desktop' ? 1.0 : 1.2,
+      touchInertiaMultiplier: deviceType === 'desktop' ? 1.0 : 1.5, // Increased from 1.2 to 1.5 for faster inertia scrolling
     };
 
     const lenis = new Lenis(config);
