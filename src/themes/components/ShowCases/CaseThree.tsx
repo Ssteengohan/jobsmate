@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import gsap from 'gsap';
@@ -62,348 +62,151 @@ const CaseThree = () => {
     }
   }, []);
 
-  const createAnimationTimeline = useCallback(() => {
-    // Only create complex animation for desktop
-    if (!screenSize.isDesktop) return null;
-
-    const ctx = gsap.context(() => {
-      gsap.set(contentRef.current, {
-        autoAlpha: 0,
-        willChange: 'opacity, transform',
-      });
-
-      gsap.set(titleRef.current, {
-        autoAlpha: 0,
-        y: -20,
-        willChange: 'opacity, transform',
-      });
-
-      gsap.set(chartRef.current, {
-        autoAlpha: 0,
-        scale: 0.9,
-        y: 20,
-        willChange: 'opacity, transform',
-        transformOrigin: 'center center',
-      });
-
-      gsap.set(logoRef.current, {
-        autoAlpha: 0,
-        scale: 0.9,
-        y: 30,
-        willChange: 'opacity, transform',
-        transformOrigin: 'center center',
-      });
-
-      const analyticCards = gsap.utils.toArray('.analytics-card');
-      gsap.set(analyticCards, {
-        autoAlpha: 0,
-        x: 20,
-        scale: 0.95,
-        willChange: 'opacity, transform',
-        transformOrigin: 'center center',
-      });
-
-      const chartLines = gsap.utils.toArray('.chart-line');
-      gsap.set(chartLines, {
-        scaleY: 0,
-        transformOrigin: 'bottom',
-        willChange: 'transform',
-      });
-
-      const metricLabels = gsap.utils.toArray('.metric-label');
-      gsap.set(metricLabels, {
-        autoAlpha: 0,
-        y: 10,
-        willChange: 'opacity, transform',
-      });
-
-      const mainTl = gsap.timeline({
-        paused: true,
-        smoothChildTiming: true,
-        defaults: {
-          ease: 'power2.out',
-          duration: 0.4,
-          clearProps: '',
-        },
-      });
-
-      mainTl
-        .to(contentRef.current, {
-          autoAlpha: 1,
-          duration: 0.5,
-        })
-        .to(
-          titleRef.current,
-          {
-            autoAlpha: 1,
-            y: 0,
-            ease: 'back.out(1.1)',
-            duration: 0.6,
-          },
-          0.1,
-        )
-        .to(
-          chartRef.current,
-          {
-            autoAlpha: 1,
-            scale: 1,
-            y: 0,
-            duration: 0.6,
-            ease: 'back.out(1.1)',
-          },
-          0.3,
-        )
-        .to(
-          chartLines,
-          {
-            scaleY: 1,
-            stagger: 0.08,
-            duration: 0.6,
-            ease: 'power3.out',
-          },
-          0.55,
-        )
-        .to(
-          metricLabels,
-          {
-            autoAlpha: 1,
-            y: 0,
-            stagger: 0.06,
-            duration: 0.4,
-          },
-          0.75,
-        )
-        .to(
-          logoRef.current,
-          {
-            autoAlpha: 1,
-            scale: 1,
-            y: 0,
-            duration: 0.5,
-            ease: 'power2.out',
-          },
-          0.8,
-        )
-        .to(
-          analyticCards,
-          {
-            autoAlpha: 1,
-            x: 0,
-            scale: 1,
-            stagger: 0.08,
-            duration: 0.5,
-            ease: 'back.out(1.4)',
-          },
-          0.4,
-        );
-
-      gsap.to('.pulse-element', {
-        scale: 1.03,
-        repeat: -1,
-        yoyo: true,
-        duration: 1.8,
-        ease: 'sine.inOut',
-      });
-
-      gsap.to('.pattern-grid', {
-        backgroundPosition: '14px 14px',
-        duration: 25,
-        repeat: -1,
-        ease: 'none',
-      });
-
-      gsap.to('.pattern-dots', {
-        backgroundPosition: '18px 18px',
-        duration: 30,
-        repeat: -1,
-        ease: 'none',
-      });
-
-      if (stickyWrapperRef.current && containerRef.current) {
-        ScrollTrigger.create({
-          trigger: stickyWrapperRef.current,
-          start: 'top 10%',
-          end: 'bottom 10%',
-          pin: containerRef.current,
-          pinSpacing: true,
-          anticipatePin: 1,
-          pinReparent: false,
-          refreshPriority: 1,
-          id: 'case-three-pin',
-          onEnter: () => {
-            mainTl.progress(0);
-          },
-          onLeaveBack: () => {
-            mainTl.progress(0);
-          },
-          onLeave: () => {
-            mainTl.progress(1);
-          },
-        });
-      }
-
-      const scrollTrigger = ScrollTrigger.create({
-        trigger: stickyWrapperRef.current,
-        start: 'top 60%',
-        end: 'bottom 20%',
-        onUpdate: (self) => {
-          const rawProgress = Math.min(self.progress, 1);
-          const easedProgress =
-            rawProgress < 0.5
-              ? 2 * rawProgress * rawProgress
-              : 1 - Math.pow(-2 * rawProgress + 2, 2) / 2;
-
-          mainTl.progress(easedProgress);
-        },
-        scrub: 0.8,
-        preventOverlaps: true,
-        fastScrollEnd: true,
-        id: 'case-three-animation',
-      });
-
-      return () => {
-        scrollTrigger.kill();
-        return mainTl;
-      };
-    }, containerRef);
-
-    return ctx;
-  }, [screenSize.isDesktop]); // Add screenSize.isDesktop to dependencies
-
-  // Update mobile animation effect with better timing and sequencing
   useEffect(() => {
     if (typeof window === 'undefined' || !animationReady) return;
 
-    if (!screenSize.isDesktop) {
+    // Create the animation timeline inline instead of using the callback
+    if (screenSize.isDesktop) {
       const ctx = gsap.context(() => {
-        // Initially hide elements for smoother entrance
-        gsap.set([titleRef.current, chartRef.current, logoRef.current], {
+        const mainTl = gsap.timeline({
+          paused: true,
+          smoothChildTiming: true,
+          defaults: {
+            ease: 'power2.out',
+            duration: 0.4,
+            clearProps: '',
+          },
+        });
+
+        // All initialization code from createAnimationTimeline goes here
+        gsap.set(contentRef.current, {
           autoAlpha: 0,
-          y: 15,
           willChange: 'opacity, transform',
         });
 
-        gsap.set('.analytics-card', {
+        gsap.set(titleRef.current, {
           autoAlpha: 0,
+          y: -20,
+          willChange: 'opacity, transform',
+        });
+
+        gsap.set(chartRef.current, {
+          autoAlpha: 0,
+          scale: 0.9,
           y: 20,
-          stagger: 0.08,
           willChange: 'opacity, transform',
+          transformOrigin: 'center center',
         });
 
-        gsap.set('.chart-line', {
+        gsap.set(logoRef.current, {
+          autoAlpha: 0,
+          scale: 0.9,
+          y: 30,
+          willChange: 'opacity, transform',
+          transformOrigin: 'center center',
+        });
+
+        const analyticCards = gsap.utils.toArray('.analytics-card');
+        gsap.set(analyticCards, {
+          autoAlpha: 0,
+          x: 20,
+          scale: 0.95,
+          willChange: 'opacity, transform',
+          transformOrigin: 'center center',
+        });
+
+        const chartLines = gsap.utils.toArray('.chart-line');
+        gsap.set(chartLines, {
           scaleY: 0,
           transformOrigin: 'bottom',
           willChange: 'transform',
         });
 
-        gsap.set('.metric-label', {
+        const metricLabels = gsap.utils.toArray('.metric-label');
+        gsap.set(metricLabels, {
           autoAlpha: 0,
           y: 10,
           willChange: 'opacity, transform',
         });
 
-        // Smooth entry for title section with better timing
-        ScrollTrigger.create({
-          trigger: titleRef.current,
-          start: 'top 95%', // Trigger earlier (was 85%)
-          onEnter: () => {
-            gsap.to(titleRef.current, {
+        mainTl
+          .to(contentRef.current, {
+            autoAlpha: 1,
+            duration: 0.5,
+          })
+          .to(
+            titleRef.current,
+            {
               autoAlpha: 1,
+              y: 0,
+              ease: 'back.out(1.1)',
+              duration: 0.6,
+            },
+            0.1,
+          )
+          .to(
+            chartRef.current,
+            {
+              autoAlpha: 1,
+              scale: 1,
               y: 0,
               duration: 0.6,
-              ease: 'back.out(1.7)',
-              clearProps: 'willChange',
-            });
-          },
-          once: true,
-        });
-
-        // Smoother animation for chart with proper timing
-        ScrollTrigger.create({
-          trigger: chartRef.current,
-          start: 'top 95%', // Trigger earlier (was 80%)
-          onEnter: () => {
-            // First animate the chart container
-            gsap.to(chartRef.current, {
-              autoAlpha: 1,
-              y: 0,
-              duration: 0.7,
+              ease: 'back.out(1.1)',
+            },
+            0.3,
+          )
+          .to(
+            chartLines,
+            {
+              scaleY: 1,
+              stagger: 0.08,
+              duration: 0.6,
               ease: 'power3.out',
-              clearProps: 'willChange',
-              onComplete: () => {
-                // Then animate chart lines with subtle staggering
-                gsap.to('.chart-line', {
-                  scaleY: 1,
-                  stagger: 0.1,
-                  duration: 0.5,
-                  ease: 'power2.out',
-                  clearProps: 'willChange',
-                });
-
-                // Finally animate the labels with slight delay
-                gsap.to('.metric-label', {
-                  autoAlpha: 1,
-                  y: 0,
-                  stagger: 0.06,
-                  duration: 0.4,
-                  delay: 0.3,
-                  ease: 'power2.out',
-                  clearProps: 'willChange',
-                });
-              },
-            });
-          },
-          once: true,
-        });
-
-        // Logo animation with pulse effect
-        ScrollTrigger.create({
-          trigger: logoRef.current,
-          start: 'top 95%', // Trigger earlier (was 85%)
-          onEnter: () => {
-            gsap.to(logoRef.current, {
+            },
+            0.55,
+          )
+          .to(
+            metricLabels,
+            {
               autoAlpha: 1,
               y: 0,
-              duration: 0.6,
+              stagger: 0.06,
+              duration: 0.4,
+            },
+            0.75,
+          )
+          .to(
+            logoRef.current,
+            {
+              autoAlpha: 1,
+              scale: 1,
+              y: 0,
+              duration: 0.5,
+              ease: 'power2.out',
+            },
+            0.8,
+          )
+          .to(
+            analyticCards,
+            {
+              autoAlpha: 1,
+              x: 0,
+              scale: 1,
+              stagger: 0.08,
+              duration: 0.5,
               ease: 'back.out(1.4)',
-              clearProps: 'willChange',
-            });
+            },
+            0.4,
+          );
 
-            // Add pulse animation after logo appears
-            gsap.to('.pulse-element', {
-              scale: 1.03,
-              repeat: -1,
-              yoyo: true,
-              duration: 1.8,
-              ease: 'sine.inOut',
-              delay: 0.3,
-            });
-          },
-          once: true,
+        gsap.to('.pulse-element', {
+          scale: 1.03,
+          repeat: -1,
+          yoyo: true,
+          duration: 1.8,
+          ease: 'sine.inOut',
         });
 
-        // Analytics cards with staggered entrance and smoother animation
-        const cards = gsap.utils.toArray('.analytics-card');
-        ScrollTrigger.create({
-          trigger: analyticsRef.current,
-          start: 'top 95%', // Trigger earlier (was 80%)
-          onEnter: () => {
-            gsap.to(cards, {
-              autoAlpha: 1,
-              y: 0,
-              stagger: {
-                each: 0.12,
-                ease: 'power2.out',
-              },
-              duration: 0.6,
-              ease: 'back.out(1.2)',
-              clearProps: 'willChange',
-            });
-          },
-          once: true,
-        });
-
-        // Background animations
         gsap.to('.pattern-grid', {
           backgroundPosition: '14px 14px',
           duration: 25,
@@ -417,30 +220,272 @@ const CaseThree = () => {
           repeat: -1,
           ease: 'none',
         });
+
+        if (stickyWrapperRef.current && containerRef.current) {
+          ScrollTrigger.create({
+            trigger: stickyWrapperRef.current,
+            start: 'top 10%',
+            end: 'bottom 10%',
+            pin: containerRef.current,
+            pinSpacing: true,
+            anticipatePin: 1,
+            pinReparent: false,
+            refreshPriority: 1,
+            id: 'case-three-pin',
+            onEnter: () => {
+              mainTl.progress(0);
+            },
+            onLeaveBack: () => {
+              mainTl.progress(0);
+            },
+            onLeave: () => {
+              mainTl.progress(1);
+            },
+          });
+        }
+
+        const scrollTrigger = ScrollTrigger.create({
+          trigger: stickyWrapperRef.current,
+          start: 'top 60%',
+          end: 'bottom 20%',
+          onUpdate: (self) => {
+            const rawProgress = Math.min(self.progress, 1);
+            const easedProgress =
+              rawProgress < 0.5
+                ? 2 * rawProgress * rawProgress
+                : 1 - Math.pow(-2 * rawProgress + 2, 2) / 2;
+
+            mainTl.progress(easedProgress);
+          },
+          scrub: 0.8,
+          preventOverlaps: true,
+          fastScrollEnd: true,
+          id: 'case-three-animation',
+        });
+
+        // Ensure desktop ScrollTrigger settings match other components for cohesive behavior
+        ScrollTrigger.create({
+          trigger: stickyWrapperRef.current,
+          start: 'top 10%', // Match the start position used in CaseOne and CaseTwo
+          end: 'bottom 10%', // Match the end position used in CaseOne and CaseTwo
+          onLeaveBack: () => {
+            // Ensure animation resets properly when scrolling back up
+            mainTl.progress(0);
+          },
+          onLeave: () => {
+            // Ensure animation completes properly when scrolling past
+            mainTl.progress(1);
+          },
+          markers: false,
+          id: 'case-three-desktop-reset',
+        });
+
+        return () => {
+          scrollTrigger.kill();
+        };
       }, containerRef);
 
-      return () => ctx.revert();
+      const refreshTimeout = setTimeout(() => {
+        ScrollTrigger.refresh(true);
+      }, 100);
+
+      return () => {
+        clearTimeout(refreshTimeout);
+        if (ctx) ctx.revert();
+      };
     }
   }, [animationReady, screenSize.isDesktop]);
 
   useEffect(() => {
     if (typeof window === 'undefined' || !animationReady) return;
 
-    const ctx = createAnimationTimeline();
+    if (!screenSize.isDesktop) {
+      const ctx = gsap.context(() => {
+        // Initially hide elements for smoother entrance
+        gsap.set([titleRef.current, chartRef.current, logoRef.current], {
+          autoAlpha: 0,
+          y: 15,
+          willChange: 'opacity, transform',
+        });
 
-    const refreshTimeout = setTimeout(() => {
-      ScrollTrigger.refresh(true);
-    }, 100);
+        // Explicitly set chart lines to visible but scaled to 0 for mobile/tablet
+        const chartLines = gsap.utils.toArray('.chart-line');
+        gsap.set(chartLines, {
+          autoAlpha: 1, // Make sure they're visible
+          scaleY: 0,
+          transformOrigin: 'bottom',
+          willChange: 'transform',
+        });
 
-    return () => {
-      clearTimeout(refreshTimeout);
-      if (ctx) ctx.revert();
-    };
-  }, [animationReady, createAnimationTimeline]);
+        gsap.set('.metric-label', {
+          autoAlpha: 0,
+          y: 10,
+          willChange: 'opacity, transform',
+        });
+
+        // Create a centralized timeline for all animations to ensure cohesive behavior
+        const mobileTl = gsap.timeline({
+          paused: true,
+          smoothChildTiming: true,
+          defaults: {
+            ease: 'power2.out',
+            duration: 0.4,
+          },
+        });
+
+        // Add title animation to the timeline
+        mobileTl.to(
+          titleRef.current,
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.6,
+            ease: 'back.out(1.7)',
+            clearProps: 'willChange',
+          },
+          0,
+        );
+
+        // Add chart container animation to the timeline
+        mobileTl.to(
+          chartRef.current,
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.7,
+            ease: 'power3.out',
+            clearProps: 'willChange',
+          },
+          0.2,
+        );
+
+        // Add blue chart lines animation (applications)
+        const blueChartLines = chartLines.filter((_, i) => i % 2 === 0);
+        mobileTl.to(
+          blueChartLines,
+          {
+            scaleY: 1,
+            stagger: 0.12,
+            duration: 0.7,
+            ease: 'power2.out',
+            clearProps: 'willChange',
+            overwrite: true,
+          },
+          0.5,
+        );
+
+        // Add gold chart lines animation (hires) with slight delay
+        const goldChartLines = chartLines.filter((_, i) => i % 2 === 1);
+        mobileTl.to(
+          goldChartLines,
+          {
+            scaleY: 1,
+            stagger: 0.12,
+            duration: 0.5,
+            ease: 'back.out(1.2)',
+            clearProps: 'willChange',
+            overwrite: true,
+          },
+          0.7,
+        );
+
+        // Add metric labels animation with delay
+        mobileTl.to(
+          '.metric-label',
+          {
+            autoAlpha: 1,
+            y: 0,
+            stagger: 0.08,
+            duration: 0.4,
+            ease: 'power2.out',
+            clearProps: 'willChange',
+          },
+          0.9,
+        );
+
+        // Add logo animation
+        mobileTl.to(
+          logoRef.current,
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.6,
+            ease: 'back.out(1.4)',
+            clearProps: 'willChange',
+          },
+          1.0,
+        );
+
+        // Add analytics cards animation with staggered entrance
+        const cards = gsap.utils.toArray('.analytics-card');
+        mobileTl.to(
+          cards,
+          {
+            autoAlpha: 1,
+            y: 0,
+            stagger: 0.12,
+            duration: 0.6,
+            ease: 'back.out(1.2)',
+            clearProps: 'willChange',
+          },
+          1.2,
+        );
+
+        // Add pulse animation after logo appears
+        mobileTl.add(() => {
+          gsap.to('.pulse-element', {
+            scale: 1.03,
+            repeat: -1,
+            yoyo: true,
+            duration: 1.8,
+            ease: 'sine.inOut',
+          });
+        }, 1.0);
+
+        // Background animations
+        mobileTl.add(() => {
+          gsap.to('.pattern-grid', {
+            backgroundPosition: '14px 14px',
+            duration: 25,
+            repeat: -1,
+            ease: 'none',
+          });
+
+          gsap.to('.pattern-dots', {
+            backgroundPosition: '18px 18px',
+            duration: 30,
+            repeat: -1,
+            ease: 'none',
+          });
+        }, 0);
+
+        // Create a unified scroll trigger that controls the entire timeline
+        ScrollTrigger.create({
+          trigger: containerRef.current,
+          start: 'top 85%',
+          end: 'bottom 15%',
+          onUpdate: (self) => {
+            // Smooth easing of the timeline progress based on scroll position
+            const rawProgress = Math.min(self.progress * 1.2, 1);
+            const easedProgress =
+              rawProgress < 0.5
+                ? 2 * Math.pow(rawProgress, 2)
+                : 1 - Math.pow(-2 * rawProgress + 2, 2) / 2;
+
+            mobileTl.progress(easedProgress);
+          },
+          scrub: 0.8,
+          id: 'case-three-mobile-animation',
+        });
+      }, containerRef);
+
+      return () => ctx.revert();
+    }
+  }, [animationReady, screenSize.isDesktop]);
 
   return (
     <div
-      className={`relative z-40 ${screenSize.isDesktop ? 'mt-[719px]' : '-mt-20 sm:mt-16'}`}
+      className={`relative z-40 ${screenSize.isDesktop ? 'mt-[720px]' : '-mt-20 sm:mt-16'}`}
       ref={stickyWrapperRef}
       style={{ position: 'relative', top: 0 }}
     >
@@ -740,13 +785,60 @@ const CaseThree = () => {
           .js-animation-ready .metric-label {
             opacity: 0;
             transition:
-              transform 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-              opacity 0.6s ease-out;
+              transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+              opacity 0.5s ease-out;
           }
 
-          /* Improve chart appearance on small screens */
+          /* Ensure chart lines remain visible once animated */
           .chart-line {
             min-width: 4px;
+            opacity: 1 !important; /* Force visibility */
+            transform-origin: bottom !important;
+          }
+
+          /* Adjust chart heights for mobile/tablet */
+          .chart-line[class*='h-[100px]'] {
+            height: 60px !important;
+          }
+          .chart-line[class*='h-[120px]'] {
+            height: 72px !important;
+          }
+          .chart-line[class*='h-[75px]'] {
+            height: 45px !important;
+          }
+          .chart-line[class*='h-[130px]'] {
+            height: 78px !important;
+          }
+          .chart-line[class*='h-[135px]'] {
+            height: 80px !important;
+          }
+
+          /* Make the gold bars (hire bars) proportionally correct but shorter */
+          .chart-line[class*='bg-[var(--primary-gold)]'] {
+            height: 10px !important;
+          }
+
+          /* At tablet size, make chart lines a bit taller than mobile but still shorter than desktop */
+          @media (min-width: 768px) and (max-width: 1023px) {
+            .chart-line[class*='h-[100px]'] {
+              height: 80px !important;
+            }
+            .chart-line[class*='h-[120px]'] {
+              height: 96px !important;
+            }
+            .chart-line[class*='h-[75px]'] {
+              height: 60px !important;
+            }
+            .chart-line[class*='h-[130px]'] {
+              height: 104px !important;
+            }
+            .chart-line[class*='h-[135px]'] {
+              height: 108px !important;
+            }
+
+            .chart-line[class*='bg-[var(--primary-gold)]'] {
+              height: 13px !important;
+            }
           }
 
           /* Improve text readability on small screens */
@@ -777,6 +869,13 @@ const CaseThree = () => {
             -webkit-tap-highlight-color: transparent;
           }
 
+          /* Ensure chart lines animate on mobile */
+          .chart-line {
+            min-height: 5px; /* Ensure min height for visibility */
+            will-change: transform;
+            transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+          }
+
           /* Reduce motion for users who prefer it */
           @media (prefers-reduced-motion: reduce) {
             .chart-line,
@@ -787,6 +886,11 @@ const CaseThree = () => {
               animation-duration: 0.1s !important;
             }
           }
+        }
+
+        /* Enhance the animation transition */
+        .chart-line {
+          transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
         }
 
         @media (prefers-color-scheme: dark) {

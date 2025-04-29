@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   description:
     'Jobsmate helps you find your dream job through AI-powered matching, smart resume analysis, and personalized job recommendations. Connect with top employers and advance your career with our cutting-edge job search platform.',
   keywords:
-    'job search, career opportunities, AI job matching, employment, resume builder, job application, career advancement, remote jobs, tech jobs, professional networking, job board, career platform, hiring platform, recruitment software, job marketplace, AI recruitment, applicant tracking, talent acquisition, job recommendations, skill matching',
+    'job search, career opportunities, AI job matching, employment, resume builder, job application, career advancement, remote jobs, tech jobs, professional networking, job board, career platform, hiring platform, recruitment software, job marketplace, AI recruitment, applicant tracking, talent acquisition, job recommendations, skill matching, executive search, diversity hiring, career coaching, interview preparation, salary negotiation, employee benefits, work-life balance, industry trends, job alerts, company reviews, candidate experience, HR technology, career development, professional growth, entry-level positions, experienced hires',
   applicationName: 'Jobsmate',
   authors: [{ name: 'Jobsmate Team', url: 'https://jobsmate.global' }],
   category: 'Career & Employment',
@@ -140,6 +140,9 @@ export default function RootLayout({
         />
         <link rel="preconnect" href="https://cdn.sanity.io" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://cdn.sanity.io" />
+        <meta name="author" content="Jobsmate Team" />
+        <meta name="copyright" content="Jobsmate 2025" />
+        <meta name="subject" content="Job Search and Career Opportunities" />
       </head>
       <body className={`${lexend.variable} bg-white antialiased dark:bg-[#202735]`}>
         <SmoothScrollProvider>{children}</SmoothScrollProvider>

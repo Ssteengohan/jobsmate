@@ -916,7 +916,7 @@ const CaseTwo = () => {
                   } z-10 flex h-full w-full items-center justify-center`}
                 >
                   <WorldMap
-                    className={`world-map-container h-fit max-lg:pt-20 ${
+                    className={`world-map-container h-fit max-lg:pt-30 ${
                       screenSize.isDesktop ? 'w-[95%]' : 'w-[90%]'
                     }`}
                   />
