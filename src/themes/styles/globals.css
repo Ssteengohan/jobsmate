@@ -39,6 +39,10 @@
   /* Spotlight effect variables */
   --spotlight-blue: rgba(59, 130, 246, 0.15);
   --spotlight-gold: rgba(234, 179, 8, 0.15);
+
+  /* Page transition variables */
+  --transition-duration: 500ms;
+  --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -73,6 +77,39 @@
   }
 }
 
+/* Page transition styles */
+.page-transition {
+  opacity: 0;
+  transform: translateY(40px);
+  filter: blur(12px);
+  transition: opacity var(--transition-duration) var(--transition-timing),
+              transform var(--transition-duration) var(--transition-timing),
+              filter var(--transition-duration) var(--transition-timing),
+              background var(--transition-duration) var(--transition-timing);
+}
+
+/* Additional page transition variations */
+.page-transition-fade-scale {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: all var(--transition-duration) var(--transition-timing);
+}
+
+.page-transition-slide {
+  transform: translateX(100%);
+  transition: transform var(--transition-duration) var(--transition-timing);
+}
+
+.page-transition-rotate-scale {
+  opacity: 0;
+  transform: rotate(10deg) scale(0.95);
+  transition: all var(--transition-duration) var(--transition-timing);
+}
+
+.page-transition-slide-up {
+  transform: translateY(100%);
+  transition: transform var(--transition-duration) var(--transition-timing);
+}
 
 
 @theme inline {
@@ -167,7 +204,11 @@ body {
   background-attachment: fixed;
   color: var(--foreground);
   font-family: var(--font-lexend), sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color var(--transition-duration) var(--transition-timing),
+              color var(--transition-duration) var(--transition-timing),
+              opacity var(--transition-duration) var(--transition-timing),
+              transform var(--transition-duration) var(--transition-timing),
+              filter var(--transition-duration) var(--transition-timing);
 }
 
 /* Container for centered content */

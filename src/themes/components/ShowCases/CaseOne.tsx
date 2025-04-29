@@ -661,7 +661,8 @@ const CaseOne = () => {
             {
               autoAlpha: 1,
               y: 0,
-              duration: 0.6,
+              duration: 0.7,
+              ease: 'power2.inOut',
             },
             0,
           )
@@ -671,8 +672,9 @@ const CaseOne = () => {
               autoAlpha: 1,
               y: 0,
               filter: 'blur(0px)',
-              stagger: 0.1,
-              duration: 0.4,
+              stagger: 0.08,
+              duration: 0.5,
+              ease: 'back.out(1.1)',
             },
             0.3,
           )
@@ -682,6 +684,7 @@ const CaseOne = () => {
               autoAlpha: 1,
               y: 0,
               duration: 0.6,
+              ease: 'power2.inOut',
             },
             0.2,
           )
@@ -691,9 +694,10 @@ const CaseOne = () => {
               autoAlpha: 1,
               y: 0,
               filter: 'blur(0px)',
-              duration: 0.5,
+              duration: 0.6,
+              ease: 'power2.out',
             },
-            0.4,
+            0.5,
           )
           .to(
             badge1Ref.current,
@@ -701,9 +705,10 @@ const CaseOne = () => {
               autoAlpha: 1,
               y: 0,
               filter: 'blur(0px)',
-              duration: 0.4,
+              duration: 0.5,
+              ease: 'back.out(1.2)',
             },
-            0.5,
+            0.6,
           )
           .to(
             container2Ref.current,
@@ -711,9 +716,10 @@ const CaseOne = () => {
               autoAlpha: 1,
               y: 0,
               filter: 'blur(0px)',
-              duration: 0.5,
+              duration: 0.6,
+              ease: 'power2.out',
             },
-            0.7,
+            0.8,
           )
           .to(
             badge2Ref.current,
@@ -721,9 +727,10 @@ const CaseOne = () => {
               autoAlpha: 1,
               y: 0,
               filter: 'blur(0px)',
-              duration: 0.4,
+              duration: 0.5,
+              ease: 'back.out(1.2)',
             },
-            0.8,
+            0.9,
           )
           .to(
             rightColumnRef.current,
@@ -731,8 +738,9 @@ const CaseOne = () => {
               autoAlpha: 1,
               y: 0,
               duration: 0.6,
+              ease: 'power2.inOut',
             },
-            0.9,
+            1.0,
           )
           .to(
             container3Ref.current,
@@ -740,9 +748,10 @@ const CaseOne = () => {
               autoAlpha: 1,
               y: 0,
               filter: 'blur(0px)',
-              duration: 0.5,
+              duration: 0.6,
+              ease: 'power2.out',
             },
-            1.0,
+            1.2,
           )
           .to(
             container4Ref.current,
@@ -750,9 +759,10 @@ const CaseOne = () => {
               autoAlpha: 1,
               y: 0,
               filter: 'blur(0px)',
-              duration: 0.5,
+              duration: 0.6,
+              ease: 'power2.out',
             },
-            1.2,
+            1.4,
           )
           .to(
             container5Ref.current,
@@ -760,21 +770,26 @@ const CaseOne = () => {
               autoAlpha: 0.8,
               y: 0,
               filter: 'blur(0px)',
-              duration: 0.5,
+              duration: 0.6,
+              ease: 'power2.out',
             },
-            1.4,
+            1.6,
           );
 
         if (containerRef.current) {
           ScrollTrigger.create({
             trigger: containerRef.current,
-            start: 'top 80%',
-            end: 'bottom 20%',
+            start: 'top 85%',
+            end: 'bottom 15%',
             onUpdate: (self) => {
-              const progress = Math.min(self.progress * 1.5, 1);
-              mainTl.progress(progress);
+              const rawProgress = Math.min(self.progress * 1.2, 1);
+              const easedProgress =
+                rawProgress < 0.5
+                  ? 2 * Math.pow(rawProgress, 2)
+                  : 1 - Math.pow(-2 * rawProgress + 2, 2) / 2;
+              mainTl.progress(easedProgress);
             },
-            scrub: 0.5,
+            scrub: 0.8,
             markers: false,
             id: 'case-one-mobile-animation',
           });
@@ -810,7 +825,7 @@ const CaseOne = () => {
               href={
                 'https://platform.jobsmate.global/company/onboarding/preferences?_gl=1*1wymypx*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY3OC4wLjAuMA'
               }
-              target='_blank'
+              target="_blank"
               className="group relative flex w-fit items-center gap-1 px-4 font-semibold md:pb-20"
             >
               <span className="relative inline-block">

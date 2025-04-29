@@ -305,7 +305,7 @@ const CaseThree = () => {
         // Smooth entry for title section with better timing
         ScrollTrigger.create({
           trigger: titleRef.current,
-          start: 'top 85%', // Start animation earlier
+          start: 'top 95%', // Trigger earlier (was 85%)
           onEnter: () => {
             gsap.to(titleRef.current, {
               autoAlpha: 1,
@@ -321,7 +321,7 @@ const CaseThree = () => {
         // Smoother animation for chart with proper timing
         ScrollTrigger.create({
           trigger: chartRef.current,
-          start: 'top 80%', // Start when approaching viewport
+          start: 'top 95%', // Trigger earlier (was 80%)
           onEnter: () => {
             // First animate the chart container
             gsap.to(chartRef.current, {
@@ -359,7 +359,7 @@ const CaseThree = () => {
         // Logo animation with pulse effect
         ScrollTrigger.create({
           trigger: logoRef.current,
-          start: 'top 85%',
+          start: 'top 95%', // Trigger earlier (was 85%)
           onEnter: () => {
             gsap.to(logoRef.current, {
               autoAlpha: 1,
@@ -386,7 +386,7 @@ const CaseThree = () => {
         const cards = gsap.utils.toArray('.analytics-card');
         ScrollTrigger.create({
           trigger: analyticsRef.current,
-          start: 'top 80%',
+          start: 'top 95%', // Trigger earlier (was 80%)
           onEnter: () => {
             gsap.to(cards, {
               autoAlpha: 1,
@@ -474,7 +474,7 @@ const CaseThree = () => {
                     href={
                       'https://platform.jobsmate.global/company/onboarding/preferences?_gl=1*1wymypx*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY3OC4wLjAuMA'
                     }
-                    target='_blank'
+                    target="_blank"
                     className="group text-foreground relative flex w-fit items-center gap-1 px-4 pb-20 text-sm font-semibold"
                   >
                     <span className="relative inline-block">
@@ -525,9 +525,9 @@ const CaseThree = () => {
 
                   <div
                     ref={chartRef}
-                    className="relative z-50 mx-auto mt-4 flex w-full max-w-[500px] flex-col items-center justify-center rounded-lg bg-white/90 p-4 shadow-lg sm:mt-8 sm:p-6 dark:bg-gray-800/90"
+                    className="relative z-50 mx-auto mt-4 flex w-full max-w-[500px] flex-col items-center justify-center rounded-lg bg-white/90 p-4 shadow-lg sm:mt-4 sm:p-6 dark:bg-gray-800/90"
                   >
-                    <div className="mb-6 flex w-full flex-col space-y-3 sm:mb-8">
+                    <div className="mb-6 flex w-full flex-col space-y-3 sm:mb-12">
                       <span className="text-sm font-medium text-gray-500">
                         Application Funnel (2023-2024)
                       </span>
