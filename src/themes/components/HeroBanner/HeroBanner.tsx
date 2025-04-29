@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import React from 'react';
+import { TransitionLink } from '../PageTransition/PageTransitionWrapper-1';
 
 export function SpotlightPreview() {
   return (
@@ -26,20 +27,18 @@ export function SpotlightPreview() {
             className="w-full rounded-full border border-neutral-300 bg-transparent px-4 py-3 text-sm font-medium text-neutral-900 shadow-sm transition-all duration-300 focus:border-[var(--primary-gold)] focus:ring-[var(--primary-gold)] focus:outline-none sm:hidden dark:text-white dark:focus:border-[var(--primary-gold)] dark:focus:ring-[var(--primary-gold)]"
           /> */}
 
-          <Link
+          <TransitionLink
             href="https://platform.jobsmate.global/company/onboarding/preferences?_gl=1*1wymypx*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY3OC4wLjAuMA"
-            target="_blank"
             className="group relative cursor-pointer rounded-full border flex items-center justify-center border-transparent bg-[var(--primary-gold)] px-8 py-3 text-xs font-medium text-[var(--primary-dark-blue)] transition-all duration-300 ease-in-out hover:scale-105 hover:border-transparent hover:shadow-lg focus:ring-2 focus:ring-[var(--primary-gold)] focus:ring-offset-2 focus:outline-none sm:text-sm dark:text-[var(--primary-dark)] dark:hover:shadow-[0_0_15px_rgba(240,180,41,0.4)]"
           >
             <div className="via-primary-light-blue absolute inset-x-0 -top-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent to-transparent opacity-70 shadow-sm transition-all duration-300 group-hover:w-3/4 group-hover:opacity-100 group-hover:shadow-md" />
             <div className="via-primary-gold absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent to-transparent opacity-0 shadow-sm transition-all duration-300 group-hover:w-3/4 group-hover:opacity-100" />
             <div className="from-primary-light-blue via-primary-medium-blue to-primary-gold absolute -top-px -right-px -left-px h-[3px] w-0 rounded-t-full bg-gradient-to-r transition-all duration-700 group-hover:w-full" />
             <span className="relative z-20 transition-all text-center duration-300">Start for free</span>
-          </Link>
+          </TransitionLink>
 
           <Link
             href="https://calendly.com/info-jtq/jobsmate-introduction"
-            target="_blank"
             className="group relative inline-flex cursor-pointer overflow-hidden rounded-full p-[1px] shadow-sm transition-all duration-300 ease-in-out hover:shadow-xl focus:ring-2 focus:ring-[var(--primary-light-blue)] focus:ring-offset-2 focus:outline-none dark:hover:shadow-[0_0_20px_rgba(42,151,219,0.4)]"
           >
             <span className="absolute inset-[-1000%] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,var(--primary-light-blue)_0%,var(--primary-medium-blue)_40%,var(--primary-gold)_70%,var(--primary-dark)_100%)] opacity-80 transition-all duration-300 ease-in-out group-hover:animate-[spin_3s_linear_infinite] group-hover:opacity-100" />

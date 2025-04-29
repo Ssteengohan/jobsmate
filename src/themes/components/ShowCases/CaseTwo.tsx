@@ -526,7 +526,7 @@ const CaseTwo = () => {
                     'https://platform.jobsmate.global/company/onboarding/preferences?_gl=1*1wymypx*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY3OC4wLjAuMA'
                   }
                   target='_blank'
-                  className="group text-foreground relative flex w-fit items-center gap-1 pt-4 pb-4 text-sm font-semibold sm:pb-20"
+                  className="group text-foreground relative sm:px-4 flex w-fit items-center gap-1 pt-4 pb-4 text-sm font-semibold sm:pb-20"
                 >
                   <span className="relative inline-block">
                     Explore Ranked matches
@@ -540,7 +540,7 @@ const CaseTwo = () => {
                 className={`relative overflow-hidden ${
                   screenSize.isDesktop
                     ? 'w-2/4 border-r border-l'
-                    : 'h-[90vh] w-full border-t border-b'
+                    : 'h-screen w-full border-t border-b'
                 } border-black/20 dark:border-white/30`}
               >
                 <div className="absolute inset-0 overflow-hidden">

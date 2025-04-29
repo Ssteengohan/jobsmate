@@ -138,23 +138,27 @@ const ShowCase: React.FC<ShowCaseProps> = ({ id }) => {
     const wordElements = paragraphElement.querySelectorAll<HTMLElement>('.word-span');
 
     if (gsap && ScrollTrigger) {
-      gsap!.set(wordElements, { opacity: 0, y: 20, willChange: 'opacity, transform' });
+      gsap.set(wordElements, { opacity: 0, y: 20, willChange: 'opacity, transform' });
 
-      ScrollTrigger!.batch(wordElements, {
-        interval: 0.1,
-        batchMax: 20,
-        start: 'top 85%',
-        end: 'bottom 60%',
-        scrub: 0.6,
-        onEnter: (batch: HTMLElement[]) => {
-          gsap!.to(batch, {
-            opacity: 1,
-            y: 0,
-            stagger: 0.05,
-            ease: 'power2.out',
-            overwrite: true,
-          });
+      // Create a timeline for the text animation
+      const textTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: paragraphElement,
+          start: 'top 85%', // start when the top of the element hits 85% from the top of viewport
+          end: 'bottom 60%', // end when the bottom of the element hits 60% from the top of viewport
+          scrub: 0.8, // smooth scrubbing effect
+          toggleActions: 'play none none reverse', // play on enter, reverse on leave
+          markers: false,
         },
+      });
+
+      // Add staggered animation to the timeline
+      textTimeline.to(wordElements, {
+        opacity: 1,
+        y: 0,
+        stagger: 0.03,
+        ease: 'power1.out',
+        duration: 0.5,
       });
     }
 

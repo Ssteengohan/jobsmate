@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useScrollData } from '@/themes/lib/lenis';
+import { TransitionLink } from '../PageTransition/PageTransitionWrapper-1';
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -267,12 +268,12 @@ const Navbar = () => {
                 onMouseLeave={() => setActiveItem(null)}
                 className="relative z-10"
               >
-                <Link
+                <TransitionLink
                   href="#features"
                   className="block px-3 py-2 text-black transition-all duration-400 ease-in-out dark:text-[var(--primary-white)]"
                 >
                   Features
-                </Link>
+                </TransitionLink>
               </li>
               <li
                 ref={(el) => {
@@ -297,22 +298,20 @@ const Navbar = () => {
                 onMouseLeave={() => setActiveItem(null)}
                 className="relative z-10"
               >
-                <Link
-                  href="#about-us"
+                <TransitionLink
+                  href="https://jobsmate.global/why-jobsmate/"
                   className="block px-3 py-2 text-black transition-all duration-400 ease-in-out dark:text-[var(--primary-white)]"
-                  onClick={(e) => handleSmoothScroll(e, '#about-us')}
                 >
                   About us
-                </Link>
+                </TransitionLink>
               </li>
             </ul>
           </nav>
         </div>
 
         <div className="hidden items-center gap-4 lg:flex">
-          <Link
+          <TransitionLink
             href="https://platform.jobsmate.global/company/onboarding/preferences?_gl=1*1wymypx*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY3OC4wLjAuMA"
-            target="_black"
             className="group relative rounded-full border border-slate-300 bg-white px-8 py-2 text-sm font-medium text-black transition-all duration-300 ease-in-out hover:scale-105 hover:border-transparent hover:shadow-lg dark:border-[var(--neutral-200)] dark:bg-[var(--neutral-50)] dark:text-[var(--primary-white)] dark:hover:shadow-[0_4px_20px_rgba(42,151,219,0.2)]"
           >
             <div className="via-primary-light-blue absolute inset-x-0 -top-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent to-transparent opacity-70 shadow-sm transition-all duration-300 group-hover:w-3/4 group-hover:opacity-100 group-hover:shadow-md" />
@@ -321,17 +320,16 @@ const Navbar = () => {
             <span className="group-hover:text-primary-medium-blue relative z-20 transition-all duration-300">
               Company
             </span>
-          </Link>
-          <Link
+          </TransitionLink>
+          <TransitionLink
             href="https://platform.jobsmate.global/candidate/onboarding?_gl=1*3v7v81*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY4Mi4wLjAuMA"
             className="group relative inline-flex h-10 overflow-hidden rounded-full p-[1px] shadow-sm transition-all duration-300 ease-in-out hover:shadow-md focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 focus:outline-none dark:hover:shadow-[0_4px_20px_rgba(42,151,219,0.2)]"
-            target="_blank"
           >
             <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,var(--primary-light-blue)_0%,var(--primary-medium-blue)_40%,var(--primary-gold)_70%,var(--primary-dark)_100%)] transition-transform duration-300 ease-in-out group-hover:scale-110 group-hover:animate-[spin_1.5s_linear_infinite]" />
             <span className="group-hover:text-primary-medium-blue inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-white px-3 py-1 text-sm font-medium text-black backdrop-blur-3xl transition-all duration-300 ease-in-out group-hover:bg-gray-50 dark:bg-[var(--neutral-50)] dark:text-[var(--primary-white)] dark:group-hover:bg-[var(--neutral-200)]">
               Candidate
             </span>
-          </Link>
+          </TransitionLink>
         </div>
 
         <button
@@ -396,7 +394,7 @@ const Navbar = () => {
 
               <motion.div variants={itemVariants}>
                 <Link
-                  href="/services"
+                  href="#pricing-card"
                   className="block rounded-md px-3 py-1 text-base font-medium text-black transition-colors duration-300 hover:bg-[#f3f4f6] dark:text-[var(--primary-white)] dark:hover:bg-[var(--neutral-200)]"
                 >
                   Price
@@ -404,32 +402,31 @@ const Navbar = () => {
               </motion.div>
 
               <motion.div variants={itemVariants}>
-                <Link
-                  href="#about-us"
+                <TransitionLink
+                  href="https://jobsmate.global/why-jobsmate/"
                   className="block rounded-md px-3 py-2 text-base font-medium text-black transition-colors duration-300 hover:bg-[#f3f4f6] dark:text-[var(--primary-white)] dark:hover:bg-[var(--neutral-200)]"
-                  onClick={(e) => handleSmoothScroll(e, '#about-us')}
                 >
                   About us
-                </Link>
+                </TransitionLink>
               </motion.div>
 
               <div className="mt-1 flex flex-col gap-5">
                 <motion.div variants={buttonVariants}>
-                  <Link
-                    href="/"
+                  <TransitionLink
+                    href="https://platform.jobsmate.global/candidate/onboarding?_gl=1*3v7v81*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY4Mi4wLjAuMA"
                     className="w-full rounded-full border border-slate-300 bg-white px-8 py-2 text-center text-sm font-medium text-black transition-colors duration-300 dark:border-[var(--neutral-200)] dark:bg-[var(--neutral-50)] dark:text-[var(--primary-white)]"
                   >
                     Company
-                  </Link>
+                  </TransitionLink>
                 </motion.div>
 
                 <motion.div variants={buttonVariants}>
-                  <Link
-                    href="/"
+                  <TransitionLink
+                    href="https://platform.jobsmate.global/candidate/onboarding?_gl=1*3v7v81*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY4Mi4wLjAuMA"
                     className="w-full rounded-full border border-slate-300 bg-white px-8 py-2 text-center text-sm font-medium text-black transition-colors duration-300 dark:border-[var(--neutral-200)] dark:bg-[var(--neutral-50)] dark:text-[var(--primary-white)]"
                   >
                     Candidate
-                  </Link>
+                  </TransitionLink>
                 </motion.div>
               </div>
             </div>
