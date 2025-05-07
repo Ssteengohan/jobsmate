@@ -932,7 +932,7 @@ const CaseTwo = () => {
                 </div>
                 <div
                   className={`absolute ${
-                    screenSize.isDesktop ? 'top-[40%]' : 'top-[35%]'
+                    screenSize.isDesktop ? 'top-[40%]' : 'sm:top-[35%]'
                   } z-10 flex w-full items-center justify-center sm:h-fit`}
                 >
                   <WorldMap
