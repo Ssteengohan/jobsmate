@@ -525,8 +525,9 @@ const CaseTwo = () => {
                   href={
                     'https://platform.jobsmate.global/company/onboarding/preferences?_gl=1*1wymypx*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY3OC4wLjAuMA'
                   }
-                  target='_blank'
-                  className="group text-foreground relative sm:px-4 flex w-fit items-center gap-1 pt-4 pb-4 text-sm font-semibold sm:pb-20"
+                  target="_blank"
+                  className="group text-foreground relative flex w-fit items-center gap-1 pt-4 pb-4 text-sm font-semibold sm:px-4 sm:pb-20"
+                  aria-label="Explore ranked matches for global hiring"
                 >
                   <span className="relative inline-block">
                     Explore Ranked matches
@@ -540,7 +541,7 @@ const CaseTwo = () => {
                 className={`relative overflow-hidden ${
                   screenSize.isDesktop
                     ? 'w-2/4 border-r border-l'
-                    : 'h-screen w-full border-t border-b'
+                    : 'h-[60vh] w-full border-t border-b md:h-[160vh] lg:h-screen'
                 } border-black/20 dark:border-white/30`}
               >
                 <div className="absolute inset-0 overflow-hidden">
@@ -666,7 +667,7 @@ const CaseTwo = () => {
                   </div>
                   <div
                     className={`flex flex-col gap-4 ${
-                      screenSize.isDesktop ? 'pt-10 pl-30' : 'px-4 pt-4'
+                      screenSize.isDesktop ? 'pt-10 pl-30' : 'px-1 pt-4'
                     }`}
                   >
                     <div
@@ -744,7 +745,12 @@ const CaseTwo = () => {
                           </span>
                         </div>
                       </div>
-                      <span className="bg-primary-gold text-background absolute -top-4 -right-7 rounded-3xl px-4 py-2 shadow-xs shadow-[#05253c]">
+                      <span
+                        className="bg-primary-gold text-background absolute -top-4 -right-7 rounded-3xl px-4 py-2 shadow-xs shadow-[#05253c]"
+                        aria-label="Like candidate"
+                        role="button"
+                        tabIndex={0}
+                      >
                         <Heart className="h-4 w-4" fill="#05253c" />
                       </span>
                     </div>
@@ -753,14 +759,14 @@ const CaseTwo = () => {
                       ref={(el) => {
                         cardsRef.current[1] = el;
                       }}
-                      className="info-container relative flex w-[90%] flex-row items-center rounded-2xl border-1 border-[#7f9cf5]/50 bg-white px-2 py-2 max-md:flex-wrap md:pr-2"
+                      className="info-container relative flex w-[90%] flex-row items-center gap-1 rounded-2xl border-1 border-[#7f9cf5]/50 bg-white px-2 py-2 sm:gap-10 md:pr-2"
                     >
-                      <div className="flex items-center max-md:w-full max-md:justify-evenly">
+                      <div className="flex items-center gap-1 sm:w-fit sm:justify-evenly">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 24 24"
                           fill="red"
-                          className="v-popper--has-tooltip size-5"
+                          className="v-popper--has-tooltip size-2 sm:size-5"
                         >
                           <path
                             fillRule="evenodd"
@@ -768,20 +774,24 @@ const CaseTwo = () => {
                             clipRule="evenodd"
                           ></path>
                         </svg>
-                        <div className="flex flex-row items-center justify-evenly max-md:w-2/4 md:flex-col">
-                          <span className="text-lg font-bold text-[#00253b] md:text-xl">1#</span>
-                          <span className="rounded-lg bg-[#fad246] px-2 py-1 text-[10px] font-bold text-white md:px-4 md:text-[10px]">
+                        <div className="flex flex-row items-center justify-evenly gap-1 max-md:w-2/4 md:flex-col">
+                          <span className="text-[10px] font-bold text-[#00253b] md:text-xl">
+                            1#
+                          </span>
+                          <span className="rounded-lg bg-[#fad246] px-2 py-1 text-[8px] font-bold text-white md:px-4 md:text-[10px]">
                             70%
                           </span>
                         </div>
                       </div>
-                      <div className="flex w-full flex-row items-center justify-between border-[#ededed] px-2 max-md:flex-col">
-                        <div className="flex w-full flex-row items-start gap-1 max-md:justify-evenly md:items-center">
-                          <span className="rounded-full bg-[#ebf4ff] px-2 py-3 text-[#7f9cf5] uppercase md:px-2 md:py-2 md:text-xl">
+                      <div className="flex w-full flex-row items-center justify-between border-[#ededed] pr-2">
+                        <div className="flex w-full flex-row items-center gap-1 pr-1 max-md:justify-evenly md:items-center">
+                          <span className="rounded-full bg-[#ebf4ff] px-1 py-1 text-[10px] text-[#7f9cf5] uppercase md:px-2 md:py-2 md:text-xl">
                             RN
                           </span>
                           <div className="flex flex-col items-start gap-1">
-                            <span className="text-sm font-bold text-[#00253b]">Robert Ment</span>
+                            <span className="text-[10px] font-bold text-[#00253b]">
+                              Robert Ment
+                            </span>
                             <div className="flex flex-row items-start gap-2 md:items-center">
                               <span className="rounded-lg bg-[#fad246] px-2 py-1 text-[8px] font-bold text-[#00253b] md:text-xs lg:px-2 lg:py-1">
                                 Senior
@@ -800,31 +810,34 @@ const CaseTwo = () => {
                           </div>
                         </div>
                         <div className="flex w-full flex-col items-center gap-1 sm:items-start">
-                          <span className="text-sm font-bold text-nowrap text-[#00253b]">
+                          <span className="text-[10px] font-bold text-nowrap text-[#00253b]">
                             Top skills
                           </span>
                           <div className="flex flex-wrap items-start gap-1 md:items-center">
-                            <span className="rounded-lg bg-[#38b6ff] px-3 py-1 text-[8px] font-bold text-nowrap text-white md:text-[10px]">
+                            <span className="rounded-lg bg-[#38b6ff] px-1 py-1 text-[6px] font-bold text-nowrap text-white md:text-[10px]">
                               AWS
                             </span>
-                            <span className="rounded-lg bg-[#38b6ff] px-3 py-1 text-[8px] font-bold text-nowrap text-white md:text-[10px]">
+                            <span className="rounded-lg bg-[#38b6ff] px-1 py-1 text-[6px] font-bold text-nowrap text-white md:text-[10px]">
                               Docker
                             </span>
-                            <span className="rounded-lg bg-[#38b6ff] px-3 py-1 text-[8px] font-bold text-nowrap text-white md:text-[10px]">
+                            <span className="rounded-lg bg-[#38b6ff] px-1 py-1 text-[6px] font-bold text-nowrap text-white md:text-[10px]">
                               Git
                             </span>
                           </div>
                         </div>
                         <div className="flex w-full flex-col items-center gap-1 sm:items-start">
-                          <span className="text-xs font-bold text-[#00253b] md:text-xs">
+                          <span className="text-[10px] font-bold text-[#00253b] md:text-xs">
                             Country of residence
                           </span>
-                          <span className="text-[10px] text-[#00253b]">
-                            🇦🇪 United Arab Emirates
-                          </span>
+                          <span className="text-[8px] text-[#00253b]">🇦🇪 United Arab Emirates</span>
                         </div>
                       </div>
-                      <span className="bg-primary-gold text-background absolute -right-7 rounded-3xl px-4 py-2 shadow-xs shadow-[#05253c]">
+                      <span
+                        className="bg-primary-gold text-background absolute -right-7 rounded-3xl px-4 py-2 shadow-xs shadow-[#05253c]"
+                        aria-label="Message candidate"
+                        role="button"
+                        tabIndex={0}
+                      >
                         <MessageSquare className="h-4 w-4" fill="#05253c" />
                       </span>
                     </div>
@@ -833,14 +846,14 @@ const CaseTwo = () => {
                       ref={(el) => {
                         cardsRef.current[2] = el;
                       }}
-                      className="info-container relative flex w-[90%] flex-row items-center rounded-2xl border-1 border-[#7f9cf5]/50 bg-white px-2 py-2 max-md:flex-wrap md:pr-2"
+                      className="info-container relative flex w-[90%] flex-row items-center gap-1 rounded-2xl border-1 border-[#7f9cf5]/50 bg-white px-2 py-2 sm:gap-10 md:pr-2"
                     >
-                      <div className="flex items-center max-md:w-full max-md:justify-evenly">
+                      <div className="flex items-center gap-1 sm:w-fit sm:justify-evenly">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 24 24"
                           fill="red"
-                          className="v-popper--has-tooltip size-5"
+                          className="v-popper--has-tooltip size-2 sm:size-5"
                         >
                           <path
                             fillRule="evenodd"
@@ -848,20 +861,24 @@ const CaseTwo = () => {
                             clipRule="evenodd"
                           ></path>
                         </svg>
-                        <div className="flex flex-row items-center justify-evenly max-md:w-2/4 md:flex-col">
-                          <span className="text-lg font-bold text-[#00253b] md:text-xl">1#</span>
-                          <span className="rounded-lg bg-[#fad246] px-2 py-1 text-[10px] font-bold text-white md:px-4 md:text-[10px]">
+                        <div className="flex flex-row items-center justify-evenly gap-1 max-md:w-2/4 md:flex-col">
+                          <span className="text-[10px] font-bold text-[#00253b] md:text-xl">
+                            1#
+                          </span>
+                          <span className="rounded-lg bg-[#fad246] px-2 py-1 text-[8px] font-bold text-white md:px-4 md:text-[10px]">
                             70%
                           </span>
                         </div>
                       </div>
-                      <div className="flex w-full flex-row items-center justify-between border-[#ededed] px-2 max-md:flex-col">
-                        <div className="flex w-full flex-row items-start gap-1 max-md:justify-evenly md:items-center">
-                          <span className="rounded-full bg-[#ebf4ff] px-2 py-3 text-[#7f9cf5] uppercase md:px-2 md:py-2 md:text-xl">
+                      <div className="flex w-full flex-row items-center justify-between border-[#ededed] pr-2">
+                        <div className="flex w-full flex-row items-center gap-1 pr-1 max-md:justify-evenly md:items-center">
+                          <span className="rounded-full bg-[#ebf4ff] px-1 py-1 text-[10px] text-[#7f9cf5] uppercase md:px-2 md:py-2 md:text-xl">
                             RN
                           </span>
                           <div className="flex flex-col items-start gap-1">
-                            <span className="text-sm font-bold text-[#00253b]">Robert Ment</span>
+                            <span className="text-[10px] font-bold text-[#00253b]">
+                              Robert Ment
+                            </span>
                             <div className="flex flex-row items-start gap-2 md:items-center">
                               <span className="rounded-lg bg-[#fad246] px-2 py-1 text-[8px] font-bold text-[#00253b] md:text-xs lg:px-2 lg:py-1">
                                 Senior
@@ -880,31 +897,34 @@ const CaseTwo = () => {
                           </div>
                         </div>
                         <div className="flex w-full flex-col items-center gap-1 sm:items-start">
-                          <span className="text-sm font-bold text-nowrap text-[#00253b]">
+                          <span className="text-[10px] font-bold text-nowrap text-[#00253b]">
                             Top skills
                           </span>
                           <div className="flex flex-wrap items-start gap-1 md:items-center">
-                            <span className="rounded-lg bg-[#38b6ff] px-3 py-1 text-[8px] font-bold text-nowrap text-white md:text-[10px]">
+                            <span className="rounded-lg bg-[#38b6ff] px-1 py-1 text-[6px] font-bold text-nowrap text-white md:text-[10px]">
                               AWS
                             </span>
-                            <span className="rounded-lg bg-[#38b6ff] px-3 py-1 text-[8px] font-bold text-nowrap text-white md:text-[10px]">
+                            <span className="rounded-lg bg-[#38b6ff] px-1 py-1 text-[6px] font-bold text-nowrap text-white md:text-[10px]">
                               Docker
                             </span>
-                            <span className="rounded-lg bg-[#38b6ff] px-3 py-1 text-[8px] font-bold text-nowrap text-white md:text-[10px]">
+                            <span className="rounded-lg bg-[#38b6ff] px-1 py-1 text-[6px] font-bold text-nowrap text-white md:text-[10px]">
                               Git
                             </span>
                           </div>
                         </div>
                         <div className="flex w-full flex-col items-center gap-1 sm:items-start">
-                          <span className="text-xs font-bold text-[#00253b] md:text-xs">
+                          <span className="text-[10px] font-bold text-[#00253b] md:text-xs">
                             Country of residence
                           </span>
-                          <span className="text-[10px] text-[#00253b]">
-                            🇦🇪 United Arab Emirates
-                          </span>
+                          <span className="text-[8px] text-[#00253b]">🇦🇪 United Arab Emirates</span>
                         </div>
                       </div>
-                      <span className="bg-primary-gold text-background absolute -right-7 -bottom-5 rounded-3xl px-4 py-2 shadow-xs shadow-[#05253c]">
+                      <span
+                        className="bg-primary-gold text-background absolute -right-7 -bottom-5 rounded-3xl px-4 py-2 shadow-xs shadow-[#05253c]"
+                        aria-label="Reject candidate"
+                        role="button"
+                        tabIndex={0}
+                      >
                         <CircleSlash className="h-4 w-4" />
                       </span>
                     </div>
@@ -912,11 +932,11 @@ const CaseTwo = () => {
                 </div>
                 <div
                   className={`absolute ${
-                    screenSize.isDesktop ? 'top-[35%]' : 'top-[20%]'
-                  } z-10 flex h-full w-full items-center justify-center`}
+                    screenSize.isDesktop ? 'top-[40%]' : 'top-[35%]'
+                  } z-10 flex w-full items-center justify-center sm:h-fit`}
                 >
                   <WorldMap
-                    className={`world-map-container h-fit max-lg:pt-30 ${
+                    className={`world-map-container h-fit ${
                       screenSize.isDesktop ? 'w-[95%]' : 'w-[90%]'
                     }`}
                   />
@@ -977,17 +997,32 @@ const CaseTwo = () => {
                   </div>
 
                   <div className="mt-6 flex flex-col gap-3 px-5">
-                    <div className="flex items-center justify-center gap-2 rounded-lg bg-[var(--primary-medium-blue)]/80 px-4 py-2 text-white">
+                    <div
+                      className="flex items-center justify-center gap-2 rounded-lg bg-[var(--primary-medium-blue)]/80 px-4 py-2 text-white"
+                      role="button"
+                      tabIndex={0}
+                      aria-label="View top candidates ready"
+                    >
                       <Briefcase className="h-4 w-4" />
                       <span>Top candidates ready</span>
                     </div>
 
-                    <div className="flex items-center justify-center gap-2 rounded-lg border border-[var(--primary-gold)]/80 bg-transparent px-4 py-2 text-[var(--primary-gold)]">
+                    <div
+                      className="flex items-center justify-center gap-2 rounded-lg border border-[var(--primary-gold)]/80 bg-transparent px-4 py-2 text-[var(--primary-gold)]"
+                      role="button"
+                      tabIndex={0}
+                      aria-label="View applied search criteria"
+                    >
                       <Award className="h-4 w-4" />
                       <span>Search criteria applied</span>
                     </div>
 
-                    <div className="text-foreground mt-6 flex w-fit items-center gap-1 text-sm">
+                    <div
+                      className="text-foreground mt-6 flex w-fit items-center gap-1 text-sm"
+                      role="button"
+                      tabIndex={0}
+                      aria-label="View all 70+ matched candidates"
+                    >
                       <span className="opacity-75">70+ matched candidates</span>
                       <ArrowRight className="inline h-4 w-4 opacity-75" />
                     </div>

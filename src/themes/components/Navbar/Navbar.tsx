@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useScrollData } from '@/themes/lib/lenis';
-import { TransitionLink } from '../PageTransition/PageTransitionWrapper-1';
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -268,12 +267,12 @@ const Navbar = () => {
                 onMouseLeave={() => setActiveItem(null)}
                 className="relative z-10"
               >
-                <TransitionLink
+                <Link
                   href="#features"
                   className="block px-3 py-2 text-black transition-all duration-400 ease-in-out dark:text-[var(--primary-white)]"
                 >
                   Features
-                </TransitionLink>
+                </Link>
               </li>
               <li
                 ref={(el) => {
@@ -298,21 +297,22 @@ const Navbar = () => {
                 onMouseLeave={() => setActiveItem(null)}
                 className="relative z-10"
               >
-                <TransitionLink
+                <Link
                   href="https://jobsmate.global/why-jobsmate/"
                   className="block px-3 py-2 text-black transition-all duration-400 ease-in-out dark:text-[var(--primary-white)]"
                 >
                   About us
-                </TransitionLink>
+                </Link>
               </li>
             </ul>
           </nav>
         </div>
 
         <div className="hidden items-center gap-4 lg:flex">
-          <TransitionLink
+          <Link
             href="https://platform.jobsmate.global/company/onboarding/preferences?_gl=1*1wymypx*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY3OC4wLjAuMA"
             className="group relative rounded-full border border-slate-300 bg-white px-8 py-2 text-sm font-medium text-black transition-all duration-300 ease-in-out hover:scale-105 hover:border-transparent hover:shadow-lg dark:border-[var(--neutral-200)] dark:bg-[var(--neutral-50)] dark:text-[var(--primary-white)] dark:hover:shadow-[0_4px_20px_rgba(42,151,219,0.2)]"
+            aria-label="Company portal access"
           >
             <div className="via-primary-light-blue absolute inset-x-0 -top-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent to-transparent opacity-70 shadow-sm transition-all duration-300 group-hover:w-3/4 group-hover:opacity-100 group-hover:shadow-md" />
             <div className="via-primary-gold absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent to-transparent opacity-0 shadow-sm transition-all duration-300 group-hover:w-3/4 group-hover:opacity-100" />
@@ -320,16 +320,17 @@ const Navbar = () => {
             <span className="group-hover:text-primary-medium-blue relative z-20 transition-all duration-300">
               Company
             </span>
-          </TransitionLink>
-          <TransitionLink
+          </Link>
+          <Link
             href="https://platform.jobsmate.global/candidate/onboarding?_gl=1*3v7v81*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY4Mi4wLjAuMA"
             className="group relative inline-flex h-10 overflow-hidden rounded-full p-[1px] shadow-sm transition-all duration-300 ease-in-out hover:shadow-md focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 focus:outline-none dark:hover:shadow-[0_4px_20px_rgba(42,151,219,0.2)]"
+            aria-label="Candidate portal access"
           >
             <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,var(--primary-light-blue)_0%,var(--primary-medium-blue)_40%,var(--primary-gold)_70%,var(--primary-dark)_100%)] transition-transform duration-300 ease-in-out group-hover:scale-110 group-hover:animate-[spin_1.5s_linear_infinite]" />
             <span className="group-hover:text-primary-medium-blue inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-white px-3 py-1 text-sm font-medium text-black backdrop-blur-3xl transition-all duration-300 ease-in-out group-hover:bg-gray-50 dark:bg-[var(--neutral-50)] dark:text-[var(--primary-white)] dark:group-hover:bg-[var(--neutral-200)]">
               Candidate
             </span>
-          </TransitionLink>
+          </Link>
         </div>
 
         <button
@@ -402,31 +403,33 @@ const Navbar = () => {
               </motion.div>
 
               <motion.div variants={itemVariants}>
-                <TransitionLink
+                <Link
                   href="https://jobsmate.global/why-jobsmate/"
                   className="block rounded-md px-3 py-2 text-base font-medium text-black transition-colors duration-300 hover:bg-[#f3f4f6] dark:text-[var(--primary-white)] dark:hover:bg-[var(--neutral-200)]"
                 >
                   About us
-                </TransitionLink>
+                </Link>
               </motion.div>
 
               <div className="mt-1 flex flex-col gap-5">
                 <motion.div variants={buttonVariants}>
-                  <TransitionLink
+                  <Link
                     href="https://platform.jobsmate.global/candidate/onboarding?_gl=1*3v7v81*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY4Mi4wLjAuMA"
                     className="w-full rounded-full border border-slate-300 bg-white px-8 py-2 text-center text-sm font-medium text-black transition-colors duration-300 dark:border-[var(--neutral-200)] dark:bg-[var(--neutral-50)] dark:text-[var(--primary-white)]"
+                    aria-label="Company portal access"
                   >
                     Company
-                  </TransitionLink>
+                  </Link>
                 </motion.div>
 
                 <motion.div variants={buttonVariants}>
-                  <TransitionLink
+                  <Link
                     href="https://platform.jobsmate.global/candidate/onboarding?_gl=1*3v7v81*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY4Mi4wLjAuMA"
                     className="w-full rounded-full border border-slate-300 bg-white px-8 py-2 text-center text-sm font-medium text-black transition-colors duration-300 dark:border-[var(--neutral-200)] dark:bg-[var(--neutral-50)] dark:text-[var(--primary-white)]"
+                    aria-label="Candidate portal access"
                   >
                     Candidate
-                  </TransitionLink>
+                  </Link>
                 </motion.div>
               </div>
             </div>
