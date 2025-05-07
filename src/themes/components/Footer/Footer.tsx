@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 // import { SparklesPreview } from './Sparkles';
 import Link from 'next/link';
 import Image from 'next/image';
-import { TransitionLink } from '../../components/PageTransition/PageTransitionWrapper-1';
 
 // Define interfaces for our components
 interface FooterLink {
@@ -158,14 +157,14 @@ const Footer = () => {
                         <span className="absolute -bottom-0.5 left-0 h-[0.5px] w-0 bg-gray-400 opacity-50 transition-all duration-300 group-hover:w-full dark:bg-gray-500"></span>
                       </Link>
                     ) : (
-                      <TransitionLink
+                      <Link
                         href={link.href}
                         aria-label={link.label}
                         className="group relative text-sm text-gray-600 transition-colors duration-200 dark:text-gray-300"
                       >
                         <span className="relative">{link.label}</span>
                         <span className="absolute -bottom-0.5 left-0 h-[0.5px] w-0 bg-gray-400 opacity-50 transition-all duration-300 group-hover:w-full dark:bg-gray-500"></span>
-                      </TransitionLink>
+                      </Link>
                     )}
                   </li>
                 ))}
@@ -179,23 +178,23 @@ const Footer = () => {
           <div className="flex flex-wrap items-center gap-2">
             <span>&copy; {currentYear} Jobsmate. All rights reserved.</span>
             <span className="hidden md:inline">•</span>
-            <TransitionLink
+            <Link
               href="https://jobsmate.global/privacy-policy"
               aria-label="Privacy Policy"
               className="group relative transition-colors duration-200"
             >
               <span>Privacy Policy</span>
               <span className="absolute -bottom-0.5 left-0 h-[0.5px] w-0 bg-gray-400 opacity-50 transition-all duration-200 group-hover:w-full dark:bg-gray-500"></span>
-            </TransitionLink>
+            </Link>
             <span className="hidden md:inline">•</span>
-            <TransitionLink
+            <Link
               href="https://jobsmate.global/terms-and-conditions-employees"
               aria-label="Terms and Conditions"
               className="group relative transition-colors duration-200"
             >
               <span>Terms & Conditions</span>
               <span className="absolute -bottom-0.5 left-0 h-[0.5px] w-0 bg-gray-400 opacity-50 transition-all duration-200 group-hover:w-full dark:bg-gray-500"></span>
-            </TransitionLink>
+            </Link>
             <div className="flex space-x-2 md:hidden">
               <Link
                 href="https://www.linkedin.com/company/jobsmate"
