@@ -61,23 +61,8 @@ const Card = () => {
           </div>
 
           <div className="overflow-hidden rounded-xl border border-gray-200/70 shadow-xl md:shadow-2xl dark:border-white/20">
-            <Image
-              src="/dashboard-preview.png"
-              alt="Pro Dashboard"
-              width={500}
-              height={300}
-              className="h-auto w-full"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-
-                const fallbackElement = e.currentTarget.nextSibling as HTMLElement;
-                if (fallbackElement && fallbackElement instanceof HTMLElement) {
-                  fallbackElement.style.display = 'block';
-                }
-              }}
-            />
-
-            <div className="hidden h-52 w-full bg-gradient-to-br from-[var(--primary-light-blue)] to-[var(--primary-gold)] p-4">
+            {/* Replace with fallback UI since we don't have the dashboard image */}
+            <div className="h-52 w-full bg-gradient-to-br from-[var(--primary-light-blue)] to-[var(--primary-gold)] p-4">
               <div className="flex h-full flex-col justify-between">
                 <div className="space-y-2">
                   <div className="h-2 w-24 rounded bg-white/30"></div>

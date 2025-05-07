@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
       images: {
         formats: ["image/avif", "image/webp"],
     },
+     productionBrowserSourceMaps: true,
     async redirects() {
       return [
         // Common misspellings of "jobsmate"
