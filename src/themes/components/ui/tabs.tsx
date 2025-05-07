@@ -40,6 +40,7 @@ export const Tabs = ({
   return (
     <>
       <div
+        role="tablist"
         className={cn(
           'no-visible-scrollbar relative flex w-full max-w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 overflow-auto [perspective:1000px] sm:flex-row sm:justify-center sm:gap-4 sm:gap-x-8 sm:overflow-visible sm:pb-0 md:flex-wrap',
           containerClassName,
@@ -53,6 +54,11 @@ export const Tabs = ({
             }}
             onMouseEnter={() => setHovering(true)}
             onMouseLeave={() => setHovering(false)}
+            aria-label={`Switch to ${tab.title} tab`}
+            role="tab"
+            aria-selected={active.value === tab.value}
+            aria-controls={`tab-content-${tab.value}`}
+            id={`tab-${tab.value}`}
             className={cn(
               'relative cursor-pointer rounded-full border border-gray-300 px-3 py-2 text-lg text-nowrap transition-all duration-200 hover:bg-[#f3f4f6] max-md:text-sm md:px-4 md:py-2 dark:border-gray-700 dark:hover:bg-[var(--neutral-200)]',
               active.value === tab.value ? 'border-blue-500 dark:border-blue-400' : '',
@@ -123,13 +129,16 @@ export const FadeInDiv = ({
   };
   return (
     <div
-      className="relative mx-auto flex h-auto min-h-[60vh] w-full overflow-visible sm:min-h-[65vh] md:h-screen lg:h-auto lg:aspect-video lg:w-[90%]"
+      className="relative mx-auto flex h-auto min-h-[60vh] w-full overflow-visible sm:min-h-[65vh] md:h-screen lg:aspect-video lg:h-auto lg:w-[90%]"
       style={{ position: 'relative' }}
     >
       {tabs.map((tab, idx) => (
         <motion.div
           key={tab.value}
           layoutId={tab.value}
+          id={`tab-content-${tab.value}`}
+          role="tabpanel"
+          aria-labelledby={`tab-${tab.value}`}
           style={{
             scale: 1 - idx * 0.1,
             top: hovering ? idx * -50 : 0,

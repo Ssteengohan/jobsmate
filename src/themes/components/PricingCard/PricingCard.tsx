@@ -190,6 +190,7 @@ const PricingCard: React.FC<PricingCardProps> = ({ tiers = defaultTiers }) => {
                       href="https://platform.jobsmate.global/company/onboarding/preferences?_gl=1*1wymypx*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY3OC4wLjAuMA"
                       target="_blank"
                       className="block w-full"
+                      aria-label={`${tier.buttonText} for ${tier.name} plan`}
                     >
                       <motion.div
                         whileHover={{
@@ -219,6 +220,7 @@ const PricingCard: React.FC<PricingCardProps> = ({ tiers = defaultTiers }) => {
                       }
                       target="_blank"
                       className="block w-full"
+                      aria-label={`${tier.buttonText} for ${tier.name} plan`}
                     >
                       <motion.div
                         whileHover={{

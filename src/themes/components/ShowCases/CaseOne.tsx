@@ -827,6 +827,7 @@ const CaseOne = () => {
               }
               target="_blank"
               className="group relative flex w-fit items-center gap-1 px-4 font-semibold md:pb-20"
+              aria-label="Explore Jobsmate hiring platform"
             >
               <span className="relative inline-block">
                 Explore platform

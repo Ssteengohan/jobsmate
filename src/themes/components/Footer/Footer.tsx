@@ -124,6 +124,7 @@ const Footer = () => {
                 <span>Powered by </span>
                 <Link
                   href="mailto:contact@nextshift.com"
+                  aria-label="Contact NextShift"
                   className="group relative font-medium text-[var(--primary-medium-blue)] dark:text-[var(--primary-light-blue)]"
                 >
                   <span className="relative z-10">NextShift</span>
@@ -148,6 +149,7 @@ const Footer = () => {
                     {link.isExternal || link.href.startsWith('#') ? (
                       <Link
                         href={link.href}
+                        aria-label={link.label}
                         target={link.isExternal ? '_blank' : undefined}
                         rel={link.isExternal ? 'noopener noreferrer' : undefined}
                         className="group relative text-sm text-gray-600 transition-colors duration-200 dark:text-gray-300"
@@ -158,6 +160,7 @@ const Footer = () => {
                     ) : (
                       <TransitionLink
                         href={link.href}
+                        aria-label={link.label}
                         className="group relative text-sm text-gray-600 transition-colors duration-200 dark:text-gray-300"
                       >
                         <span className="relative">{link.label}</span>
@@ -178,6 +181,7 @@ const Footer = () => {
             <span className="hidden md:inline">•</span>
             <TransitionLink
               href="https://jobsmate.global/privacy-policy"
+              aria-label="Privacy Policy"
               className="group relative transition-colors duration-200"
             >
               <span>Privacy Policy</span>
@@ -186,6 +190,7 @@ const Footer = () => {
             <span className="hidden md:inline">•</span>
             <TransitionLink
               href="https://jobsmate.global/terms-and-conditions-employees"
+              aria-label="Terms and Conditions"
               className="group relative transition-colors duration-200"
             >
               <span>Terms & Conditions</span>

@@ -53,17 +53,21 @@ export const CodeBlock = ({
     <div className="relative w-full rounded-lg bg-slate-900 p-4 font-mono text-sm">
       <div className="flex flex-col gap-2">
         {tabsExist && (
-          <div className="flex overflow-x-auto">
+          <div className="flex overflow-x-auto" role="tablist">
             {tabs.map((tab, index) => (
-              <button
+              <div
                 key={index}
+                role="tab"
                 onClick={() => setActiveTab(index)}
-                className={`px-3 !py-2 font-sans text-xs transition-colors ${
+                aria-selected={activeTab === index}
+                tabIndex={activeTab === index ? 0 : -1}
+                aria-controls={`tab-panel-${index}`}
+                className={`cursor-pointer px-3 !py-2 font-sans text-xs transition-colors ${
                   activeTab === index ? 'text-white' : 'text-zinc-400 hover:text-zinc-200'
                 }`}
               >
                 {tab.name}
-              </button>
+              </div>
             ))}
           </div>
         )}
@@ -72,6 +76,7 @@ export const CodeBlock = ({
             <div className="text-xs text-zinc-400">{filename}</div>
             <button
               onClick={copyToClipboard}
+              aria-label='Click Icon'
               className="flex items-center gap-1 font-sans text-xs text-zinc-400 transition-colors hover:text-zinc-200"
             >
               {copied ? <IconCheck size={14} /> : <IconCopy size={14} />}
@@ -79,30 +84,36 @@ export const CodeBlock = ({
           </div>
         )}
       </div>
-      <SyntaxHighlighter
-        language={activeLanguage}
-        style={atomDark}
-        customStyle={{
-          margin: 0,
-          padding: 0,
-          background: 'transparent',
-          fontSize: '0.875rem', 
-        }}
-        wrapLines={true}
-        showLineNumbers={true}
-        lineProps={(lineNumber) => ({
-          style: {
-            backgroundColor: activeHighlightLines.includes(lineNumber)
-              ? 'rgba(255,255,255,0.1)'
-              : 'transparent',
-            display: 'block',
-            width: '100%',
-          },
-        })}
-        PreTag="div"
+      <div
+        role={tabsExist ? 'tabpanel' : undefined}
+        id={tabsExist ? `tab-panel-${activeTab}` : undefined}
+        aria-labelledby={tabsExist ? `tab-${activeTab}` : undefined}
       >
-        {String(activeCode)}
-      </SyntaxHighlighter>
+        <SyntaxHighlighter
+          language={activeLanguage}
+          style={atomDark}
+          customStyle={{
+            margin: 0,
+            padding: 0,
+            background: 'transparent',
+            fontSize: '0.875rem',
+          }}
+          wrapLines={true}
+          showLineNumbers={true}
+          lineProps={(lineNumber) => ({
+            style: {
+              backgroundColor: activeHighlightLines.includes(lineNumber)
+                ? 'rgba(255,255,255,0.1)'
+                : 'transparent',
+              display: 'block',
+              width: '100%',
+            },
+          })}
+          PreTag="div"
+        >
+          {String(activeCode)}
+        </SyntaxHighlighter>
+      </div>
     </div>
   );
 };
