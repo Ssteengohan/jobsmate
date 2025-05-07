@@ -540,7 +540,7 @@ const CaseTwo = () => {
                 className={`relative overflow-hidden ${
                   screenSize.isDesktop
                     ? 'w-2/4 border-r border-l'
-                    : 'h-screen w-full border-t border-b'
+                    : 'md:h-[160vh] lg:h-screen w-full border-t border-b'
                 } border-black/20 dark:border-white/30`}
               >
                 <div className="absolute inset-0 overflow-hidden">

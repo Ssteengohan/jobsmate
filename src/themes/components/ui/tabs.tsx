@@ -123,7 +123,7 @@ export const FadeInDiv = ({
   };
   return (
     <div
-      className="relative mx-auto flex h-auto min-h-[60vh] w-full overflow-visible sm:min-h-[65vh] lg:aspect-video lg:w-[90%]"
+      className="relative mx-auto flex h-auto min-h-[60vh] w-full overflow-visible sm:min-h-[65vh] md:h-screen lg:h-auto lg:aspect-video lg:w-[90%]"
       style={{ position: 'relative' }}
     >
       {tabs.map((tab, idx) => (

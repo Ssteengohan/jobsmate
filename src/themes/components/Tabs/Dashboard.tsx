@@ -341,7 +341,7 @@ const Dashboard = () => {
             </motion.div>
             <motion.div
               variants={itemVariants}
-              className="flex justify-between rounded-xl border-2 border-[#e5e7eb] px-2 py-3 md:w-5/8"
+              className="flex justify-between rounded-xl border-2 border-[#e5e7eb] px-2 py-3 lg:w-5/8"
             >
               <div className="flex w-8/12 flex-col gap-1">
                 <span className="text-xs font-bold text-[#00253b] md:text-lg">
@@ -376,7 +376,7 @@ const Dashboard = () => {
             </motion.div>
             <motion.div
               variants={itemVariants}
-              className="flex justify-between rounded-xl border-2 border-[#e5e7eb] px-2 py-3 md:w-5/8"
+              className="flex justify-between rounded-xl border-2 border-[#e5e7eb] px-2 py-3 lg:w-5/8"
             >
               <div className="flex w-8/12 flex-col gap-1">
                 <span className="text-xs font-bold text-[#00253b] md:text-lg">
@@ -410,7 +410,7 @@ const Dashboard = () => {
             </motion.div>
             <motion.div
               variants={itemVariants}
-              className="grid grid-cols-1 items-start gap-4 md:grid-cols-2"
+              className="grid grid-cols-1 items-start gap-4 lg:grid-cols-2"
             >
               <div className="flex justify-between rounded-xl border-2 border-[#e5e7eb] px-2 py-3">
                 <div className="flex w-8/12 flex-col gap-1">
