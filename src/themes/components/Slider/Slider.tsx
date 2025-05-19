@@ -275,7 +275,7 @@ const Slider = () => {
         </motion.div>
       </motion.section>
 
-      <div className="h-[250vh] w-full sm:h-[200vh]"></div>
+      <div className="h-[250vh] w-full sm:h-[280vh]"></div>
     </div>
   );
 };
