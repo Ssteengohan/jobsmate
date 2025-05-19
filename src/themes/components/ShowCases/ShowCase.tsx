@@ -57,7 +57,7 @@ interface ShowCaseProps {
 
 const ShowCase: React.FC<ShowCaseProps> = ({ id }) => {
   const initialText =
-    'Find the right fit, faster. Connect with top candidates, streamline hiring, and collaborate smarter — all in one powerful platform.';
+    'Find the right fit,  faster.  Connect with top candidates,  streamline hiring,  and collaborate smarter — all in one powerful platform.';
 
   const sectionRef = useRef<HTMLElement>(null);
   const balancerRef = useRef<HTMLDivElement>(null);
