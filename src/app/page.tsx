@@ -50,7 +50,7 @@ export default function Home() {
         <Slider />
 
         <TimelineDemo />
-        <ShowCase />
+        <ShowCase id="features" />
         <Card />
         <PricingCard />
       </div>

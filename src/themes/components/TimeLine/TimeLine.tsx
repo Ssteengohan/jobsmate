@@ -210,7 +210,7 @@ export function TimelineDemo() {
   ];
 
   return (
-    <div ref={containerRef} className="relative z-20 h-full w-full" id='features'>
+    <div ref={containerRef} className="relative z-20 h-full w-full" id="timeline">
       <Timeline data={data} />
     </div>
   );

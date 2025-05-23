@@ -15,6 +15,194 @@ interface FooterSection {
   links: FooterLink[];
 }
 
+// Interface for Lenis scroll library access
+interface LenisScrollOptions {
+  duration?: number;
+  easing?: (t: number) => number;
+  lerp?: number;
+  onStart?: () => void;
+  onComplete?: () => void;
+}
+
+// Smooth scroll handler function for footer links
+const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  if (href.startsWith('#')) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const navbarHeight = document.querySelector('header')?.clientHeight || 80;
+    const targetElement = document.querySelector(href);
+
+    if (!targetElement) {
+      // For lazy-loaded sections, scroll to trigger loading first
+      if (href === '#features') {
+        // Scroll down to trigger ShowCase loading
+        const triggerPosition = window.innerHeight * 0.7;
+        const lenis = (
+          window as unknown as {
+            lenis?: {
+              scrollTo: (target: number | string, options?: LenisScrollOptions) => void;
+            };
+          }
+        ).lenis;
+
+        // Show a subtle loading indicator to enhance UX
+        const loadingIndicator = document.createElement('div');
+        loadingIndicator.style.cssText = `
+          position: fixed;
+          bottom: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          padding: 8px 16px;
+          background-color: rgba(0, 0, 0, 0.7);
+          color: white;
+          border-radius: 20px;
+          font-size: 14px;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          z-index: 9999;
+        `;
+        loadingIndicator.textContent = 'Scrolling to features...';
+        document.body.appendChild(loadingIndicator);
+
+        // Fade in the loading indicator
+        setTimeout(() => {
+          loadingIndicator.style.opacity = '1';
+        }, 50);
+
+        if (lenis) {
+          // First smooth scroll to trigger section loading
+          lenis.scrollTo(triggerPosition, {
+            duration: 0.8, // Faster first scroll to reduce waiting time
+            easing: (t: number) => 1 - Math.pow(1 - t, 2), // Smoother initial movement
+            lerp: 0.1,
+            onComplete: () => {
+              // After initial scroll completes, look for the target
+              setTimeout(() => {
+                const retryTarget = document.querySelector(href);
+                if (retryTarget) {
+                  const elementPosition =
+                    retryTarget.getBoundingClientRect().top + window.pageYOffset;
+                  const finalPosition = elementPosition - navbarHeight - 20;
+
+                  // Now do the final scroll to exact position
+                  lenis.scrollTo(finalPosition, {
+                    duration: 1.8, // Longer, smoother final scroll
+                    easing: (t: number) => {
+                      // Premium easing curve for beautiful scrolling
+                      return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+                    },
+                    lerp: 0.075, // More precise final positioning
+                    onComplete: () => {
+                      // Update URL and remove the loading indicator
+                      window.history.replaceState({}, '', href);
+                      loadingIndicator.style.opacity = '0';
+                      setTimeout(() => {
+                        loadingIndicator.remove();
+                      }, 300);
+                    },
+                  });
+                } else {
+                  // If target still not found, clean up
+                  loadingIndicator.style.opacity = '0';
+                  setTimeout(() => {
+                    loadingIndicator.remove();
+                  }, 300);
+                }
+              }, 700); // Reduced waiting time between scrolls
+            },
+          });
+        } else {
+          // Fallback for browsers without Lenis
+          window.scrollTo({ top: triggerPosition, behavior: 'smooth' });
+
+          // Wait and try to find the target again
+          setTimeout(() => {
+            const retryTarget = document.querySelector(href);
+            if (retryTarget) {
+              const elementPosition = retryTarget.getBoundingClientRect().top + window.pageYOffset;
+              const finalPosition = elementPosition - navbarHeight - 20;
+
+              window.scrollTo({ top: finalPosition, behavior: 'smooth' });
+
+              // Update URL after scroll completes
+              setTimeout(() => {
+                window.history.replaceState({}, '', href);
+                loadingIndicator.style.opacity = '0';
+                setTimeout(() => {
+                  loadingIndicator.remove();
+                }, 300);
+              }, 1000);
+            } else {
+              // Clean up if target not found
+              loadingIndicator.style.opacity = '0';
+              setTimeout(() => {
+                loadingIndicator.remove();
+              }, 300);
+            }
+          }, 1000);
+        }
+      }
+      return;
+    }
+
+    // Element exists, scroll to it directly
+    const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+    const targetPosition = elementPosition - navbarHeight - 20;
+
+    // Use Lenis for butter-smooth scrolling
+    const lenis = (
+      window as unknown as {
+        lenis?: {
+          scrollTo: (target: number | string, options?: LenisScrollOptions) => void;
+        };
+      }
+    ).lenis;
+
+    if (lenis) {
+      // Slightly offset the scroll to provide a more natural starting point
+      const startOffset = window.scrollY;
+      const distance = Math.abs(targetPosition - startOffset);
+
+      // Adjust duration based on scroll distance for a more natural feel
+      // Longer distances get slightly more time, with a base minimum
+      const baseDuration = 1.2;
+      const distanceFactor = Math.min(distance / 2000, 1); // Cap at 1 for very long scrolls
+      const adaptiveDuration = baseDuration + distanceFactor * 1.0;
+
+      lenis.scrollTo(targetPosition, {
+        duration: adaptiveDuration,
+        easing: (t: number) => {
+          // Enhanced easing function for ultra-smooth experience
+          // This combines cubic and exponential easing for a butter-smooth feel
+          return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        },
+        lerp: 0.1, // Linear interpolation factor for extra smoothness
+        onStart: () => {
+          // Add a subtle visual indication that scrolling is happening
+          document.body.style.cursor = 'progress';
+        },
+        onComplete: () => {
+          document.body.style.cursor = '';
+          // Update URL after scroll completes
+          window.history.replaceState({}, '', href);
+        },
+      });
+    } else {
+      // Fallback to native smooth scroll with best possible settings
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth',
+      });
+
+      // Update URL after scroll likely completes
+      setTimeout(() => {
+        window.history.replaceState({}, '', href);
+      }, 1000);
+    }
+  }
+};
+
 const getCurrentYear = () => new Date().getFullYear();
 
 const Footer = () => {
@@ -108,13 +296,15 @@ const Footer = () => {
           <div className="col-span-1 lg:col-span-5">
             <div className="flex flex-col space-y-4">
               <div className="flex items-center">
-                <Image
-                  src="/jobsmate-mob.svg"
-                  alt="Jobsmate Logo"
-                  width={140}
-                  height={40}
-                  className="h-40 w-40 dark:brightness-100"
-                />
+                <Link href="/" aria-label="Go to homepage">
+                  <Image
+                    src="/jobsmate-mob.svg"
+                    alt="Jobsmate Logo"
+                    width={140}
+                    height={40}
+                    className="h-40 w-40 dark:brightness-100"
+                  />
+                </Link>
               </div>
               <p className="max-w-xs text-sm text-gray-600 dark:text-gray-300">
                 Hire the best applicants for your tech positions. Focus on skills, not just resumes.
@@ -152,6 +342,11 @@ const Footer = () => {
                         target={link.isExternal ? '_blank' : undefined}
                         rel={link.isExternal ? 'noopener noreferrer' : undefined}
                         className="group relative text-sm text-gray-600 transition-colors duration-200 dark:text-gray-300"
+                        onClick={(e) => {
+                          if (link.href.startsWith('#')) {
+                            handleSmoothScroll(e, link.href);
+                          }
+                        }}
                       >
                         <span className="relative">{link.label}</span>
                         <span className="absolute -bottom-0.5 left-0 h-[0.5px] w-0 bg-gray-400 opacity-50 transition-all duration-300 group-hover:w-full dark:bg-gray-500"></span>

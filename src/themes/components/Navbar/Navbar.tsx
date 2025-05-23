@@ -62,105 +62,200 @@ const Navbar = () => {
   const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (href.startsWith('#')) {
       e.preventDefault();
-      e.stopPropagation(); // Stop event propagation
+      e.stopPropagation();
 
       // Close mobile menu if open
       if (mobileMenuOpen) setMobileMenuOpen(false);
 
-      // Special handling for about-us and features sections
-      if (href === '#features' || href === '#about-us') {
-        // Use different approach for these specific sections
-        const navbarHeight = document.querySelector('header')?.clientHeight || 80;
+      const navbarHeight = document.querySelector('header')?.clientHeight || 80;
+      const targetElement = document.querySelector(href);
 
-        // On first page load, we need to scroll enough to get past ShowCase section's lazy loading threshold
-        const initialScrollTarget =
-          href === '#about-us'
-            ? window.innerHeight * 7.5 // Scroll more for about-us since it's farther down
-            : window.innerHeight * 0.8; // Less for features
-
-        // Prevent any other scrolling during our custom scroll
-        document.body.style.overflow = 'hidden';
-
-        // First, scroll down enough to trigger lazy loading of the sections
-        window.scrollTo({
-          top: initialScrollTarget,
-          behavior: 'smooth',
-        });
-
-        // Wait for components to load and then try to find and scroll to the target
-        setTimeout(
-          () => {
-            document.body.style.overflow = '';
-
-            const targetElement = document.querySelector(href);
-            if (!targetElement) {
-              // If still not found, try once more after a delay
-              setTimeout(() => {
-                const retryTarget = document.querySelector(href);
-                if (retryTarget) {
-                  const finalPosition =
-                    retryTarget.getBoundingClientRect().top + window.pageYOffset;
-                  window.scrollTo({
-                    top: finalPosition - navbarHeight - 50,
-                    behavior: 'smooth',
-                  });
-                  window.history.replaceState({}, '', href);
-                }
-              }, 500);
-              return;
+      if (!targetElement) {
+        // For lazy-loaded sections, scroll to trigger loading first
+        if (href === '#features') {
+          // Scroll down to trigger ShowCase loading
+          const triggerPosition = window.innerHeight * 0.7; // Use Lenis for smooth scrolling
+          const lenis = (
+            window as unknown as {
+              lenis?: {
+                scrollTo: (
+                  target: number | string,
+                  options?: {
+                    duration?: number;
+                    easing?: (t: number) => number;
+                    lerp?: number;
+                    onStart?: () => void;
+                    onComplete?: () => void;
+                  },
+                ) => void;
+              };
             }
+          ).lenis;
 
-            const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
-            window.scrollTo({
-              top: elementPosition - navbarHeight - 50,
-              behavior: 'smooth',
+          // Show a subtle loading indicator to enhance UX
+          const loadingIndicator = document.createElement('div');
+          loadingIndicator.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 16px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 20px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 9999;
+          `;
+          loadingIndicator.textContent = 'Scrolling to features...';
+          document.body.appendChild(loadingIndicator);
+
+          // Fade in the loading indicator
+          setTimeout(() => {
+            loadingIndicator.style.opacity = '1';
+          }, 50);
+
+          if (lenis) {
+            // First smooth scroll to trigger section loading
+            lenis.scrollTo(triggerPosition, {
+              duration: 0.8, // Faster first scroll to reduce waiting time
+              easing: (t: number) => 1 - Math.pow(1 - t, 2), // Smoother initial movement
+              lerp: 0.1,
+              onComplete: () => {
+                // After initial scroll completes, look for the target
+                setTimeout(() => {
+                  const retryTarget = document.querySelector(href);
+                  if (retryTarget) {
+                    const elementPosition =
+                      retryTarget.getBoundingClientRect().top + window.pageYOffset;
+                    const finalPosition = elementPosition - navbarHeight - 20;
+
+                    // Now do the final scroll to exact position
+                    lenis.scrollTo(finalPosition, {
+                      duration: 1.8, // Longer, smoother final scroll
+                      easing: (t: number) => {
+                        // Premium easing curve for beautiful scrolling
+                        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+                      },
+                      lerp: 0.075, // More precise final positioning
+                      onComplete: () => {
+                        // Update URL and remove the loading indicator
+                        window.history.replaceState({}, '', href);
+                        loadingIndicator.style.opacity = '0';
+                        setTimeout(() => {
+                          loadingIndicator.remove();
+                        }, 300);
+                      },
+                    });
+                  } else {
+                    // If target still not found, clean up
+                    loadingIndicator.style.opacity = '0';
+                    setTimeout(() => {
+                      loadingIndicator.remove();
+                    }, 300);
+                  }
+                }, 700); // Reduced waiting time between scrolls
+              },
             });
+          } else {
+            // Fallback for browsers without Lenis
+            window.scrollTo({ top: triggerPosition, behavior: 'smooth' });
 
-            // Update URL
-            window.history.replaceState({}, '', href);
-          },
-          href === '#about-us' ? 1000 : 800,
-        );
+            // Wait and try to find the target again
+            setTimeout(() => {
+              const retryTarget = document.querySelector(href);
+              if (retryTarget) {
+                const elementPosition =
+                  retryTarget.getBoundingClientRect().top + window.pageYOffset;
+                const finalPosition = elementPosition - navbarHeight - 20;
 
+                window.scrollTo({ top: finalPosition, behavior: 'smooth' });
+
+                // Update URL after scroll completes
+                setTimeout(() => {
+                  window.history.replaceState({}, '', href);
+                  loadingIndicator.style.opacity = '0';
+                  setTimeout(() => {
+                    loadingIndicator.remove();
+                  }, 300);
+                }, 1000);
+              } else {
+                // Clean up if target not found
+                loadingIndicator.style.opacity = '0';
+                setTimeout(() => {
+                  loadingIndicator.remove();
+                }, 300);
+              }
+            }, 1000);
+          }
+        }
         return;
       }
 
-      // Regular scroll for other anchor links
-      const navbarHeight = document.querySelector('header')?.clientHeight || 80;
-      const targetElement = document.querySelector(href);
-      if (!targetElement) return;
+      // Element exists, scroll to it directly
+      const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+      const targetPosition = elementPosition - navbarHeight - 20;
 
-      const targetPosition = targetElement.getBoundingClientRect().top;
-      const offsetPosition = targetPosition + window.pageYOffset - navbarHeight - 20;
-
-      const startPosition = window.pageYOffset;
-      const distance = offsetPosition - startPosition;
-      const duration = 800;
-      let startTime: number | null = null;
-
-      const easeOutQuart = (t: number): number => {
-        return 1 - Math.pow(1 - t, 4);
-      };
-
-      const scrollAnimation = (currentTime: number) => {
-        if (startTime === null) startTime = currentTime;
-        const timeElapsed = currentTime - startTime;
-        const progress = Math.min(timeElapsed / duration, 1);
-        const easedProgress = easeOutQuart(progress);
-
-        window.scrollTo(0, startPosition + distance * easedProgress);
-
-        if (timeElapsed < duration) {
-          requestAnimationFrame(scrollAnimation);
-        } else {
-          // Update URL after animation completes
-          setTimeout(() => {
-            window.history.replaceState({}, '', href);
-          }, 100);
+      // Use Lenis for butter-smooth scrolling
+      const lenis = (
+        window as unknown as {
+          lenis?: {
+            scrollTo: (
+              target: number | string,
+              options?: {
+                duration?: number;
+                easing?: (t: number) => number;
+                lerp?: number;
+                onStart?: () => void;
+                onComplete?: () => void;
+              },
+            ) => void;
+          };
         }
-      };
+      ).lenis;
 
-      requestAnimationFrame(scrollAnimation);
+      if (lenis) {
+        // Slightly offset the scroll to provide a more natural starting point
+        const startOffset = window.scrollY;
+        const distance = Math.abs(targetPosition - startOffset);
+
+        // Adjust duration based on scroll distance for a more natural feel
+        // Longer distances get slightly more time, with a base minimum
+        const baseDuration = 1.2;
+        const distanceFactor = Math.min(distance / 2000, 1); // Cap at 1 for very long scrolls
+        const adaptiveDuration = baseDuration + distanceFactor * 1.0;
+
+        lenis.scrollTo(targetPosition, {
+          duration: adaptiveDuration,
+          easing: (t: number) => {
+            // Enhanced easing function for ultra-smooth experience
+            // This combines cubic and exponential easing for a butter-smooth feel
+            return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+          },
+          lerp: 0.1, // Linear interpolation factor for extra smoothness
+          onStart: () => {
+            // Add a subtle visual indication that scrolling is happening
+            document.body.style.cursor = 'progress';
+          },
+          onComplete: () => {
+            document.body.style.cursor = '';
+            // Update URL after scroll completes
+            window.history.replaceState({}, '', href);
+          },
+        });
+      } else {
+        // Fallback to native smooth scroll with best possible settings
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth',
+        });
+
+        // Update URL after scroll likely completes
+        setTimeout(() => {
+          window.history.replaceState({}, '', href);
+        }, 1000);
+      }
     }
   };
 
@@ -270,6 +365,7 @@ const Navbar = () => {
                 <Link
                   href="#features"
                   className="block px-3 py-2 text-black transition-all duration-400 ease-in-out dark:text-[var(--primary-white)]"
+                  onClick={(e) => handleSmoothScroll(e, '#features')}
                 >
                   Features
                 </Link>
@@ -285,6 +381,7 @@ const Navbar = () => {
                 <Link
                   href="#pricing-card"
                   className="block px-3 py-2 text-black transition-all duration-400 ease-in-out dark:text-[var(--primary-white)]"
+                  onClick={(e) => handleSmoothScroll(e, '#pricing-card')}
                 >
                   Price
                 </Link>
@@ -397,6 +494,7 @@ const Navbar = () => {
                 <Link
                   href="#pricing-card"
                   className="block rounded-md px-3 py-1 text-base font-medium text-black transition-colors duration-300 hover:bg-[#f3f4f6] dark:text-[var(--primary-white)] dark:hover:bg-[var(--neutral-200)]"
+                  onClick={(e) => handleSmoothScroll(e, '#pricing-card')}
                 >
                   Price
                 </Link>
