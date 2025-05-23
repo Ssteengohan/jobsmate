@@ -77,6 +77,7 @@ const CaseThree = () => {
         CustomEase.create('chartReveal', 'M0,0 C0.23,1 0.32,1 1,1');
         CustomEase.create('floatIn', 'M0,0 C0.175,0.885 0.32,1.275 1,1');
         CustomEase.create('perfectBounce', 'M0,0 C0.68,-0.55 0.265,1.55 1,1');
+        CustomEase.create('leftToRight', 'M0,0 C0.25,0.46 0.45,0.94 1,1');
 
         // Master timeline with perfect sequencing
         const masterTl = gsap.timeline({
@@ -136,23 +137,38 @@ const CaseThree = () => {
         });
 
         const chartLines = gsap.utils.toArray('.chart-line');
+        // Enhanced chart line initialization with left-to-right reveal
         initTl.set(chartLines, {
           scaleY: 0,
-          scaleX: 0.6,
-          transformOrigin: 'bottom center',
-          filter: 'saturate(0.3)',
-          willChange: 'transform, filter',
+          scaleX: 0,
+          x: -30, // Start from left
+          opacity: 0,
+          transformOrigin: 'bottom left',
+          filter: 'saturate(0.3) blur(1px)',
+          willChange: 'transform, filter, opacity',
           backfaceVisibility: 'hidden',
         });
 
         const metricLabels = gsap.utils.toArray('.metric-label');
         initTl.set(metricLabels, {
           autoAlpha: 0,
+          x: -20, // Start from left
           y: 25,
           scale: 0.8,
           rotationX: 15,
           transformPerspective: 800,
           willChange: 'opacity, transform',
+        });
+
+        // Enhanced chart columns for left-to-right animation
+        const chartColumns = gsap.utils.toArray('.chart-column');
+        initTl.set(chartColumns, {
+          x: -40,
+          opacity: 0,
+          scale: 0.8,
+          rotationY: -15,
+          transformPerspective: 1000,
+          willChange: 'transform, opacity',
         });
 
         // Stage 1: Foundation reveal (0% - 15%)
@@ -196,52 +212,77 @@ const CaseThree = () => {
             0.25,
           )
 
-          // Stage 4: Chart data visualization (40% - 70%)
+          // Stage 4: Chart columns appear from left to right (35% - 55%)
           .to(
-            chartLines.filter((_, i) => i % 2 === 0),
+            chartColumns,
             {
-              scaleY: 1,
-              scaleX: 1,
-              filter: 'saturate(1)',
+              x: 0,
+              opacity: 1,
+              scale: 1,
+              rotationY: 0,
               stagger: {
-                each: 0.08,
-                ease: 'power2.out',
+                each: 0.15,
+                ease: 'leftToRight',
                 from: 'start',
               },
               duration: 0.8,
+              ease: 'floatIn',
+            },
+            0.35,
+          )
+
+          // Stage 5: Chart bars reveal from left to right (40% - 70%)
+          .to(
+            chartLines.filter((_, i) => i % 2 === 0), // Blue bars (applications)
+            {
+              scaleY: 1,
+              scaleX: 1,
+              x: 0,
+              opacity: 1,
+              filter: 'saturate(1) blur(0px)',
+              stagger: {
+                each: 0.12,
+                ease: 'leftToRight',
+                from: 'start',
+              },
+              duration: 1.0,
               ease: 'chartReveal',
             },
             0.4,
           )
 
           .to(
-            chartLines.filter((_, i) => i % 2 === 1),
+            chartLines.filter((_, i) => i % 2 === 1), // Gold bars (hires)
             {
               scaleY: 1,
               scaleX: 1,
-              filter: 'saturate(1.2)',
+              x: 0,
+              opacity: 1,
+              filter: 'saturate(1.2) blur(0px)',
               stagger: {
-                each: 0.06,
-                ease: 'power2.out',
+                each: 0.1,
+                ease: 'leftToRight',
                 from: 'start',
               },
-              duration: 0.6,
+              duration: 0.8,
               ease: 'perfectBounce',
             },
-            0.5,
+            0.55,
           )
 
-          // Stage 5: Metrics revelation (60% - 75%)
+          // Stage 6: Metrics revelation from left to right (60% - 75%)
           .to(
             metricLabels,
             {
               autoAlpha: 1,
+              x: 0,
               y: 0,
               scale: 1,
               rotationX: 0,
               stagger: {
-                each: 0.04,
-                ease: 'power2.out',
+                each: 0.08,
+                ease: 'leftToRight',
+                from: 'start',
               },
               duration: 0.6,
               ease: 'floatIn',
@@ -249,7 +290,7 @@ const CaseThree = () => {
             0.6,
           )
 
-          // Stage 6: Logo prominence (70% - 85%)
+          // Stage 7: Logo prominence (70% - 85%)
           .to(
             logoRef.current,
             {
@@ -264,7 +305,7 @@ const CaseThree = () => {
             0.7,
           )
 
-          // Stage 7: Analytics cards cascade (75% - 100%)
+          // Stage 8: Analytics cards cascade from left (75% - 100%)
           .to(
             analyticCards,
             {
@@ -275,11 +316,11 @@ const CaseThree = () => {
               rotationY: 0,
               filter: 'blur(0px)',
               stagger: {
-                each: 0.06,
-                ease: 'power2.out',
+                each: 0.1,
+                ease: 'leftToRight',
                 from: 'start',
               },
-              duration: 0.7,
+              duration: 0.8,
               ease: 'floatIn',
             },
             0.75,
@@ -315,10 +356,10 @@ const CaseThree = () => {
         let targetProgress = 0;
 
         const updateProgress = () => {
-          // Smooth momentum-based progress
-          currentProgress += (targetProgress - currentProgress) * 0.08;
+          // Smooth momentum-based progress with enhanced interpolation
+          currentProgress += (targetProgress - currentProgress) * 0.12; // Increased for smoother feel
 
-          // Ultra-smooth easing function
+          // Ultra-smooth easing function with left-to-right consideration
           const smoothProgress = CustomEase.create(
             'scrollSmooth',
             'M0,0 C0.25,0.1 0.25,1 1,1',
@@ -359,14 +400,14 @@ const CaseThree = () => {
 
           ScrollTrigger.create({
             trigger: stickyWrapperRef.current,
-            start: 'top 50%',
-            end: 'bottom 20%',
+            start: 'top 60%',
+            end: 'bottom 15%',
             onUpdate: (self) => {
               velocity = self.getVelocity() / -300;
               const rawProgress = Math.max(0, Math.min(1, self.progress));
 
-              // Enhanced progress mapping with velocity consideration
-              const velocityInfluence = Math.max(-0.1, Math.min(0.1, velocity * 0.001));
+              // Enhanced progress mapping with smoother velocity consideration
+              const velocityInfluence = Math.max(-0.05, Math.min(0.05, velocity * 0.0008));
               targetProgress = rawProgress + velocityInfluence;
               targetProgress = Math.max(0, Math.min(1, targetProgress));
 
@@ -399,14 +440,15 @@ const CaseThree = () => {
 
     if (!screenSize.isDesktop) {
       const ctx = gsap.context(() => {
-        // Mobile ultra-smooth easing
+        // Mobile ultra-smooth easing with left-to-right support
         CustomEase.create('mobileUltraSmooth', 'M0,0 C0.2,0 0.38,1 1,1');
         CustomEase.create('mobilePerfectFloat', 'M0,0 C0.175,0.885 0.32,1.275 1,1');
+        CustomEase.create('mobileLeftToRight', 'M0,0 C0.25,0.46 0.45,0.94 1,1');
 
         // Mobile master timeline
         const mobileMasterTl = gsap.timeline({ paused: true });
 
-        // Enhanced mobile initialization
+        // Enhanced mobile initialization with left-to-right setup
         gsap.set([titleRef.current, chartRef.current, logoRef.current], {
           autoAlpha: 0,
           y: 30,
@@ -419,17 +461,19 @@ const CaseThree = () => {
 
         const chartLines = gsap.utils.toArray('.chart-line');
         gsap.set(chartLines, {
-          autoAlpha: 1,
+          autoAlpha: 0, // Start invisible for mobile
           scaleY: 0,
-          scaleX: 0.8,
-          transformOrigin: 'bottom center',
-          filter: 'saturate(0.4)',
-          willChange: 'transform, filter',
+          scaleX: 0,
+          x: -20, // Start from left on mobile
+          transformOrigin: 'bottom left',
+          filter: 'saturate(0.4) blur(1px)',
+          willChange: 'transform, filter, opacity',
           backfaceVisibility: 'hidden',
         });
 
         gsap.set('.metric-label', {
           autoAlpha: 0,
+          x: -15, // Start from left
           y: 20,
           scale: 0.9,
           filter: 'blur(1px)',
@@ -439,13 +483,14 @@ const CaseThree = () => {
         const cards = gsap.utils.toArray('.analytics-card');
         gsap.set(cards, {
           autoAlpha: 0,
+          x: -30, // Start from left
           y: 40,
           scale: 0.85,
           filter: 'blur(2px)',
           willChange: 'opacity, transform, filter',
         });
 
-        // Mobile animation sequence
+        // Mobile animation sequence with left-to-right flow
         mobileMasterTl
           .to(
             titleRef.current,
@@ -474,50 +519,58 @@ const CaseThree = () => {
             0.2,
           )
           .to(
-            chartLines.filter((_, i) => i % 2 === 0),
+            chartLines.filter((_, i) => i % 2 === 0), // Blue bars from left to right
             {
+              autoAlpha: 1,
               scaleY: 1,
               scaleX: 1,
-              filter: 'saturate(1)',
+              x: 0,
+              filter: 'saturate(1) blur(0px)',
               stagger: {
-                each: 0.12,
-                ease: 'power2.out',
+                each: 0.18,
+                ease: 'mobileLeftToRight',
+                from: 'start',
               },
-              duration: 1.0,
+              duration: 1.2,
               ease: 'mobileUltraSmooth',
             },
             0.5,
           )
           .to(
-            chartLines.filter((_, i) => i % 2 === 1),
+            chartLines.filter((_, i) => i % 2 === 1), // Gold bars from left to right
             {
+              autoAlpha: 1,
               scaleY: 1,
               scaleX: 1,
-              filter: 'saturate(1.1)',
+              x: 0,
+              filter: 'saturate(1.1) blur(0px)',
               stagger: {
-                each: 0.1,
-                ease: 'power2.out',
+                each: 0.15,
+                ease: 'mobileLeftToRight',
+                from: 'start',
               },
-              duration: 0.8,
+              duration: 1.0,
               ease: 'mobilePerfectFloat',
             },
-            0.7,
+            0.8,
           )
           .to(
             '.metric-label',
             {
               autoAlpha: 1,
+              x: 0,
               y: 0,
               scale: 1,
               filter: 'blur(0px)',
               stagger: {
-                each: 0.08,
-                ease: 'power2.out',
+                each: 0.12,
+                ease: 'mobileLeftToRight',
+                from: 'start',
               },
-              duration: 0.8,
+              duration: 0.9,
               ease: 'mobileUltraSmooth',
             },
-            0.9,
+            1.0,
           )
           .to(
             logoRef.current,
@@ -530,23 +583,25 @@ const CaseThree = () => {
               duration: 1.0,
               ease: 'mobilePerfectFloat',
             },
-            1.0,
+            1.2,
           )
           .to(
             cards,
             {
               autoAlpha: 1,
+              x: 0,
               y: 0,
               scale: 1,
               filter: 'blur(0px)',
               stagger: {
-                each: 0.1,
-                ease: 'power2.out',
+                each: 0.15,
+                ease: 'mobileLeftToRight',
+                from: 'start',
               },
-              duration: 0.9,
+              duration: 1.0,
               ease: 'mobilePerfectFloat',
             },
-            1.2,
+            1.4,
           );
 
         // Mobile continuous animations
@@ -574,12 +629,12 @@ const CaseThree = () => {
           });
         }, 1.0);
 
-        // Mobile smooth ScrollTrigger
+        // Enhanced mobile ScrollTrigger with left-to-right smoothing
         let mobileCurrentProgress = 0;
         let mobileTargetProgress = 0;
 
         const updateMobileProgress = () => {
-          mobileCurrentProgress += (mobileTargetProgress - mobileCurrentProgress) * 0.06;
+          mobileCurrentProgress += (mobileTargetProgress - mobileCurrentProgress) * 0.08;
           const smoothProgress = CustomEase.create(
             'mobileScrollSmooth',
             'M0,0 C0.3,0 0.7,1 1,1',
@@ -593,10 +648,10 @@ const CaseThree = () => {
 
         ScrollTrigger.create({
           trigger: containerRef.current,
-          start: 'top 80%',
-          end: 'bottom 20%',
+          start: 'top 85%',
+          end: 'bottom 15%',
           onUpdate: (self) => {
-            mobileTargetProgress = Math.max(0, Math.min(1, self.progress * 1.1));
+            mobileTargetProgress = Math.max(0, Math.min(1, self.progress * 1.05));
             requestAnimationFrame(updateMobileProgress);
           },
           refreshPriority: 8,
@@ -728,31 +783,31 @@ const CaseThree = () => {
                     </div>
 
                     <div className="flex h-[140px] w-full items-end justify-around border-b border-gray-200 sm:h-[160px]">
-                      <div className="flex flex-col items-center">
+                      <div className="chart-column flex flex-col items-center">
                         <div className="chart-line h-[100px] w-5 rounded-t-md bg-[var(--primary-medium-blue)]/70 sm:h-[120px] sm:w-8"></div>
                         <div className="chart-line h-[15px] w-5 bg-[var(--primary-gold)] sm:h-[18px] sm:w-8"></div>
                         <span className="mt-2 text-xs">Q1 &apos;23</span>
                         <span className="text-[10px] text-gray-500">1,240</span>
                       </div>
-                      <div className="flex flex-col items-center">
+                      <div className="chart-column flex flex-col items-center">
                         <div className="chart-line h-[120px] w-5 rounded-t-md bg-[var(--primary-medium-blue)]/70 sm:h-[140px] sm:w-8"></div>
                         <div className="chart-line h-[18px] w-5 bg-[var(--primary-gold)] sm:h-[20px] sm:w-8"></div>
                         <span className="mt-2 text-xs">Q2 &apos;23</span>
                         <span className="text-[10px] text-gray-500">1,456</span>
                       </div>
-                      <div className="flex flex-col items-center">
+                      <div className="chart-column flex flex-col items-center">
                         <div className="chart-line h-[75px] w-5 rounded-t-md bg-[var(--primary-medium-blue)]/70 sm:h-[90px] sm:w-8"></div>
                         <div className="chart-line h-[12px] w-5 bg-[var(--primary-gold)] sm:h-[15px] sm:w-8"></div>
                         <span className="mt-2 text-xs">Q3 &apos;23</span>
                         <span className="text-[10px] text-gray-500">942</span>
                       </div>
-                      <div className="flex flex-col items-center">
+                      <div className="chart-column flex flex-col items-center">
                         <div className="chart-line h-[130px] w-5 rounded-t-md bg-[var(--primary-medium-blue)]/70 sm:h-[150px] sm:w-8"></div>
                         <div className="chart-line h-[22px] w-5 bg-[var(--primary-gold)] sm:h-[25px] sm:w-8"></div>
                         <span className="mt-2 text-xs">Q4 &apos;23</span>
                         <span className="text-[10px] text-gray-500">1,580</span>
                       </div>
-                      <div className="flex flex-col items-center">
+                      <div className="chart-column flex flex-col items-center">
                         <div className="chart-line h-[135px] w-5 rounded-t-md bg-[var(--primary-medium-blue)]/70 sm:h-[155px] sm:w-8"></div>
                         <div className="chart-line h-[23px] w-5 bg-[var(--primary-gold)] sm:h-[26px] sm:w-8"></div>
                         <span className="mt-2 text-xs">Q1 &apos;24</span>
@@ -908,13 +963,19 @@ const CaseThree = () => {
           </div>
         </div>
       </div>
+
       <style jsx global>{`
-        /* Enhanced smooth scrolling styles */
+        /* Enhanced left-to-right chart animation styles */
         .chart-line {
-          transform-origin: bottom center !important;
-          will-change: transform, filter !important;
+          transform-origin: bottom left !important;
+          will-change: transform, filter, opacity !important;
           backface-visibility: hidden !important;
           transform-style: preserve-3d !important;
+        }
+
+        .chart-column {
+          will-change: transform, opacity !important;
+          backface-visibility: hidden !important;
         }
 
         /* Ultra-smooth transitions */
