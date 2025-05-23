@@ -3,15 +3,11 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { TextPlugin } from 'gsap/TextPlugin';
-import { CustomEase } from 'gsap/CustomEase';
-import { SplitText } from 'gsap/SplitText';
-import { Observer } from 'gsap/Observer';
 import Balancer from 'react-wrap-balancer';
 import Image from 'next/image';
 
 if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger, TextPlugin, CustomEase, SplitText, Observer);
+  gsap.registerPlugin(ScrollTrigger);
 }
 
 // Add screen size interface
@@ -24,7 +20,6 @@ interface ScreenSize {
 
 const CaseThree = () => {
   const [animationReady, setAnimationReady] = useState(false);
-  const [currentProgress, setCurrentProgress] = useState(0);
   // Add screen size state
   const [screenSize, setScreenSize] = useState<ScreenSize>({
     width: typeof window !== 'undefined' ? window.innerWidth : 1200,
@@ -70,363 +65,229 @@ const CaseThree = () => {
   useEffect(() => {
     if (typeof window === 'undefined' || !animationReady) return;
 
+    // Create the animation timeline inline instead of using the callback
     if (screenSize.isDesktop) {
       const ctx = gsap.context(() => {
-        // Create ultra-smooth custom easing curves
-        CustomEase.create('ultraSmooth', 'M0,0 C0.16,1 0.3,1 1,1');
-        CustomEase.create('chartReveal', 'M0,0 C0.23,1 0.32,1 1,1');
-        CustomEase.create('floatIn', 'M0,0 C0.175,0.885 0.32,1.275 1,1');
-        CustomEase.create('perfectBounce', 'M0,0 C0.68,-0.55 0.265,1.55 1,1');
-        CustomEase.create('leftToRight', 'M0,0 C0.25,0.46 0.45,0.94 1,1');
-
-        // Master timeline with perfect sequencing
-        const masterTl = gsap.timeline({
+        const mainTl = gsap.timeline({
           paused: true,
           smoothChildTiming: true,
-          autoRemoveChildren: false,
+          defaults: {
+            ease: 'power2.out',
+            duration: 0.4,
+            clearProps: '',
+          },
         });
 
-        // Initialize all elements with enhanced transforms
-        const initTl = gsap.timeline();
+        // All initialization code from createAnimationTimeline goes here
+        gsap.set(contentRef.current, {
+          autoAlpha: 0,
+          willChange: 'opacity, transform',
+        });
 
-        initTl
-          .set(contentRef.current, {
-            autoAlpha: 0,
-            filter: 'blur(8px)',
-            willChange: 'opacity, transform, filter',
-          })
-          .set(titleRef.current, {
-            autoAlpha: 0,
-            y: -40,
-            rotationX: 20,
-            transformPerspective: 1200,
-            transformOrigin: '50% 100%',
-            willChange: 'opacity, transform',
-          })
-          .set(chartRef.current, {
-            autoAlpha: 0,
-            scale: 0.7,
-            y: 60,
-            rotationY: 15,
-            transformPerspective: 1200,
-            filter: 'blur(4px)',
-            willChange: 'opacity, transform, filter',
-            transformOrigin: 'center center',
-          })
-          .set(logoRef.current, {
-            autoAlpha: 0,
-            scale: 0.6,
-            y: 80,
-            rotation: -10,
-            filter: 'blur(2px)',
-            willChange: 'opacity, transform, filter',
-            transformOrigin: 'center center',
-          });
+        gsap.set(titleRef.current, {
+          autoAlpha: 0,
+          y: -20,
+          willChange: 'opacity, transform',
+        });
+
+        gsap.set(chartRef.current, {
+          autoAlpha: 0,
+          scale: 0.9,
+          y: 20,
+          willChange: 'opacity, transform',
+          transformOrigin: 'center center',
+        });
+
+        gsap.set(logoRef.current, {
+          autoAlpha: 0,
+          scale: 0.9,
+          y: 30,
+          willChange: 'opacity, transform',
+          transformOrigin: 'center center',
+        });
 
         const analyticCards = gsap.utils.toArray('.analytics-card');
-        initTl.set(analyticCards, {
+        gsap.set(analyticCards, {
           autoAlpha: 0,
-          x: 60,
-          y: 20,
-          scale: 0.8,
-          rotationY: 25,
-          transformPerspective: 1000,
-          filter: 'blur(2px)',
-          willChange: 'opacity, transform, filter',
+          x: 20,
+          scale: 0.95,
+          willChange: 'opacity, transform',
           transformOrigin: 'center center',
         });
 
         const chartLines = gsap.utils.toArray('.chart-line');
-        // Enhanced chart line initialization with left-to-right reveal
-        initTl.set(chartLines, {
+        gsap.set(chartLines, {
           scaleY: 0,
-          scaleX: 0,
-          x: -30, // Start from left
-          opacity: 0,
-          transformOrigin: 'bottom left',
-          filter: 'saturate(0.3) blur(1px)',
-          willChange: 'transform, filter, opacity',
-          backfaceVisibility: 'hidden',
+          transformOrigin: 'bottom',
+          willChange: 'transform',
         });
 
         const metricLabels = gsap.utils.toArray('.metric-label');
-        initTl.set(metricLabels, {
+        gsap.set(metricLabels, {
           autoAlpha: 0,
-          x: -20, // Start from left
-          y: 25,
-          scale: 0.8,
-          rotationX: 15,
-          transformPerspective: 800,
+          y: 10,
           willChange: 'opacity, transform',
         });
 
-        // Enhanced chart columns for left-to-right animation
-        const chartColumns = gsap.utils.toArray('.chart-column');
-        initTl.set(chartColumns, {
-          x: -40,
-          opacity: 0,
-          scale: 0.8,
-          rotationY: -15,
-          transformPerspective: 1000,
-          willChange: 'transform, opacity',
-        });
-
-        // Stage 1: Foundation reveal (0% - 15%)
-        masterTl
-          .to(
-            contentRef.current,
-            {
-              autoAlpha: 1,
-              filter: 'blur(0px)',
-              duration: 1.2,
-              ease: 'ultraSmooth',
-            },
-            0,
-          )
-
-          // Stage 2: Title dramatic entrance (15% - 25%)
+        mainTl
+          .to(contentRef.current, {
+            autoAlpha: 1,
+            duration: 0.5,
+          })
           .to(
             titleRef.current,
             {
               autoAlpha: 1,
               y: 0,
-              rotationX: 0,
-              duration: 1.0,
-              ease: 'perfectBounce',
+              ease: 'back.out(1.1)',
+              duration: 0.6,
             },
-            0.15,
+            0.1,
           )
-
-          // Stage 3: Chart container reveal (25% - 40%)
           .to(
             chartRef.current,
             {
               autoAlpha: 1,
               scale: 1,
               y: 0,
-              rotationY: 0,
-              filter: 'blur(0px)',
-              duration: 1.2,
-              ease: 'floatIn',
+              duration: 0.6,
+              ease: 'back.out(1.1)',
             },
-            0.25,
+            0.3,
           )
-
-          // Stage 4: Chart columns appear from left to right (35% - 55%)
           .to(
-            chartColumns,
-            {
-              x: 0,
-              opacity: 1,
-              scale: 1,
-              rotationY: 0,
-              stagger: {
-                each: 0.15,
-                ease: 'leftToRight',
-                from: 'start',
-              },
-              duration: 0.8,
-              ease: 'floatIn',
-            },
-            0.35,
-          )
-
-          // Stage 5: Chart bars reveal from left to right (40% - 70%)
-          .to(
-            chartLines.filter((_, i) => i % 2 === 0), // Blue bars (applications)
+            chartLines,
             {
               scaleY: 1,
-              scaleX: 1,
-              x: 0,
-              opacity: 1,
-              filter: 'saturate(1) blur(0px)',
-              stagger: {
-                each: 0.12,
-                ease: 'leftToRight',
-                from: 'start',
-              },
-              duration: 1.0,
-              ease: 'chartReveal',
-            },
-            0.4,
-          )
-
-          .to(
-            chartLines.filter((_, i) => i % 2 === 1), // Gold bars (hires)
-            {
-              scaleY: 1,
-              scaleX: 1,
-              x: 0,
-              opacity: 1,
-              filter: 'saturate(1.2) blur(0px)',
-              stagger: {
-                each: 0.1,
-                ease: 'leftToRight',
-                from: 'start',
-              },
-              duration: 0.8,
-              ease: 'perfectBounce',
+              stagger: 0.08,
+              duration: 0.6,
+              ease: 'power3.out',
             },
             0.55,
           )
-
-          // Stage 6: Metrics revelation from left to right (60% - 75%)
           .to(
             metricLabels,
             {
               autoAlpha: 1,
-              x: 0,
               y: 0,
-              scale: 1,
-              rotationX: 0,
-              stagger: {
-                each: 0.08,
-                ease: 'leftToRight',
-                from: 'start',
-              },
-              duration: 0.6,
-              ease: 'floatIn',
+              stagger: 0.06,
+              duration: 0.4,
             },
-            0.6,
+            0.75,
           )
-
-          // Stage 7: Logo prominence (70% - 85%)
           .to(
             logoRef.current,
             {
               autoAlpha: 1,
               scale: 1,
               y: 0,
-              rotation: 0,
-              filter: 'blur(0px)',
-              duration: 0.8,
-              ease: 'perfectBounce',
+              duration: 0.5,
+              ease: 'power2.out',
             },
-            0.7,
+            0.8,
           )
-
-          // Stage 8: Analytics cards cascade from left (75% - 100%)
           .to(
             analyticCards,
             {
               autoAlpha: 1,
               x: 0,
-              y: 0,
               scale: 1,
-              rotationY: 0,
-              filter: 'blur(0px)',
-              stagger: {
-                each: 0.1,
-                ease: 'leftToRight',
-                from: 'start',
-              },
-              duration: 0.8,
-              ease: 'floatIn',
+              stagger: 0.08,
+              duration: 0.5,
+              ease: 'back.out(1.4)',
             },
-            0.75,
+            0.4,
           );
 
-        // Continuous animations
         gsap.to('.pulse-element', {
-          scale: 1.06,
+          scale: 1.03,
           repeat: -1,
           yoyo: true,
-          duration: 2.5,
+          duration: 1.8,
           ease: 'sine.inOut',
-          transformOrigin: 'center center',
         });
 
         gsap.to('.pattern-grid', {
-          backgroundPosition: '28px 28px',
-          duration: 45,
+          backgroundPosition: '14px 14px',
+          duration: 25,
           repeat: -1,
           ease: 'none',
         });
 
         gsap.to('.pattern-dots', {
-          backgroundPosition: '32px 32px',
-          duration: 50,
+          backgroundPosition: '18px 18px',
+          duration: 30,
           repeat: -1,
           ease: 'none',
         });
 
-        // Enhanced ScrollTrigger with perfect momentum
-        let velocity = 0;
-        let currentProgress = 0;
-        let targetProgress = 0;
-
-        const updateProgress = () => {
-          // Smooth momentum-based progress with enhanced interpolation
-          currentProgress += (targetProgress - currentProgress) * 0.12; // Increased for smoother feel
-
-          // Ultra-smooth easing function with left-to-right consideration
-          const smoothProgress = CustomEase.create(
-            'scrollSmooth',
-            'M0,0 C0.25,0.1 0.25,1 1,1',
-          )(currentProgress);
-
-          masterTl.progress(smoothProgress);
-          setCurrentProgress(smoothProgress);
-
-          if (Math.abs(targetProgress - currentProgress) > 0.001) {
-            requestAnimationFrame(updateProgress);
-          }
-        };
-
         if (stickyWrapperRef.current && containerRef.current) {
           ScrollTrigger.create({
             trigger: stickyWrapperRef.current,
-            start: 'top 8%',
-            end: 'bottom 8%',
+            start: 'top 10%',
+            end: 'bottom 10%',
             pin: containerRef.current,
             pinSpacing: true,
             anticipatePin: 1,
             pinReparent: false,
-            refreshPriority: 10,
+            refreshPriority: 1,
             id: 'case-three-pin',
             onEnter: () => {
-              targetProgress = 0;
-              updateProgress();
+              mainTl.progress(0);
             },
             onLeaveBack: () => {
-              targetProgress = 0;
-              updateProgress();
+              mainTl.progress(0);
             },
             onLeave: () => {
-              targetProgress = 1;
-              updateProgress();
+              mainTl.progress(1);
             },
-          });
-
-          ScrollTrigger.create({
-            trigger: stickyWrapperRef.current,
-            start: 'top 60%',
-            end: 'bottom 15%',
-            onUpdate: (self) => {
-              velocity = self.getVelocity() / -300;
-              const rawProgress = Math.max(0, Math.min(1, self.progress));
-
-              // Enhanced progress mapping with smoother velocity consideration
-              const velocityInfluence = Math.max(-0.05, Math.min(0.05, velocity * 0.0008));
-              targetProgress = rawProgress + velocityInfluence;
-              targetProgress = Math.max(0, Math.min(1, targetProgress));
-
-              requestAnimationFrame(updateProgress);
-            },
-            scrub: false, // We handle smoothing manually
-            refreshPriority: 15,
-            id: 'case-three-smooth-animation',
           });
         }
 
+        const scrollTrigger = ScrollTrigger.create({
+          trigger: stickyWrapperRef.current,
+          start: 'top 60%',
+          end: 'bottom 20%',
+          onUpdate: (self) => {
+            const rawProgress = Math.min(self.progress, 1);
+            const easedProgress =
+              rawProgress < 0.5
+                ? 2 * rawProgress * rawProgress
+                : 1 - Math.pow(-2 * rawProgress + 2, 2) / 2;
+
+            mainTl.progress(easedProgress);
+          },
+          scrub: 0.8,
+          preventOverlaps: true,
+          fastScrollEnd: true,
+          id: 'case-three-animation',
+        });
+
+        // Ensure desktop ScrollTrigger settings match other components for cohesive behavior
+        ScrollTrigger.create({
+          trigger: stickyWrapperRef.current,
+          start: 'top 10%', // Match the start position used in CaseOne and CaseTwo
+          end: 'bottom 10%', // Match the end position used in CaseOne and CaseTwo
+          onLeaveBack: () => {
+            // Ensure animation resets properly when scrolling back up
+            mainTl.progress(0);
+          },
+          onLeave: () => {
+            // Ensure animation completes properly when scrolling past
+            mainTl.progress(1);
+          },
+          markers: false,
+          id: 'case-three-desktop-reset',
+        });
+
         return () => {
-          // Cleanup
+          scrollTrigger.kill();
         };
       }, containerRef);
 
       const refreshTimeout = setTimeout(() => {
         ScrollTrigger.refresh(true);
-      }, 200);
+      }, 100);
 
       return () => {
         clearTimeout(refreshTimeout);
@@ -440,222 +301,181 @@ const CaseThree = () => {
 
     if (!screenSize.isDesktop) {
       const ctx = gsap.context(() => {
-        // Mobile ultra-smooth easing with left-to-right support
-        CustomEase.create('mobileUltraSmooth', 'M0,0 C0.2,0 0.38,1 1,1');
-        CustomEase.create('mobilePerfectFloat', 'M0,0 C0.175,0.885 0.32,1.275 1,1');
-        CustomEase.create('mobileLeftToRight', 'M0,0 C0.25,0.46 0.45,0.94 1,1');
-
-        // Mobile master timeline
-        const mobileMasterTl = gsap.timeline({ paused: true });
-
-        // Enhanced mobile initialization with left-to-right setup
+        // Initially hide elements for smoother entrance
         gsap.set([titleRef.current, chartRef.current, logoRef.current], {
           autoAlpha: 0,
-          y: 30,
-          scale: 0.9,
-          rotationX: 8,
-          transformPerspective: 1000,
-          filter: 'blur(3px)',
-          willChange: 'opacity, transform, filter',
+          y: 15,
+          willChange: 'opacity, transform',
         });
 
+        // Explicitly set chart lines to visible but scaled to 0 for mobile/tablet
         const chartLines = gsap.utils.toArray('.chart-line');
         gsap.set(chartLines, {
-          autoAlpha: 0, // Start invisible for mobile
+          autoAlpha: 1, // Make sure they're visible
           scaleY: 0,
-          scaleX: 0,
-          x: -20, // Start from left on mobile
-          transformOrigin: 'bottom left',
-          filter: 'saturate(0.4) blur(1px)',
-          willChange: 'transform, filter, opacity',
-          backfaceVisibility: 'hidden',
+          transformOrigin: 'bottom',
+          willChange: 'transform',
         });
 
         gsap.set('.metric-label', {
           autoAlpha: 0,
-          x: -15, // Start from left
-          y: 20,
-          scale: 0.9,
-          filter: 'blur(1px)',
-          willChange: 'opacity, transform, filter',
+          y: 10,
+          willChange: 'opacity, transform',
         });
 
+        // Create a centralized timeline for all animations to ensure cohesive behavior
+        const mobileTl = gsap.timeline({
+          paused: true,
+          smoothChildTiming: true,
+          defaults: {
+            ease: 'power2.out',
+            duration: 0.4,
+          },
+        });
+
+        // Add title animation to the timeline
+        mobileTl.to(
+          titleRef.current,
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.6,
+            ease: 'back.out(1.7)',
+            clearProps: 'willChange',
+          },
+          0,
+        );
+
+        // Add chart container animation to the timeline
+        mobileTl.to(
+          chartRef.current,
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.7,
+            ease: 'power3.out',
+            clearProps: 'willChange',
+          },
+          0.2,
+        );
+
+        // Add blue chart lines animation (applications)
+        const blueChartLines = chartLines.filter((_, i) => i % 2 === 0);
+        mobileTl.to(
+          blueChartLines,
+          {
+            scaleY: 1,
+            stagger: 0.12,
+            duration: 0.7,
+            ease: 'power2.out',
+            clearProps: 'willChange',
+            overwrite: true,
+          },
+          0.5,
+        );
+
+        // Add gold chart lines animation (hires) with slight delay
+        const goldChartLines = chartLines.filter((_, i) => i % 2 === 1);
+        mobileTl.to(
+          goldChartLines,
+          {
+            scaleY: 1,
+            stagger: 0.12,
+            duration: 0.5,
+            ease: 'back.out(1.2)',
+            clearProps: 'willChange',
+            overwrite: true,
+          },
+          0.7,
+        );
+
+        // Add metric labels animation with delay
+        mobileTl.to(
+          '.metric-label',
+          {
+            autoAlpha: 1,
+            y: 0,
+            stagger: 0.08,
+            duration: 0.4,
+            ease: 'power2.out',
+            clearProps: 'willChange',
+          },
+          0.9,
+        );
+
+        // Add logo animation
+        mobileTl.to(
+          logoRef.current,
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.6,
+            ease: 'back.out(1.4)',
+            clearProps: 'willChange',
+          },
+          1.0,
+        );
+
+        // Add analytics cards animation with staggered entrance
         const cards = gsap.utils.toArray('.analytics-card');
-        gsap.set(cards, {
-          autoAlpha: 0,
-          x: -30, // Start from left
-          y: 40,
-          scale: 0.85,
-          filter: 'blur(2px)',
-          willChange: 'opacity, transform, filter',
-        });
+        mobileTl.to(
+          cards,
+          {
+            autoAlpha: 1,
+            y: 0,
+            stagger: 0.12,
+            duration: 0.6,
+            ease: 'back.out(1.2)',
+            clearProps: 'willChange',
+          },
+          1.2,
+        );
 
-        // Mobile animation sequence with left-to-right flow
-        mobileMasterTl
-          .to(
-            titleRef.current,
-            {
-              autoAlpha: 1,
-              y: 0,
-              scale: 1,
-              rotationX: 0,
-              filter: 'blur(0px)',
-              duration: 1.0,
-              ease: 'mobilePerfectFloat',
-            },
-            0,
-          )
-          .to(
-            chartRef.current,
-            {
-              autoAlpha: 1,
-              y: 0,
-              scale: 1,
-              rotationX: 0,
-              filter: 'blur(0px)',
-              duration: 1.2,
-              ease: 'mobileUltraSmooth',
-            },
-            0.2,
-          )
-          .to(
-            chartLines.filter((_, i) => i % 2 === 0), // Blue bars from left to right
-            {
-              autoAlpha: 1,
-              scaleY: 1,
-              scaleX: 1,
-              x: 0,
-              filter: 'saturate(1) blur(0px)',
-              stagger: {
-                each: 0.18,
-                ease: 'mobileLeftToRight',
-                from: 'start',
-              },
-              duration: 1.2,
-              ease: 'mobileUltraSmooth',
-            },
-            0.5,
-          )
-          .to(
-            chartLines.filter((_, i) => i % 2 === 1), // Gold bars from left to right
-            {
-              autoAlpha: 1,
-              scaleY: 1,
-              scaleX: 1,
-              x: 0,
-              filter: 'saturate(1.1) blur(0px)',
-              stagger: {
-                each: 0.15,
-                ease: 'mobileLeftToRight',
-                from: 'start',
-              },
-              duration: 1.0,
-              ease: 'mobilePerfectFloat',
-            },
-            0.8,
-          )
-          .to(
-            '.metric-label',
-            {
-              autoAlpha: 1,
-              x: 0,
-              y: 0,
-              scale: 1,
-              filter: 'blur(0px)',
-              stagger: {
-                each: 0.12,
-                ease: 'mobileLeftToRight',
-                from: 'start',
-              },
-              duration: 0.9,
-              ease: 'mobileUltraSmooth',
-            },
-            1.0,
-          )
-          .to(
-            logoRef.current,
-            {
-              autoAlpha: 1,
-              y: 0,
-              scale: 1,
-              rotationX: 0,
-              filter: 'blur(0px)',
-              duration: 1.0,
-              ease: 'mobilePerfectFloat',
-            },
-            1.2,
-          )
-          .to(
-            cards,
-            {
-              autoAlpha: 1,
-              x: 0,
-              y: 0,
-              scale: 1,
-              filter: 'blur(0px)',
-              stagger: {
-                each: 0.15,
-                ease: 'mobileLeftToRight',
-                from: 'start',
-              },
-              duration: 1.0,
-              ease: 'mobilePerfectFloat',
-            },
-            1.4,
-          );
-
-        // Mobile continuous animations
-        mobileMasterTl.add(() => {
+        // Add pulse animation after logo appears
+        mobileTl.add(() => {
           gsap.to('.pulse-element', {
-            scale: 1.05,
+            scale: 1.03,
             repeat: -1,
             yoyo: true,
-            duration: 2.3,
+            duration: 1.8,
             ease: 'sine.inOut',
           });
+        }, 1.0);
 
+        // Background animations
+        mobileTl.add(() => {
           gsap.to('.pattern-grid', {
-            backgroundPosition: '20px 20px',
-            duration: 35,
+            backgroundPosition: '14px 14px',
+            duration: 25,
             repeat: -1,
             ease: 'none',
           });
 
           gsap.to('.pattern-dots', {
-            backgroundPosition: '24px 24px',
-            duration: 40,
+            backgroundPosition: '18px 18px',
+            duration: 30,
             repeat: -1,
             ease: 'none',
           });
-        }, 1.0);
+        }, 0);
 
-        // Enhanced mobile ScrollTrigger with left-to-right smoothing
-        let mobileCurrentProgress = 0;
-        let mobileTargetProgress = 0;
-
-        const updateMobileProgress = () => {
-          mobileCurrentProgress += (mobileTargetProgress - mobileCurrentProgress) * 0.08;
-          const smoothProgress = CustomEase.create(
-            'mobileScrollSmooth',
-            'M0,0 C0.3,0 0.7,1 1,1',
-          )(mobileCurrentProgress);
-          mobileMasterTl.progress(smoothProgress);
-
-          if (Math.abs(mobileTargetProgress - mobileCurrentProgress) > 0.001) {
-            requestAnimationFrame(updateMobileProgress);
-          }
-        };
-
+        // Create a unified scroll trigger that controls the entire timeline
         ScrollTrigger.create({
           trigger: containerRef.current,
           start: 'top 85%',
           end: 'bottom 15%',
           onUpdate: (self) => {
-            mobileTargetProgress = Math.max(0, Math.min(1, self.progress * 1.05));
-            requestAnimationFrame(updateMobileProgress);
+            // Smooth easing of the timeline progress based on scroll position
+            const rawProgress = Math.min(self.progress * 1.2, 1);
+            const easedProgress =
+              rawProgress < 0.5
+                ? 2 * Math.pow(rawProgress, 2)
+                : 1 - Math.pow(-2 * rawProgress + 2, 2) / 2;
+
+            mobileTl.progress(easedProgress);
           },
-          refreshPriority: 8,
-          id: 'case-three-mobile-smooth',
+          scrub: 0.8,
+          id: 'case-three-mobile-animation',
         });
       }, containerRef);
 
@@ -669,19 +489,6 @@ const CaseThree = () => {
       ref={stickyWrapperRef}
       style={{ position: 'relative', top: 0 }}
     >
-      {/* Progress indicator for smooth feedback */}
-      {screenSize.isDesktop && (
-        <div className="fixed top-1/2 right-4 z-50 h-32 w-1 rounded-full bg-gray-200 opacity-20">
-          <div
-            className="rounded-full bg-[var(--primary-medium-blue)] transition-all duration-300 ease-out"
-            style={{
-              height: `${currentProgress * 100}%`,
-              width: '100%',
-            }}
-          />
-        </div>
-      )}
-
       <div className={screenSize.isDesktop ? 'h-screen' : 'h-auto'}>
         <div
           ref={containerRef}
@@ -783,31 +590,31 @@ const CaseThree = () => {
                     </div>
 
                     <div className="flex h-[140px] w-full items-end justify-around border-b border-gray-200 sm:h-[160px]">
-                      <div className="chart-column flex flex-col items-center">
+                      <div className="flex flex-col items-center">
                         <div className="chart-line h-[100px] w-5 rounded-t-md bg-[var(--primary-medium-blue)]/70 sm:h-[120px] sm:w-8"></div>
                         <div className="chart-line h-[15px] w-5 bg-[var(--primary-gold)] sm:h-[18px] sm:w-8"></div>
                         <span className="mt-2 text-xs">Q1 &apos;23</span>
                         <span className="text-[10px] text-gray-500">1,240</span>
                       </div>
-                      <div className="chart-column flex flex-col items-center">
+                      <div className="flex flex-col items-center">
                         <div className="chart-line h-[120px] w-5 rounded-t-md bg-[var(--primary-medium-blue)]/70 sm:h-[140px] sm:w-8"></div>
                         <div className="chart-line h-[18px] w-5 bg-[var(--primary-gold)] sm:h-[20px] sm:w-8"></div>
                         <span className="mt-2 text-xs">Q2 &apos;23</span>
                         <span className="text-[10px] text-gray-500">1,456</span>
                       </div>
-                      <div className="chart-column flex flex-col items-center">
+                      <div className="flex flex-col items-center">
                         <div className="chart-line h-[75px] w-5 rounded-t-md bg-[var(--primary-medium-blue)]/70 sm:h-[90px] sm:w-8"></div>
                         <div className="chart-line h-[12px] w-5 bg-[var(--primary-gold)] sm:h-[15px] sm:w-8"></div>
                         <span className="mt-2 text-xs">Q3 &apos;23</span>
                         <span className="text-[10px] text-gray-500">942</span>
                       </div>
-                      <div className="chart-column flex flex-col items-center">
+                      <div className="flex flex-col items-center">
                         <div className="chart-line h-[130px] w-5 rounded-t-md bg-[var(--primary-medium-blue)]/70 sm:h-[150px] sm:w-8"></div>
                         <div className="chart-line h-[22px] w-5 bg-[var(--primary-gold)] sm:h-[25px] sm:w-8"></div>
                         <span className="mt-2 text-xs">Q4 &apos;23</span>
                         <span className="text-[10px] text-gray-500">1,580</span>
                       </div>
-                      <div className="chart-column flex flex-col items-center">
+                      <div className="flex flex-col items-center">
                         <div className="chart-line h-[135px] w-5 rounded-t-md bg-[var(--primary-medium-blue)]/70 sm:h-[155px] sm:w-8"></div>
                         <div className="chart-line h-[23px] w-5 bg-[var(--primary-gold)] sm:h-[26px] sm:w-8"></div>
                         <span className="mt-2 text-xs">Q1 &apos;24</span>
@@ -963,40 +770,13 @@ const CaseThree = () => {
           </div>
         </div>
       </div>
-
       <style jsx global>{`
-        /* Enhanced left-to-right chart animation styles */
-        .chart-line {
-          transform-origin: bottom left !important;
-          will-change: transform, filter, opacity !important;
-          backface-visibility: hidden !important;
-          transform-style: preserve-3d !important;
-        }
-
-        .chart-column {
-          will-change: transform, opacity !important;
-          backface-visibility: hidden !important;
-        }
-
-        /* Ultra-smooth transitions */
-        .analytics-card,
-        .metric-label,
-        .pulse-element {
-          will-change: transform, opacity, filter !important;
-          backface-visibility: hidden !important;
-          transform-style: preserve-3d !important;
-        }
-
-        /* Hardware acceleration for all animated elements */
-        .chart-line,
-        .analytics-card,
-        .metric-label {
-          transform: translateZ(0) !important;
-        }
-
-        /* Smooth scroll behavior */
-        html {
-          scroll-behavior: smooth !important;
+        .js-animation-ready .chart-line {
+          transform: scaleY(0);
+          transform-origin: bottom;
+          will-change: transform;
+          backface-visibility: hidden;
+          perspective: 1000;
         }
 
         /* Override animation settings for mobile/tablet but keep them animatable */

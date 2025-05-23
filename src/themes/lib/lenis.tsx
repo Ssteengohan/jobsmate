@@ -60,9 +60,17 @@ export default function useLenis() {
       touchInertiaMultiplier: deviceType === 'desktop' ? 1.0 : 1.5, // Increased from 1.2 to 1.5 for faster inertia scrolling
     };
 
+    // Create the Lenis instance with our configuration
     const lenis = new Lenis(config);
 
+    // Store in ref for component access
     lenisRef.current = lenis;
+
+    // Also make Lenis globally accessible for the smooth scroll handlers
+    // This allows our navbar's handleSmoothScroll function to access it
+    if (typeof window !== 'undefined') {
+      (window as any).lenis = lenis;
+    }
 
     const raf = (time: number) => {
       lenis.raf(time);

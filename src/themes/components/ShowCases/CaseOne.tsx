@@ -14,24 +14,11 @@ import {
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
-import { TextPlugin } from 'gsap/TextPlugin';
-import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
-import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
-import { SplitText } from 'gsap/SplitText';
-import { CustomEase } from 'gsap/CustomEase';
 import { useScrollData } from '@/themes/lib/lenis';
 import Image from 'next/image';
 
 if (typeof window !== 'undefined') {
-  gsap.registerPlugin(
-    ScrollTrigger,
-    MotionPathPlugin,
-    TextPlugin,
-    DrawSVGPlugin,
-    MorphSVGPlugin,
-    SplitText,
-    CustomEase,
-  );
+  gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 }
 
 interface ScreenSize {
@@ -132,9 +119,6 @@ const CaseOne = () => {
   const middleColumnRef = useRef<HTMLDivElement>(null);
   const rightColumnRef = useRef<HTMLDivElement>(null);
 
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const descriptionRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
@@ -163,13 +147,6 @@ const CaseOne = () => {
   useEffect(() => {
     if (typeof window === 'undefined' || !animationReady) return;
 
-    // Create custom eases for smoother animations
-    CustomEase.create(
-      'customBounce',
-      'M0,0 C0.14,0 0.242,0.438 0.272,0.561 0.313,0.728 0.354,0.963 0.362,1 0.374,0.985 0.414,0.934 0.455,0.954 0.519,0.988 0.541,1 0.566,1 0.603,1 0.618,0.957 0.676,0.96 0.727,0.963 0.767,1 0.802,1 0.851,1 0.865,0.952 0.915,0.952 0.937,0.952 0.948,0.967 0.962,0.975 0.975,0.983 1,1 1,1',
-    );
-    CustomEase.create('customOut', 'M0,0 C0.25,0.46 0.45,0.94 1,1');
-
     const ctx = gsap.context(() => {
       gsap.set('.slider-item', { clearProps: 'all' });
       gsap.set(
@@ -193,26 +170,10 @@ const CaseOne = () => {
           paused: true,
           smoothChildTiming: true,
           defaults: {
-            ease: 'customOut',
-            duration: 0.6,
+            ease: 'power2.out',
+            duration: 0.4,
           },
         });
-
-        // Enhanced text animations with SplitText
-        if (titleRef.current) {
-          const titleSplit = new SplitText(titleRef.current, { type: 'chars,words' });
-          gsap.set(titleSplit.chars, {
-            y: 20,
-            opacity: 0,
-            rotationX: -90,
-            transformOrigin: '0% 50% -50px',
-          });
-        }
-
-        if (descriptionRef.current) {
-          const descSplit = new SplitText(descriptionRef.current, { type: 'lines,words' });
-          gsap.set(descSplit.lines, { y: 30, opacity: 0 });
-        }
 
         const containers = [
           container1Ref.current,
@@ -248,15 +209,6 @@ const CaseOne = () => {
           path3Ref.current,
           path4Ref.current,
         ].filter(Boolean);
-
-        // Enhanced path setup with DrawSVGPlugin
-        paths.forEach((path) => {
-          if (!path) return;
-          gsap.set(path, {
-            drawSVG: '0% 0%',
-            opacity: 0.8,
-          });
-        });
 
         const sliderItems = document.querySelectorAll('.slider-item');
         gsap.set(sliderItems, {
@@ -294,102 +246,62 @@ const CaseOne = () => {
           transformOrigin: 'center center',
         });
 
-        // Remove the old strokeDasharray setup
-        // paths.forEach((path) => {
-        //   if (!path) return;
-        //   try {
-        //     const pathLength = path.getTotalLength() || 300;
-        //     gsap.set(path, {
-        //       strokeDasharray: pathLength,
-        //       strokeDashoffset: pathLength,
-        //     });
-        //   } catch {}
-        // });
-
-        mainTl.to(
-          leftColumnRef.current,
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.8,
-            ease: 'customBounce',
-          },
-          0,
-        );
-
-        // Animated title reveal
-        if (titleRef.current) {
-          const titleSplit = new SplitText(titleRef.current, { type: 'chars' });
-          mainTl.to(
-            titleSplit.chars,
-            {
-              y: 0,
-              opacity: 1,
-              rotationX: 0,
-              duration: 0.8,
-              stagger: 0.02,
-              ease: 'back.out(1.7)',
-            },
-            0.2,
-          );
-        }
-
-        // Animated description reveal
-        if (descriptionRef.current) {
-          const descSplit = new SplitText(descriptionRef.current, { type: 'lines' });
-          mainTl.to(
-            descSplit.lines,
-            {
-              y: 0,
-              opacity: 1,
-              duration: 0.6,
-              stagger: 0.1,
-              ease: 'power2.out',
-            },
-            0.4,
-          );
-        }
+        paths.forEach((path) => {
+          if (!path) return;
+          try {
+            const pathLength = path.getTotalLength() || 300;
+            gsap.set(path, {
+              strokeDasharray: pathLength,
+              strokeDashoffset: pathLength,
+            });
+          } catch {}
+        });
 
         mainTl
+          .to(
+            leftColumnRef.current,
+            {
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.6,
+              ease: 'power2.out',
+            },
+            0,
+          )
           .to(
             middleColumnRef.current,
             {
               autoAlpha: 1,
               y: 0,
-              duration: 0.8,
-              ease: 'customBounce',
+              duration: 0.6,
+              ease: 'power2.out',
             },
-            0.3,
+            0.15,
           )
           .to(
             rightColumnRef.current,
             {
               autoAlpha: 1,
               y: 0,
-              duration: 0.8,
-              ease: 'customBounce',
+              duration: 0.6,
+              ease: 'power2.out',
             },
-            0.5,
+            0.3,
           );
 
-        // Enhanced slider items with better stagger
         mainTl.to(
           sliderItems,
           {
             autoAlpha: 1,
             x: 0,
             filter: 'blur(0px)',
-            duration: 0.6,
-            stagger: {
-              amount: 0.8,
-              ease: 'power2.out',
-            },
-            ease: 'customBounce',
+            duration: 0.4,
+            stagger: 0.1,
+            ease: 'back.out(1.2)',
           },
-          0.6,
+          0.4,
         );
 
-        // Enhanced container animations
         mainTl
           .to(
             container1Ref.current,
@@ -397,10 +309,9 @@ const CaseOne = () => {
               autoAlpha: 1,
               y: 0,
               filter: 'blur(0px)',
-              duration: 0.7,
-              ease: 'customBounce',
+              duration: 0.5,
             },
-            0.8,
+            0.5,
           )
           .to(
             badge1Ref.current,
@@ -408,44 +319,30 @@ const CaseOne = () => {
               autoAlpha: 1,
               y: 0,
               filter: 'blur(0px)',
-              scale: 1.05,
-              duration: 0.6,
-              ease: 'customBounce',
+              duration: 0.4,
             },
-            1.0,
-          )
-          .to(
-            badge1Ref.current,
-            {
-              scale: 1,
-              duration: 0.3,
-              ease: 'power2.out',
-            },
-            1.3,
+            0.7,
           )
           .to(
             startCircle,
             {
               autoAlpha: 1,
               scale: 1,
-              duration: 0.6,
-              ease: 'customBounce',
+              duration: 0.4,
+              ease: 'back.out(1.7)',
             },
-            1.2,
+            0.8,
+          )
+          .to(
+            path1Ref.current,
+            {
+              strokeDashoffset: 0,
+              duration: 0.8,
+              ease: 'power2.inOut',
+            },
+            0.9,
           );
 
-        // Enhanced path drawing with DrawSVGPlugin - make sure it's in the timeline
-        mainTl.to(
-          path1Ref.current,
-          {
-            drawSVG: '0% 100%',
-            duration: 1.2,
-            ease: 'power2.inOut',
-          },
-          1.4,
-        );
-
-        // Enhanced arrow motion with better easing
         if (path1Ref.current && arrowRef1.current) {
           mainTl
             .set(
@@ -454,14 +351,14 @@ const CaseOne = () => {
                 autoAlpha: 0,
                 scale: 0,
               },
-              1.4,
+              0.9,
             )
             .to(
               arrowRef1.current,
               {
                 autoAlpha: 1,
                 scale: 1,
-                duration: 1.2,
+                duration: 0.8,
                 motionPath: {
                   path: path1Ref.current,
                   align: path1Ref.current,
@@ -470,9 +367,9 @@ const CaseOne = () => {
                   start: 0,
                   end: 1,
                 },
-                ease: 'customOut',
+                ease: 'power2.inOut',
               },
-              1.4,
+              0.9,
             );
         }
 
@@ -483,10 +380,9 @@ const CaseOne = () => {
               autoAlpha: 1,
               y: 0,
               filter: 'blur(0px)',
-              duration: 0.7,
-              ease: 'customBounce',
+              duration: 0.5,
             },
-            2.4,
+            1.6,
           )
           .to(
             badge2Ref.current,
@@ -494,42 +390,30 @@ const CaseOne = () => {
               autoAlpha: 1,
               y: 0,
               filter: 'blur(0px)',
-              scale: 1.05,
-              duration: 0.6,
-              ease: 'customBounce',
+              duration: 0.4,
             },
-            2.6,
-          )
-          .to(
-            badge2Ref.current,
-            {
-              scale: 1,
-              duration: 0.3,
-              ease: 'power2.out',
-            },
-            2.9,
+            1.8,
           )
           .to(
             midCircle,
             {
               autoAlpha: 1,
               scale: 1,
-              duration: 0.6,
-              ease: 'customBounce',
+              duration: 0.4,
+              ease: 'back.out(1.7)',
             },
-            2.8,
+            1.9,
           )
           .to(
             path2Ref.current,
             {
-              drawSVG: '0% 100%',
-              duration: 1.2,
+              strokeDashoffset: 0,
+              duration: 0.8,
               ease: 'power2.inOut',
             },
-            3.0,
+            2.0,
           );
 
-        // Enhanced second arrow animation
         if (path2Ref.current && arrowRef2.current) {
           mainTl
             .set(
@@ -538,14 +422,14 @@ const CaseOne = () => {
                 autoAlpha: 0,
                 scale: 0,
               },
-              3.0,
+              2.0,
             )
             .to(
               arrowRef2.current,
               {
                 autoAlpha: 1,
                 scale: 1,
-                duration: 1.2,
+                duration: 0.8,
                 motionPath: {
                   path: path2Ref.current,
                   align: path2Ref.current,
@@ -554,60 +438,73 @@ const CaseOne = () => {
                   start: 0,
                   end: 1,
                 },
-                ease: 'customOut',
+                ease: 'power2.inOut',
               },
-              3.0,
+              2.0,
             );
         }
 
+        mainTl.to(
+          container3Ref.current,
+          {
+            autoAlpha: 1,
+            y: 0,
+            filter: 'blur(0px)',
+            duration: 0.5,
+          },
+          2.7,
+        );
+
         mainTl
           .to(
-            container3Ref.current,
+            container4Ref.current,
             {
               autoAlpha: 1,
               y: 0,
               filter: 'blur(0px)',
-              duration: 0.7,
-              ease: 'customBounce',
+              duration: 0.5,
             },
-            4.0,
+            2.9,
           )
           .to(
-            [container4Ref.current, container5Ref.current],
+            container5Ref.current,
             {
-              autoAlpha: 1,
+              autoAlpha: 0.8,
               y: 0,
               filter: 'blur(0px)',
-              duration: 0.7,
-              stagger: 0.2,
-              ease: 'customBounce',
+              duration: 0.5,
             },
-            4.2,
+            3.0,
           )
           .to(
             endCircle,
             {
               autoAlpha: 1,
               scale: 1,
-              duration: 0.6,
-              ease: 'customBounce',
+              duration: 0.4,
+              ease: 'back.out(1.7)',
             },
-            4.4,
+            3.1,
+          )
+          .to(
+            path3Ref.current,
+            {
+              strokeDashoffset: 0,
+              duration: 0.8,
+              ease: 'power2.inOut',
+            },
+            3.2,
+          )
+          .to(
+            path4Ref.current,
+            {
+              strokeDashoffset: 0,
+              duration: 0.8,
+              ease: 'power2.inOut',
+            },
+            3.2,
           );
 
-        // Enhanced final paths with simultaneous drawing
-        mainTl.to(
-          [path3Ref.current, path4Ref.current],
-          {
-            drawSVG: '0% 100%',
-            duration: 1.0,
-            stagger: 0.1,
-            ease: 'power2.inOut',
-          },
-          4.6,
-        );
-
-        // Enhanced final arrows with better coordination
         if (path3Ref.current && arrowRef3.current) {
           mainTl
             .set(
@@ -616,14 +513,14 @@ const CaseOne = () => {
                 autoAlpha: 0,
                 scale: 0,
               },
-              4.6,
+              3.2,
             )
             .to(
               arrowRef3.current,
               {
                 autoAlpha: 1,
                 scale: 1,
-                duration: 1.0,
+                duration: 0.8,
                 motionPath: {
                   path: path3Ref.current,
                   align: path3Ref.current,
@@ -632,9 +529,9 @@ const CaseOne = () => {
                   start: 0,
                   end: 1,
                 },
-                ease: 'customOut',
+                ease: 'power2.inOut',
               },
-              4.6,
+              3.2,
             );
         }
 
@@ -646,14 +543,14 @@ const CaseOne = () => {
                 autoAlpha: 0,
                 scale: 0,
               },
-              4.7,
+              3.2,
             )
             .to(
               arrowRef4.current,
               {
                 autoAlpha: 1,
                 scale: 1,
-                duration: 1.0,
+                duration: 0.8,
                 motionPath: {
                   path: path4Ref.current,
                   align: path4Ref.current,
@@ -662,13 +559,12 @@ const CaseOne = () => {
                   start: 0,
                   end: 1,
                 },
-                ease: 'customOut',
+                ease: 'power2.inOut',
               },
-              4.7,
+              3.2,
             );
         }
 
-        // Enhanced ScrollTrigger with better performance
         if (stickyWrapperRef.current && containerRef.current) {
           ScrollTrigger.create({
             trigger: stickyWrapperRef.current,
@@ -679,7 +575,6 @@ const CaseOne = () => {
             anticipatePin: 1,
             pinReparent: false,
             refreshPriority: 1,
-            invalidateOnRefresh: true,
             id: 'case-one-pin',
             onLeaveBack: () => {
               mainTl.progress(0);
@@ -697,11 +592,10 @@ const CaseOne = () => {
           end: 'bottom 20%',
           onUpdate: (self) => {
             const rawProgress = Math.min(self.progress, 1);
-            // Enhanced easing with CustomEase
-            const easedProgress = CustomEase.create(
-              'scrollEase',
-              'M0,0 C0.126,0.382 0.282,0.674 0.44,0.822 0.632,1.002 0.818,1.001 1,1',
-            )(rawProgress);
+            const easedProgress =
+              rawProgress < 0.5
+                ? 2 * rawProgress * rawProgress
+                : 1 - Math.pow(-2 * rawProgress + 2, 2) / 2;
             mainTl.progress(easedProgress);
           },
           scrub: 0.8,
@@ -711,13 +605,12 @@ const CaseOne = () => {
           id: 'case-one-animation',
         });
       } else {
-        // Enhanced mobile animations
         const mainTl = gsap.timeline({
           paused: true,
           smoothChildTiming: true,
           defaults: {
-            ease: 'customOut',
-            duration: 0.6,
+            ease: 'power2.out',
+            duration: 0.4,
           },
         });
 
@@ -762,31 +655,14 @@ const CaseOne = () => {
           filter: 'blur(2px)',
         });
 
-        // Enhanced mobile timeline with SplitText
-        if (titleRef.current) {
-          const titleSplit = new SplitText(titleRef.current, { type: 'words' });
-          gsap.set(titleSplit.words, { y: 30, opacity: 0 });
-          mainTl.to(
-            titleSplit.words,
-            {
-              y: 0,
-              opacity: 1,
-              duration: 0.8,
-              stagger: 0.1,
-              ease: 'customBounce',
-            },
-            0.2,
-          );
-        }
-
         mainTl
           .to(
             leftColumnRef.current,
             {
               autoAlpha: 1,
               y: 0,
-              duration: 0.8,
-              ease: 'customBounce',
+              duration: 0.7,
+              ease: 'power2.inOut',
             },
             0,
           )
@@ -796,34 +672,21 @@ const CaseOne = () => {
               autoAlpha: 1,
               y: 0,
               filter: 'blur(0px)',
-              stagger: {
-                amount: 0.6,
-                ease: 'power2.out',
-              },
-              duration: 0.7,
-              ease: 'customBounce',
+              stagger: 0.08,
+              duration: 0.5,
+              ease: 'back.out(1.1)',
             },
-            0.4,
+            0.3,
           )
           .to(
             middleColumnRef.current,
             {
               autoAlpha: 1,
               y: 0,
-              duration: 0.8,
-              ease: 'customBounce',
+              duration: 0.6,
+              ease: 'power2.inOut',
             },
-            0.6,
-          )
-          .to(
-            rightColumnRef.current,
-            {
-              autoAlpha: 1,
-              y: 0,
-              duration: 0.8,
-              ease: 'customBounce',
-            },
-            0.8,
+            0.2,
           )
           .to(
             container1Ref.current,
@@ -831,10 +694,10 @@ const CaseOne = () => {
               autoAlpha: 1,
               y: 0,
               filter: 'blur(0px)',
-              duration: 0.7,
-              ease: 'customBounce',
+              duration: 0.6,
+              ease: 'power2.out',
             },
-            1.0,
+            0.5,
           )
           .to(
             badge1Ref.current,
@@ -842,20 +705,10 @@ const CaseOne = () => {
               autoAlpha: 1,
               y: 0,
               filter: 'blur(0px)',
-              scale: 1.05,
-              duration: 0.6,
-              ease: 'customBounce',
+              duration: 0.5,
+              ease: 'back.out(1.2)',
             },
-            1.2,
-          )
-          .to(
-            badge1Ref.current,
-            {
-              scale: 1,
-              duration: 0.3,
-              ease: 'power2.out',
-            },
-            1.5,
+            0.6,
           )
           .to(
             container2Ref.current,
@@ -863,10 +716,10 @@ const CaseOne = () => {
               autoAlpha: 1,
               y: 0,
               filter: 'blur(0px)',
-              duration: 0.7,
-              ease: 'customBounce',
+              duration: 0.6,
+              ease: 'power2.out',
             },
-            1.8,
+            0.8,
           )
           .to(
             badge2Ref.current,
@@ -874,20 +727,20 @@ const CaseOne = () => {
               autoAlpha: 1,
               y: 0,
               filter: 'blur(0px)',
-              scale: 1.05,
-              duration: 0.6,
-              ease: 'customBounce',
+              duration: 0.5,
+              ease: 'back.out(1.2)',
             },
-            2.0,
+            0.9,
           )
           .to(
-            badge2Ref.current,
+            rightColumnRef.current,
             {
-              scale: 1,
-              duration: 0.3,
-              ease: 'power2.out',
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.6,
+              ease: 'power2.inOut',
             },
-            2.3,
+            1.0,
           )
           .to(
             container3Ref.current,
@@ -895,10 +748,10 @@ const CaseOne = () => {
               autoAlpha: 1,
               y: 0,
               filter: 'blur(0px)',
-              duration: 0.7,
-              ease: 'customBounce',
+              duration: 0.6,
+              ease: 'power2.out',
             },
-            2.6,
+            1.2,
           )
           .to(
             container4Ref.current,
@@ -906,10 +759,10 @@ const CaseOne = () => {
               autoAlpha: 1,
               y: 0,
               filter: 'blur(0px)',
-              duration: 0.7,
-              ease: 'customBounce',
+              duration: 0.6,
+              ease: 'power2.out',
             },
-            2.8,
+            1.4,
           )
           .to(
             container5Ref.current,
@@ -917,10 +770,10 @@ const CaseOne = () => {
               autoAlpha: 0.8,
               y: 0,
               filter: 'blur(0px)',
-              duration: 0.7,
-              ease: 'customBounce',
+              duration: 0.6,
+              ease: 'power2.out',
             },
-            3.0,
+            1.6,
           );
 
         if (containerRef.current) {
@@ -930,13 +783,13 @@ const CaseOne = () => {
             end: 'bottom 15%',
             onUpdate: (self) => {
               const rawProgress = Math.min(self.progress * 1.2, 1);
-              const easedProgress = CustomEase.create(
-                'mobileScrollEase',
-                'M0,0 C0.215,0.61 0.355,1 1,1',
-              )(rawProgress);
+              const easedProgress =
+                rawProgress < 0.5
+                  ? 2 * Math.pow(rawProgress, 2)
+                  : 1 - Math.pow(-2 * rawProgress + 2, 2) / 2;
               mainTl.progress(easedProgress);
             },
-            scrub: 0.3,
+            scrub: 0.8,
             markers: false,
             id: 'case-one-mobile-animation',
           });
@@ -963,14 +816,10 @@ const CaseOne = () => {
             }`}
           >
             <div className="container flex w-full flex-col gap-2">
-              <h2 ref={titleRef} className="text-xl font-semibold">
-                Hire local or global
-              </h2>
-              <div ref={descriptionRef}>
-                <Balancer className="w-full text-gray-600 *:text-sm sm:w-3/4 md:text-base dark:text-gray-400">
-                  Streamline your hiring process with our tools and integrations to attract talent.
-                </Balancer>
-              </div>
+              <h2 className="text-xl font-semibold">Hire local or global</h2>
+              <Balancer className="w-full text-gray-600 *:text-sm sm:w-3/4 md:text-base dark:text-gray-400">
+                Streamline your hiring process with our tools and integrations to attract talent.
+              </Balancer>
             </div>
             <Link
               href={
@@ -982,9 +831,9 @@ const CaseOne = () => {
             >
               <span className="relative inline-block">
                 Explore platform
-                <span className="absolute bottom-[-4px] left-0 h-[1px] w-0 bg-current transition-all duration-500 ease-out group-hover:w-full"></span>
+                <span className="absolute bottom-[-4px] left-0 h-[1px] w-0 bg-current transition-all duration-300 ease-out group-hover:w-full"></span>
               </span>
-              <ArrowRight className="inline h-4 w-4 transform transition-transform duration-500 ease-out group-hover:translate-x-1" />
+              <ArrowRight className="inline h-4 w-4 transform transition-transform duration-300 ease-out group-hover:translate-x-1" />
             </Link>
           </div>
           <div
@@ -1612,12 +1461,12 @@ const CaseOne = () => {
             .js-animation-ready .container-5 {
               opacity: 0;
               visibility: hidden;
-              will-change: opacity, transform, filter;
+              will-change: opacity, transform;
             }
 
             .js-animation-ready .slider-item {
               opacity: 0;
-              will-change: opacity, transform, filter;
+              will-change: opacity, transform;
             }
 
             @media (max-width: 1023px) {
@@ -1632,31 +1481,22 @@ const CaseOne = () => {
               }
             }
 
-            @keyframes enhancedPulse {
+            @keyframes customPulse {
               0%,
               100% {
                 opacity: 1;
-                transform: scale(1) rotate(0deg);
-              }
-              25% {
-                opacity: 0.8;
-                transform: scale(1.02) rotate(0.5deg);
+                transform: scale(1);
               }
               50% {
                 opacity: 0.7;
-                transform: scale(0.98) rotate(-0.5deg);
-              }
-              75% {
-                opacity: 0.9;
-                transform: scale(1.01) rotate(0.3deg);
+                transform: scale(0.95);
               }
             }
 
-            .enhanced-pulse {
-              animation: enhancedPulse 3s ease-in-out infinite;
+            .custom-pulse {
+              animation: customPulse 2s ease-in-out infinite;
             }
 
-            /* Enhanced responsive scaling */
             @media (max-width: 768px) {
               #svg1,
               #svg2,
@@ -1664,7 +1504,6 @@ const CaseOne = () => {
               #svg4 {
                 transform-origin: center;
                 transform: scale(0.9);
-                filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
               }
             }
 
@@ -1674,20 +1513,7 @@ const CaseOne = () => {
               #svg3,
               #svg4 {
                 transform: scale(0.85);
-                filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.08));
               }
-            }
-
-            /* Enhanced hardware acceleration */
-            .slider-item,
-            .container-1,
-            .container-2,
-            .container-3,
-            .container-4,
-            .container-5 {
-              transform: translate3d(0, 0, 0);
-              backface-visibility: hidden;
-              perspective: 1000px;
             }
           `}</style>
         </div>
