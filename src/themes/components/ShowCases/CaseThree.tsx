@@ -3,11 +3,15 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { TextPlugin } from 'gsap/TextPlugin';
+import { CustomEase } from 'gsap/CustomEase';
+import { SplitText } from 'gsap/SplitText';
+import { Observer } from 'gsap/Observer';
 import Balancer from 'react-wrap-balancer';
 import Image from 'next/image';
 
 if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger, TextPlugin, CustomEase, SplitText, Observer);
 }
 
 // Add screen size interface
@@ -20,6 +24,7 @@ interface ScreenSize {
 
 const CaseThree = () => {
   const [animationReady, setAnimationReady] = useState(false);
+  const [currentProgress, setCurrentProgress] = useState(0);
   // Add screen size state
   const [screenSize, setScreenSize] = useState<ScreenSize>({
     width: typeof window !== 'undefined' ? window.innerWidth : 1200,
@@ -65,229 +70,322 @@ const CaseThree = () => {
   useEffect(() => {
     if (typeof window === 'undefined' || !animationReady) return;
 
-    // Create the animation timeline inline instead of using the callback
     if (screenSize.isDesktop) {
       const ctx = gsap.context(() => {
-        const mainTl = gsap.timeline({
+        // Create ultra-smooth custom easing curves
+        CustomEase.create('ultraSmooth', 'M0,0 C0.16,1 0.3,1 1,1');
+        CustomEase.create('chartReveal', 'M0,0 C0.23,1 0.32,1 1,1');
+        CustomEase.create('floatIn', 'M0,0 C0.175,0.885 0.32,1.275 1,1');
+        CustomEase.create('perfectBounce', 'M0,0 C0.68,-0.55 0.265,1.55 1,1');
+
+        // Master timeline with perfect sequencing
+        const masterTl = gsap.timeline({
           paused: true,
           smoothChildTiming: true,
-          defaults: {
-            ease: 'power2.out',
-            duration: 0.4,
-            clearProps: '',
-          },
+          autoRemoveChildren: false,
         });
 
-        // All initialization code from createAnimationTimeline goes here
-        gsap.set(contentRef.current, {
-          autoAlpha: 0,
-          willChange: 'opacity, transform',
-        });
+        // Initialize all elements with enhanced transforms
+        const initTl = gsap.timeline();
 
-        gsap.set(titleRef.current, {
-          autoAlpha: 0,
-          y: -20,
-          willChange: 'opacity, transform',
-        });
-
-        gsap.set(chartRef.current, {
-          autoAlpha: 0,
-          scale: 0.9,
-          y: 20,
-          willChange: 'opacity, transform',
-          transformOrigin: 'center center',
-        });
-
-        gsap.set(logoRef.current, {
-          autoAlpha: 0,
-          scale: 0.9,
-          y: 30,
-          willChange: 'opacity, transform',
-          transformOrigin: 'center center',
-        });
+        initTl
+          .set(contentRef.current, {
+            autoAlpha: 0,
+            filter: 'blur(8px)',
+            willChange: 'opacity, transform, filter',
+          })
+          .set(titleRef.current, {
+            autoAlpha: 0,
+            y: -40,
+            rotationX: 20,
+            transformPerspective: 1200,
+            transformOrigin: '50% 100%',
+            willChange: 'opacity, transform',
+          })
+          .set(chartRef.current, {
+            autoAlpha: 0,
+            scale: 0.7,
+            y: 60,
+            rotationY: 15,
+            transformPerspective: 1200,
+            filter: 'blur(4px)',
+            willChange: 'opacity, transform, filter',
+            transformOrigin: 'center center',
+          })
+          .set(logoRef.current, {
+            autoAlpha: 0,
+            scale: 0.6,
+            y: 80,
+            rotation: -10,
+            filter: 'blur(2px)',
+            willChange: 'opacity, transform, filter',
+            transformOrigin: 'center center',
+          });
 
         const analyticCards = gsap.utils.toArray('.analytics-card');
-        gsap.set(analyticCards, {
+        initTl.set(analyticCards, {
           autoAlpha: 0,
-          x: 20,
-          scale: 0.95,
-          willChange: 'opacity, transform',
+          x: 60,
+          y: 20,
+          scale: 0.8,
+          rotationY: 25,
+          transformPerspective: 1000,
+          filter: 'blur(2px)',
+          willChange: 'opacity, transform, filter',
           transformOrigin: 'center center',
         });
 
         const chartLines = gsap.utils.toArray('.chart-line');
-        gsap.set(chartLines, {
+        initTl.set(chartLines, {
           scaleY: 0,
-          transformOrigin: 'bottom',
-          willChange: 'transform',
+          scaleX: 0.6,
+          transformOrigin: 'bottom center',
+          filter: 'saturate(0.3)',
+          willChange: 'transform, filter',
+          backfaceVisibility: 'hidden',
         });
 
         const metricLabels = gsap.utils.toArray('.metric-label');
-        gsap.set(metricLabels, {
+        initTl.set(metricLabels, {
           autoAlpha: 0,
-          y: 10,
+          y: 25,
+          scale: 0.8,
+          rotationX: 15,
+          transformPerspective: 800,
           willChange: 'opacity, transform',
         });
 
-        mainTl
-          .to(contentRef.current, {
-            autoAlpha: 1,
-            duration: 0.5,
-          })
+        // Stage 1: Foundation reveal (0% - 15%)
+        masterTl
+          .to(
+            contentRef.current,
+            {
+              autoAlpha: 1,
+              filter: 'blur(0px)',
+              duration: 1.2,
+              ease: 'ultraSmooth',
+            },
+            0,
+          )
+
+          // Stage 2: Title dramatic entrance (15% - 25%)
           .to(
             titleRef.current,
             {
               autoAlpha: 1,
               y: 0,
-              ease: 'back.out(1.1)',
-              duration: 0.6,
+              rotationX: 0,
+              duration: 1.0,
+              ease: 'perfectBounce',
             },
-            0.1,
+            0.15,
           )
+
+          // Stage 3: Chart container reveal (25% - 40%)
           .to(
             chartRef.current,
             {
               autoAlpha: 1,
               scale: 1,
               y: 0,
-              duration: 0.6,
-              ease: 'back.out(1.1)',
+              rotationY: 0,
+              filter: 'blur(0px)',
+              duration: 1.2,
+              ease: 'floatIn',
             },
-            0.3,
+            0.25,
           )
+
+          // Stage 4: Chart data visualization (40% - 70%)
           .to(
-            chartLines,
+            chartLines.filter((_, i) => i % 2 === 0),
             {
               scaleY: 1,
-              stagger: 0.08,
-              duration: 0.6,
-              ease: 'power3.out',
+              scaleX: 1,
+              filter: 'saturate(1)',
+              stagger: {
+                each: 0.08,
+                ease: 'power2.out',
+                from: 'start',
+              },
+              duration: 0.8,
+              ease: 'chartReveal',
             },
-            0.55,
+            0.4,
           )
+
+          .to(
+            chartLines.filter((_, i) => i % 2 === 1),
+            {
+              scaleY: 1,
+              scaleX: 1,
+              filter: 'saturate(1.2)',
+              stagger: {
+                each: 0.06,
+                ease: 'power2.out',
+                from: 'start',
+              },
+              duration: 0.6,
+              ease: 'perfectBounce',
+            },
+            0.5,
+          )
+
+          // Stage 5: Metrics revelation (60% - 75%)
           .to(
             metricLabels,
             {
               autoAlpha: 1,
               y: 0,
-              stagger: 0.06,
-              duration: 0.4,
+              scale: 1,
+              rotationX: 0,
+              stagger: {
+                each: 0.04,
+                ease: 'power2.out',
+              },
+              duration: 0.6,
+              ease: 'floatIn',
             },
-            0.75,
+            0.6,
           )
+
+          // Stage 6: Logo prominence (70% - 85%)
           .to(
             logoRef.current,
             {
               autoAlpha: 1,
               scale: 1,
               y: 0,
-              duration: 0.5,
-              ease: 'power2.out',
+              rotation: 0,
+              filter: 'blur(0px)',
+              duration: 0.8,
+              ease: 'perfectBounce',
             },
-            0.8,
+            0.7,
           )
+
+          // Stage 7: Analytics cards cascade (75% - 100%)
           .to(
             analyticCards,
             {
               autoAlpha: 1,
               x: 0,
+              y: 0,
               scale: 1,
-              stagger: 0.08,
-              duration: 0.5,
-              ease: 'back.out(1.4)',
+              rotationY: 0,
+              filter: 'blur(0px)',
+              stagger: {
+                each: 0.06,
+                ease: 'power2.out',
+                from: 'start',
+              },
+              duration: 0.7,
+              ease: 'floatIn',
             },
-            0.4,
+            0.75,
           );
 
+        // Continuous animations
         gsap.to('.pulse-element', {
-          scale: 1.03,
+          scale: 1.06,
           repeat: -1,
           yoyo: true,
-          duration: 1.8,
+          duration: 2.5,
           ease: 'sine.inOut',
+          transformOrigin: 'center center',
         });
 
         gsap.to('.pattern-grid', {
-          backgroundPosition: '14px 14px',
-          duration: 25,
+          backgroundPosition: '28px 28px',
+          duration: 45,
           repeat: -1,
           ease: 'none',
         });
 
         gsap.to('.pattern-dots', {
-          backgroundPosition: '18px 18px',
-          duration: 30,
+          backgroundPosition: '32px 32px',
+          duration: 50,
           repeat: -1,
           ease: 'none',
         });
 
+        // Enhanced ScrollTrigger with perfect momentum
+        let velocity = 0;
+        let currentProgress = 0;
+        let targetProgress = 0;
+
+        const updateProgress = () => {
+          // Smooth momentum-based progress
+          currentProgress += (targetProgress - currentProgress) * 0.08;
+
+          // Ultra-smooth easing function
+          const smoothProgress = CustomEase.create(
+            'scrollSmooth',
+            'M0,0 C0.25,0.1 0.25,1 1,1',
+          )(currentProgress);
+
+          masterTl.progress(smoothProgress);
+          setCurrentProgress(smoothProgress);
+
+          if (Math.abs(targetProgress - currentProgress) > 0.001) {
+            requestAnimationFrame(updateProgress);
+          }
+        };
+
         if (stickyWrapperRef.current && containerRef.current) {
           ScrollTrigger.create({
             trigger: stickyWrapperRef.current,
-            start: 'top 10%',
-            end: 'bottom 10%',
+            start: 'top 8%',
+            end: 'bottom 8%',
             pin: containerRef.current,
             pinSpacing: true,
             anticipatePin: 1,
             pinReparent: false,
-            refreshPriority: 1,
+            refreshPriority: 10,
             id: 'case-three-pin',
             onEnter: () => {
-              mainTl.progress(0);
+              targetProgress = 0;
+              updateProgress();
             },
             onLeaveBack: () => {
-              mainTl.progress(0);
+              targetProgress = 0;
+              updateProgress();
             },
             onLeave: () => {
-              mainTl.progress(1);
+              targetProgress = 1;
+              updateProgress();
             },
+          });
+
+          ScrollTrigger.create({
+            trigger: stickyWrapperRef.current,
+            start: 'top 50%',
+            end: 'bottom 20%',
+            onUpdate: (self) => {
+              velocity = self.getVelocity() / -300;
+              const rawProgress = Math.max(0, Math.min(1, self.progress));
+
+              // Enhanced progress mapping with velocity consideration
+              const velocityInfluence = Math.max(-0.1, Math.min(0.1, velocity * 0.001));
+              targetProgress = rawProgress + velocityInfluence;
+              targetProgress = Math.max(0, Math.min(1, targetProgress));
+
+              requestAnimationFrame(updateProgress);
+            },
+            scrub: false, // We handle smoothing manually
+            refreshPriority: 15,
+            id: 'case-three-smooth-animation',
           });
         }
 
-        const scrollTrigger = ScrollTrigger.create({
-          trigger: stickyWrapperRef.current,
-          start: 'top 60%',
-          end: 'bottom 20%',
-          onUpdate: (self) => {
-            const rawProgress = Math.min(self.progress, 1);
-            const easedProgress =
-              rawProgress < 0.5
-                ? 2 * rawProgress * rawProgress
-                : 1 - Math.pow(-2 * rawProgress + 2, 2) / 2;
-
-            mainTl.progress(easedProgress);
-          },
-          scrub: 0.8,
-          preventOverlaps: true,
-          fastScrollEnd: true,
-          id: 'case-three-animation',
-        });
-
-        // Ensure desktop ScrollTrigger settings match other components for cohesive behavior
-        ScrollTrigger.create({
-          trigger: stickyWrapperRef.current,
-          start: 'top 10%', // Match the start position used in CaseOne and CaseTwo
-          end: 'bottom 10%', // Match the end position used in CaseOne and CaseTwo
-          onLeaveBack: () => {
-            // Ensure animation resets properly when scrolling back up
-            mainTl.progress(0);
-          },
-          onLeave: () => {
-            // Ensure animation completes properly when scrolling past
-            mainTl.progress(1);
-          },
-          markers: false,
-          id: 'case-three-desktop-reset',
-        });
-
         return () => {
-          scrollTrigger.kill();
+          // Cleanup
         };
       }, containerRef);
 
       const refreshTimeout = setTimeout(() => {
         ScrollTrigger.refresh(true);
-      }, 100);
+      }, 200);
 
       return () => {
         clearTimeout(refreshTimeout);
@@ -301,181 +399,208 @@ const CaseThree = () => {
 
     if (!screenSize.isDesktop) {
       const ctx = gsap.context(() => {
-        // Initially hide elements for smoother entrance
+        // Mobile ultra-smooth easing
+        CustomEase.create('mobileUltraSmooth', 'M0,0 C0.2,0 0.38,1 1,1');
+        CustomEase.create('mobilePerfectFloat', 'M0,0 C0.175,0.885 0.32,1.275 1,1');
+
+        // Mobile master timeline
+        const mobileMasterTl = gsap.timeline({ paused: true });
+
+        // Enhanced mobile initialization
         gsap.set([titleRef.current, chartRef.current, logoRef.current], {
           autoAlpha: 0,
-          y: 15,
-          willChange: 'opacity, transform',
+          y: 30,
+          scale: 0.9,
+          rotationX: 8,
+          transformPerspective: 1000,
+          filter: 'blur(3px)',
+          willChange: 'opacity, transform, filter',
         });
 
-        // Explicitly set chart lines to visible but scaled to 0 for mobile/tablet
         const chartLines = gsap.utils.toArray('.chart-line');
         gsap.set(chartLines, {
-          autoAlpha: 1, // Make sure they're visible
+          autoAlpha: 1,
           scaleY: 0,
-          transformOrigin: 'bottom',
-          willChange: 'transform',
+          scaleX: 0.8,
+          transformOrigin: 'bottom center',
+          filter: 'saturate(0.4)',
+          willChange: 'transform, filter',
+          backfaceVisibility: 'hidden',
         });
 
         gsap.set('.metric-label', {
           autoAlpha: 0,
-          y: 10,
-          willChange: 'opacity, transform',
+          y: 20,
+          scale: 0.9,
+          filter: 'blur(1px)',
+          willChange: 'opacity, transform, filter',
         });
 
-        // Create a centralized timeline for all animations to ensure cohesive behavior
-        const mobileTl = gsap.timeline({
-          paused: true,
-          smoothChildTiming: true,
-          defaults: {
-            ease: 'power2.out',
-            duration: 0.4,
-          },
-        });
-
-        // Add title animation to the timeline
-        mobileTl.to(
-          titleRef.current,
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.6,
-            ease: 'back.out(1.7)',
-            clearProps: 'willChange',
-          },
-          0,
-        );
-
-        // Add chart container animation to the timeline
-        mobileTl.to(
-          chartRef.current,
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.7,
-            ease: 'power3.out',
-            clearProps: 'willChange',
-          },
-          0.2,
-        );
-
-        // Add blue chart lines animation (applications)
-        const blueChartLines = chartLines.filter((_, i) => i % 2 === 0);
-        mobileTl.to(
-          blueChartLines,
-          {
-            scaleY: 1,
-            stagger: 0.12,
-            duration: 0.7,
-            ease: 'power2.out',
-            clearProps: 'willChange',
-            overwrite: true,
-          },
-          0.5,
-        );
-
-        // Add gold chart lines animation (hires) with slight delay
-        const goldChartLines = chartLines.filter((_, i) => i % 2 === 1);
-        mobileTl.to(
-          goldChartLines,
-          {
-            scaleY: 1,
-            stagger: 0.12,
-            duration: 0.5,
-            ease: 'back.out(1.2)',
-            clearProps: 'willChange',
-            overwrite: true,
-          },
-          0.7,
-        );
-
-        // Add metric labels animation with delay
-        mobileTl.to(
-          '.metric-label',
-          {
-            autoAlpha: 1,
-            y: 0,
-            stagger: 0.08,
-            duration: 0.4,
-            ease: 'power2.out',
-            clearProps: 'willChange',
-          },
-          0.9,
-        );
-
-        // Add logo animation
-        mobileTl.to(
-          logoRef.current,
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.6,
-            ease: 'back.out(1.4)',
-            clearProps: 'willChange',
-          },
-          1.0,
-        );
-
-        // Add analytics cards animation with staggered entrance
         const cards = gsap.utils.toArray('.analytics-card');
-        mobileTl.to(
-          cards,
-          {
-            autoAlpha: 1,
-            y: 0,
-            stagger: 0.12,
-            duration: 0.6,
-            ease: 'back.out(1.2)',
-            clearProps: 'willChange',
-          },
-          1.2,
-        );
+        gsap.set(cards, {
+          autoAlpha: 0,
+          y: 40,
+          scale: 0.85,
+          filter: 'blur(2px)',
+          willChange: 'opacity, transform, filter',
+        });
 
-        // Add pulse animation after logo appears
-        mobileTl.add(() => {
+        // Mobile animation sequence
+        mobileMasterTl
+          .to(
+            titleRef.current,
+            {
+              autoAlpha: 1,
+              y: 0,
+              scale: 1,
+              rotationX: 0,
+              filter: 'blur(0px)',
+              duration: 1.0,
+              ease: 'mobilePerfectFloat',
+            },
+            0,
+          )
+          .to(
+            chartRef.current,
+            {
+              autoAlpha: 1,
+              y: 0,
+              scale: 1,
+              rotationX: 0,
+              filter: 'blur(0px)',
+              duration: 1.2,
+              ease: 'mobileUltraSmooth',
+            },
+            0.2,
+          )
+          .to(
+            chartLines.filter((_, i) => i % 2 === 0),
+            {
+              scaleY: 1,
+              scaleX: 1,
+              filter: 'saturate(1)',
+              stagger: {
+                each: 0.12,
+                ease: 'power2.out',
+              },
+              duration: 1.0,
+              ease: 'mobileUltraSmooth',
+            },
+            0.5,
+          )
+          .to(
+            chartLines.filter((_, i) => i % 2 === 1),
+            {
+              scaleY: 1,
+              scaleX: 1,
+              filter: 'saturate(1.1)',
+              stagger: {
+                each: 0.1,
+                ease: 'power2.out',
+              },
+              duration: 0.8,
+              ease: 'mobilePerfectFloat',
+            },
+            0.7,
+          )
+          .to(
+            '.metric-label',
+            {
+              autoAlpha: 1,
+              y: 0,
+              scale: 1,
+              filter: 'blur(0px)',
+              stagger: {
+                each: 0.08,
+                ease: 'power2.out',
+              },
+              duration: 0.8,
+              ease: 'mobileUltraSmooth',
+            },
+            0.9,
+          )
+          .to(
+            logoRef.current,
+            {
+              autoAlpha: 1,
+              y: 0,
+              scale: 1,
+              rotationX: 0,
+              filter: 'blur(0px)',
+              duration: 1.0,
+              ease: 'mobilePerfectFloat',
+            },
+            1.0,
+          )
+          .to(
+            cards,
+            {
+              autoAlpha: 1,
+              y: 0,
+              scale: 1,
+              filter: 'blur(0px)',
+              stagger: {
+                each: 0.1,
+                ease: 'power2.out',
+              },
+              duration: 0.9,
+              ease: 'mobilePerfectFloat',
+            },
+            1.2,
+          );
+
+        // Mobile continuous animations
+        mobileMasterTl.add(() => {
           gsap.to('.pulse-element', {
-            scale: 1.03,
+            scale: 1.05,
             repeat: -1,
             yoyo: true,
-            duration: 1.8,
+            duration: 2.3,
             ease: 'sine.inOut',
           });
-        }, 1.0);
 
-        // Background animations
-        mobileTl.add(() => {
           gsap.to('.pattern-grid', {
-            backgroundPosition: '14px 14px',
-            duration: 25,
+            backgroundPosition: '20px 20px',
+            duration: 35,
             repeat: -1,
             ease: 'none',
           });
 
           gsap.to('.pattern-dots', {
-            backgroundPosition: '18px 18px',
-            duration: 30,
+            backgroundPosition: '24px 24px',
+            duration: 40,
             repeat: -1,
             ease: 'none',
           });
-        }, 0);
+        }, 1.0);
 
-        // Create a unified scroll trigger that controls the entire timeline
+        // Mobile smooth ScrollTrigger
+        let mobileCurrentProgress = 0;
+        let mobileTargetProgress = 0;
+
+        const updateMobileProgress = () => {
+          mobileCurrentProgress += (mobileTargetProgress - mobileCurrentProgress) * 0.06;
+          const smoothProgress = CustomEase.create(
+            'mobileScrollSmooth',
+            'M0,0 C0.3,0 0.7,1 1,1',
+          )(mobileCurrentProgress);
+          mobileMasterTl.progress(smoothProgress);
+
+          if (Math.abs(mobileTargetProgress - mobileCurrentProgress) > 0.001) {
+            requestAnimationFrame(updateMobileProgress);
+          }
+        };
+
         ScrollTrigger.create({
           trigger: containerRef.current,
-          start: 'top 85%',
-          end: 'bottom 15%',
+          start: 'top 80%',
+          end: 'bottom 20%',
           onUpdate: (self) => {
-            // Smooth easing of the timeline progress based on scroll position
-            const rawProgress = Math.min(self.progress * 1.2, 1);
-            const easedProgress =
-              rawProgress < 0.5
-                ? 2 * Math.pow(rawProgress, 2)
-                : 1 - Math.pow(-2 * rawProgress + 2, 2) / 2;
-
-            mobileTl.progress(easedProgress);
+            mobileTargetProgress = Math.max(0, Math.min(1, self.progress * 1.1));
+            requestAnimationFrame(updateMobileProgress);
           },
-          scrub: 0.8,
-          id: 'case-three-mobile-animation',
+          refreshPriority: 8,
+          id: 'case-three-mobile-smooth',
         });
       }, containerRef);
 
@@ -489,6 +614,19 @@ const CaseThree = () => {
       ref={stickyWrapperRef}
       style={{ position: 'relative', top: 0 }}
     >
+      {/* Progress indicator for smooth feedback */}
+      {screenSize.isDesktop && (
+        <div className="fixed top-1/2 right-4 z-50 h-32 w-1 rounded-full bg-gray-200 opacity-20">
+          <div
+            className="rounded-full bg-[var(--primary-medium-blue)] transition-all duration-300 ease-out"
+            style={{
+              height: `${currentProgress * 100}%`,
+              width: '100%',
+            }}
+          />
+        </div>
+      )}
+
       <div className={screenSize.isDesktop ? 'h-screen' : 'h-auto'}>
         <div
           ref={containerRef}
@@ -771,12 +909,33 @@ const CaseThree = () => {
         </div>
       </div>
       <style jsx global>{`
-        .js-animation-ready .chart-line {
-          transform: scaleY(0);
-          transform-origin: bottom;
-          will-change: transform;
-          backface-visibility: hidden;
-          perspective: 1000;
+        /* Enhanced smooth scrolling styles */
+        .chart-line {
+          transform-origin: bottom center !important;
+          will-change: transform, filter !important;
+          backface-visibility: hidden !important;
+          transform-style: preserve-3d !important;
+        }
+
+        /* Ultra-smooth transitions */
+        .analytics-card,
+        .metric-label,
+        .pulse-element {
+          will-change: transform, opacity, filter !important;
+          backface-visibility: hidden !important;
+          transform-style: preserve-3d !important;
+        }
+
+        /* Hardware acceleration for all animated elements */
+        .chart-line,
+        .analytics-card,
+        .metric-label {
+          transform: translateZ(0) !important;
+        }
+
+        /* Smooth scroll behavior */
+        html {
+          scroll-behavior: smooth !important;
         }
 
         /* Override animation settings for mobile/tablet but keep them animatable */
