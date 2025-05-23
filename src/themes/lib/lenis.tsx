@@ -5,6 +5,18 @@ import { useEffect, useRef, createContext, useState, useContext } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
+// Add interface to extend Window type
+interface WindowWithLenis extends Window {
+  lenis?: Lenis;
+}
+
+// Update TypeScript global declarations
+declare global {
+  interface Window {
+    lenis?: Lenis;
+  }
+}
+
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
@@ -69,7 +81,7 @@ export default function useLenis() {
     // Also make Lenis globally accessible for the smooth scroll handlers
     // This allows our navbar's handleSmoothScroll function to access it
     if (typeof window !== 'undefined') {
-      (window as any).lenis = lenis;
+      (window as WindowWithLenis).lenis = lenis;
     }
 
     const raf = (time: number) => {
