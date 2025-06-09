@@ -19,7 +19,21 @@ export const structure: StructureResolver = (S) =>
             .schemaType('heroBanner')
             .documentId('heroBanner')
         ),
+      S.listItem()
+        .title('Tabs Section')
+        .child(
+          S.document()
+            .schemaType('tabsSection')
+            .documentId('tabsSection')
+        ),
+      S.listItem()
+        .title('Slider Section')
+        .child(
+          S.document()
+            .schemaType('sliderSection')
+            .documentId('sliderSection')
+        ),
       ...S.documentTypeListItems().filter(
-        (listItem) => !['heroBanner', 'navbar'].includes(listItem.getId() as string)
+        (listItem) => !['heroBanner', 'navbar', 'tabsSection', 'sliderSection'].includes(listItem.getId() as string)
       ),
     ])
