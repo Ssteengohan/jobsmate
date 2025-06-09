@@ -132,37 +132,80 @@ const Slider = ({ initialData }: SliderProps) => {
 
   const lenis = useLenis();
 
-  // Fetch slider data from Sanity only if not provided as props
+  // Real-time data fetching with aggressive polling for instant updates
   useEffect(() => {
-    // If we already have initial data, skip fetching
-    if (initialData) {
-      return;
-    }
+    let isActive = true;
 
-    // Only fetch if no initial data provided
     const fetchSliderData = async () => {
+      if (!isActive) return;
+
       try {
-        const data = await client.fetch(SLIDER_SECTION_QUERY);
+        const data = await client.fetch(
+          SLIDER_SECTION_QUERY,
+          { _timestamp: Date.now() }, // Cache busting parameter
+          {
+            cache: 'no-store',
+            next: { revalidate: 0 },
+          },
+        );
 
-        console.log('Fetched slider data:', data);
+        console.log('🔄 Real-time fetched slider data:', data);
+        console.log(
+          '📝 Generated heading:',
+          data?.title || data?.headingText || 'Integration with 15+ ATS',
+        );
 
-        if (!data) {
-          setError('No slider data found. Using default configuration.');
-          return;
+        if (isActive) {
+          if (!data) {
+            setError('No slider data found. Using default configuration.');
+            // Set fallback data to show something
+            setSliderData({
+              _id: 'fallback',
+              title: 'Integration with 15+ ATS',
+              headingText: 'Integration with 15+ ATS',
+              headingPrefix: 'Integration with',
+              highlightText: '15+ ATS',
+              logos: [],
+              animationSettings: {
+                enableAnimations: true,
+                animationDuration: 1000,
+                enableTiltEffect: true,
+              },
+              backgroundSettings: {
+                showBackground: true,
+                backgroundOpacity: 0.5,
+              },
+              isEnabled: true,
+            });
+          } else {
+            setSliderData(data);
+            setError(null);
+          }
+          setLoading(false);
         }
-
-        setSliderData(data);
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-        setError(`Failed to load slider data: ${errorMessage}`);
-        console.error('Slider fetch error:', err);
-      } finally {
-        setLoading(false);
+        if (isActive) {
+          const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+          setError(`Failed to load slider data: ${errorMessage}`);
+          console.error('Slider fetch error:', err);
+          setLoading(false);
+        }
       }
     };
 
+    // Initial fetch
     fetchSliderData();
-  }, [initialData]);
+
+    // Set up polling for real-time updates (every 1 second for super fast updates)
+    const intervalId = setInterval(fetchSliderData, 1000);
+
+    return () => {
+      isActive = false;
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, []); // Only run once, polling handles updates
 
   // Only use Sanity data - no fallback defaults
   const data = sliderData;
@@ -295,7 +338,10 @@ const Slider = ({ initialData }: SliderProps) => {
   const generateStyledHeading = () => {
     // Return the plain title from Sanity - let TextGenerateEffect handle highlighting
     const result = data.title || data.headingText || 'Integration with 15+ ATS';
-    console.log('Generated heading:', result, 'from data:', { title: data.title, headingText: data.headingText });
+    console.log('Generated heading:', result, 'from data:', {
+      title: data.title,
+      headingText: data.headingText,
+    });
     return result;
   };
 
@@ -369,7 +415,7 @@ const Slider = ({ initialData }: SliderProps) => {
           style={{ scale, y }}
           className="container flex h-full w-full flex-col items-center justify-start"
         >
-          <div className="">
+          <div className="relative">
             <TextGenerateEffect
               words={words}
               html={true}
@@ -405,7 +451,7 @@ const Slider = ({ initialData }: SliderProps) => {
         </motion.div>
       </motion.section>
 
-      <div className="h-[250vh] w-full sm:h-[260vh]"></div>
+      <div className="h-[250vh] w-full sm:h-[240vh]"></div>
     </div>
   );
 };

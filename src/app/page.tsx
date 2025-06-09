@@ -11,6 +11,10 @@ import Card from '@/themes/components/Cards/Card';
 import { client } from '@/sanity/lib/client';
 import { FULL_HOME_PAGE_QUERY } from '@/sanity/lib/queries';
 
+// Force dynamic rendering and disable all caching for immediate updates
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // Fetch data on server for optimal performance
 async function getHomePageData() {
   try {
@@ -18,9 +22,12 @@ async function getHomePageData() {
       FULL_HOME_PAGE_QUERY,
       {},
       {
-        // Disable caching for development - you can re-enable this later
+        // Completely disable caching for instant updates
         cache: 'no-store',
-        // next: { revalidate: 60 }, // Revalidate every 60 seconds
+        next: {
+          revalidate: 0, // No caching at all
+          tags: ['home-page'], // For future tag-based revalidation
+        },
       },
     );
 
