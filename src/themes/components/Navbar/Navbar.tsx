@@ -5,17 +5,76 @@ import Link from 'next/link';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useScrollData } from '@/themes/lib/lenis';
+import { client } from '@/sanity/lib/client';
+import { NAVBAR_QUERY } from '@/sanity/lib/queries';
+import { transformToImageUrl, getBlurDataURL } from '@/sanity/lib/image';
+
+interface NavbarData {
+  _id: string;
+  logo: {
+    asset: {
+      _id: string;
+      url: string;
+    } | null;
+    alt?: string;
+  } | null;
+  logoText: string;
+  navigationItems: Array<{
+    title: string;
+    href: string;
+    isExternal: boolean;
+  }>;
+  ctaButtons: Array<{
+    text: string;
+    href: string;
+    variant: 'primary' | 'secondary';
+    ariaLabel?: string;
+  }>;
+}
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScroll, setLastScroll] = useState(0);
   const [activeItem, setActiveItem] = useState<number | null>(null);
+  const [navbarData, setNavbarData] = useState<NavbarData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [logoBlur, setLogoBlur] = useState<string>('');
   const navRefs = useRef<(HTMLLIElement | null)[]>([]);
   const scrollDebounceRef = useRef<NodeJS.Timeout | null>(null);
   const scrollDirectionBufferRef = useRef(0);
 
   const { scroll, direction } = useScrollData();
+
+  // Fetch navbar data from Sanity
+  useEffect(() => {
+    const fetchNavbarData = async () => {
+      try {
+        const data = await client.fetch(NAVBAR_QUERY);
+
+        if (!data) {
+          setError('No navbar data found. Please add a navbar document in Sanity.');
+          return;
+        }
+
+        setNavbarData(data);
+
+        // Generate blur data URL for logo
+        if (data.logo?.asset?.url) {
+          const blurUrl = getBlurDataURL(data.logo.asset.url, 20);
+          setLogoBlur(blurUrl);
+        }
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+        setError(`Failed to load navbar data: ${errorMessage}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNavbarData();
+  }, []);
 
   const handleScroll = useCallback(
     (scrollPosition: number, scrollDirection: number) => {
@@ -312,10 +371,27 @@ const Navbar = () => {
     isVisible ? 'translate-y-0' : '-translate-y-full'
   } z-50 border-b border-gray-200 bg-white px-4 py-4 shadow-md backdrop-blur-sm transition-transform duration-300 ease-in-out dark:border-[var(--neutral-200)] dark:bg-[var(--neutral-50)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.2)]`;
 
-  return (
-    <header className={navbarClasses}>
-      <div className="container mx-auto flex h-16 w-full items-center justify-between">
-        <div className="flex items-center gap-12">
+  // Show loading state
+  if (loading) {
+    return (
+      <header className={navbarClasses}>
+        <div className="container mx-auto flex h-16 w-full items-center justify-between">
+          <div className="flex items-center gap-12">
+            <div className="flex items-center">
+              <div className="h-10 w-10 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+              <div className="ml-2 h-6 w-32 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+            </div>
+          </div>
+        </div>
+      </header>
+    );
+  }
+
+  // Show error state
+  if (error || !navbarData) {
+    return (
+      <header className={navbarClasses}>
+        <div className="container mx-auto flex h-16 w-full items-center justify-between">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               <Image
@@ -327,6 +403,41 @@ const Navbar = () => {
               />
               <span className="text-3xl text-black transition-colors duration-300 dark:text-[var(--primary-white)]">
                 Jobsmate
+              </span>
+            </Link>
+          </div>
+        </div>
+      </header>
+    );
+  }
+
+  return (
+    <header className={navbarClasses}>
+      <div className="container mx-auto flex h-16 w-full items-center justify-between">
+        <div className="flex items-center gap-12">
+          <div className="flex items-center">
+            <Link href="/" className="flex items-center">
+              {navbarData.logo?.asset?.url ? (
+                <Image
+                  src={transformToImageUrl(navbarData.logo.asset.url)}
+                  alt={navbarData.logo.alt || 'Logo'}
+                  width={40}
+                  height={40}
+                  className="h-18 w-18 transition-opacity duration-300"
+                  placeholder="blur"
+                  blurDataURL={logoBlur}
+                />
+              ) : (
+                <Image
+                  src="/jobsmate-mob.svg"
+                  alt="Jobsmate Logo"
+                  width={40}
+                  height={40}
+                  className="h-18 w-18 transition-opacity duration-300"
+                />
+              )}
+              <span className="text-3xl text-black transition-colors duration-300 dark:text-[var(--primary-white)]">
+                {navbarData.logoText}
               </span>
             </Link>
           </div>
@@ -354,80 +465,64 @@ const Navbar = () => {
                 />
               )}
 
-              <li
-                ref={(el) => {
-                  navRefs.current[0] = el;
-                }}
-                onMouseEnter={() => setActiveItem(0)}
-                onMouseLeave={() => setActiveItem(null)}
-                className="relative z-10"
-              >
-                <Link
-                  href="#features"
-                  className="block px-3 py-2 text-black transition-all duration-400 ease-in-out dark:text-[var(--primary-white)]"
-                  onClick={(e) => handleSmoothScroll(e, '#features')}
+              {navbarData.navigationItems.map((item, index) => (
+                <li
+                  key={index}
+                  ref={(el) => {
+                    navRefs.current[index] = el;
+                  }}
+                  onMouseEnter={() => setActiveItem(index)}
+                  onMouseLeave={() => setActiveItem(null)}
+                  className="relative z-10"
                 >
-                  Features
-                </Link>
-              </li>
-              <li
-                ref={(el) => {
-                  navRefs.current[1] = el;
-                }}
-                onMouseEnter={() => setActiveItem(1)}
-                onMouseLeave={() => setActiveItem(null)}
-                className="relative z-10"
-              >
-                <Link
-                  href="#pricing-card"
-                  className="block px-3 py-2 text-black transition-all duration-400 ease-in-out dark:text-[var(--primary-white)]"
-                  onClick={(e) => handleSmoothScroll(e, '#pricing-card')}
-                >
-                  Price
-                </Link>
-              </li>
-              <li
-                ref={(el) => {
-                  navRefs.current[2] = el;
-                }}
-                onMouseEnter={() => setActiveItem(2)}
-                onMouseLeave={() => setActiveItem(null)}
-                className="relative z-10"
-              >
-                <Link
-                  href="https://jobsmate.global/why-jobsmate/"
-                  className="block px-3 py-2 text-black transition-all duration-400 ease-in-out dark:text-[var(--primary-white)]"
-                >
-                  About us
-                </Link>
-              </li>
+                  <Link
+                    href={item.href}
+                    className="block px-3 py-2 text-black transition-all duration-400 ease-in-out dark:text-[var(--primary-white)]"
+                    onClick={item.isExternal ? undefined : (e) => handleSmoothScroll(e, item.href)}
+                    {...(item.isExternal && { target: '_blank', rel: 'noopener noreferrer' })}
+                  >
+                    {item.title}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </nav>
         </div>
 
         <div className="hidden items-center gap-4 lg:flex">
-          <Link
-            href="https://platform.jobsmate.global/company/onboarding/preferences?_gl=1*1wymypx*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY3OC4wLjAuMA"
-            className="group relative rounded-full border border-slate-300 bg-white px-8 py-2 text-sm font-medium text-black transition-all duration-300 ease-in-out hover:scale-105 hover:border-transparent hover:shadow-lg dark:border-[var(--neutral-200)] dark:bg-[var(--neutral-50)] dark:text-[var(--primary-white)] dark:hover:shadow-[0_4px_20px_rgba(42,151,219,0.2)]"
-            aria-label="Company portal access"
-          >
-            <div className="via-primary-light-blue absolute inset-x-0 -top-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent to-transparent opacity-70 shadow-sm transition-all duration-300 group-hover:w-3/4 group-hover:opacity-100 group-hover:shadow-md" />
-            <div className="via-primary-gold absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent to-transparent opacity-0 shadow-sm transition-all duration-300 group-hover:w-3/4 group-hover:opacity-100" />
-            <div className="from-primary-light-blue via-primary-medium-blue to-primary-gold absolute -top-px -right-px -left-px h-[3px] w-0 rounded-t-full bg-gradient-to-r transition-all duration-700 group-hover:w-full" />
-            <span className="group-hover:text-primary-medium-blue relative z-20 transition-all duration-300">
-              Company
-            </span>
-          </Link>
-          <Link
-            href="https://platform.jobsmate.global/candidate/onboarding?_gl=1*3v7v81*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY4Mi4wLjAuMA"
-            className="group relative inline-flex h-10 overflow-hidden rounded-full p-[1px] shadow-sm transition-all duration-300 ease-in-out hover:shadow-md focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 focus:outline-none dark:hover:shadow-[0_4px_20px_rgba(42,151,219,0.2)]"
-            aria-label="Candidate portal access"
-          >
-            <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,var(--primary-light-blue)_0%,var(--primary-medium-blue)_40%,var(--primary-gold)_70%,var(--primary-dark)_100%)] transition-transform duration-300 ease-in-out group-hover:scale-110 group-hover:animate-[spin_1.5s_linear_infinite]" />
-            <span className="group-hover:text-primary-medium-blue inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-white px-3 py-1 text-sm font-medium text-black backdrop-blur-3xl transition-all duration-300 ease-in-out group-hover:bg-gray-50 dark:bg-[var(--neutral-50)] dark:text-[var(--primary-white)] dark:group-hover:bg-[var(--neutral-200)]">
-              Candidate
-            </span>
-          </Link>
+          {navbarData.ctaButtons.map((button, index) =>
+            button.variant === 'secondary' ? (
+              <Link
+                key={index}
+                href={button.href}
+                className="group relative rounded-full border border-slate-300 bg-white px-8 py-2 text-sm font-medium text-black transition-all duration-300 ease-in-out hover:scale-105 hover:border-transparent hover:shadow-lg dark:border-[var(--neutral-200)] dark:bg-[var(--neutral-50)] dark:text-[var(--primary-white)] dark:hover:shadow-[0_4px_20px_rgba(42,151,219,0.2)]"
+                aria-label={button.ariaLabel || button.text}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <div className="via-primary-light-blue absolute inset-x-0 -top-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent to-transparent opacity-70 shadow-sm transition-all duration-300 group-hover:w-3/4 group-hover:opacity-100 group-hover:shadow-md" />
+                <div className="via-primary-gold absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent to-transparent opacity-0 shadow-sm transition-all duration-300 group-hover:w-3/4 group-hover:opacity-100" />
+                <div className="from-primary-light-blue via-primary-medium-blue to-primary-gold absolute -top-px -right-px -left-px h-[3px] w-0 rounded-t-full bg-gradient-to-r transition-all duration-700 group-hover:w-full" />
+                <span className="group-hover:text-primary-medium-blue relative z-20 transition-all duration-300">
+                  {button.text}
+                </span>
+              </Link>
+            ) : (
+              <Link
+                key={index}
+                href={button.href}
+                className="group relative inline-flex h-10 overflow-hidden rounded-full p-[1px] shadow-sm transition-all duration-300 ease-in-out hover:shadow-md focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 focus:outline-none dark:hover:shadow-[0_4px_20px_rgba(42,151,219,0.2)]"
+                aria-label={button.ariaLabel || button.text}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,var(--primary-light-blue)_0%,var(--primary-medium-blue)_40%,var(--primary-gold)_70%,var(--primary-dark)_100%)] transition-transform duration-300 ease-in-out group-hover:scale-110 group-hover:animate-[spin_1.5s_linear_infinite]" />
+                <span className="group-hover:text-primary-medium-blue inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-white px-3 py-1 text-sm font-medium text-black backdrop-blur-3xl transition-all duration-300 ease-in-out group-hover:bg-gray-50 dark:bg-[var(--neutral-50)] dark:text-[var(--primary-white)] dark:group-hover:bg-[var(--neutral-200)]">
+                  {button.text}
+                </span>
+              </Link>
+            ),
+          )}
         </div>
 
         <button
@@ -467,8 +562,7 @@ const Navbar = () => {
             />
           </svg>
         </button>
-      </div>
-
+      </div>{' '}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -480,55 +574,33 @@ const Navbar = () => {
             variants={menuVariants}
           >
             <div className="flex flex-col space-y-1 px-4 pt-2 pb-3">
-              <motion.div variants={itemVariants}>
-                <Link
-                  href="#features"
-                  className="block rounded-md px-3 py-2 text-base font-medium text-black transition-colors duration-300 hover:bg-[#f3f4f6] dark:text-[var(--primary-white)] dark:hover:bg-[var(--neutral-200)]"
-                  onClick={(e) => handleSmoothScroll(e, '#features')}
-                >
-                  Features
-                </Link>
-              </motion.div>
-
-              <motion.div variants={itemVariants}>
-                <Link
-                  href="#pricing-card"
-                  className="block rounded-md px-3 py-1 text-base font-medium text-black transition-colors duration-300 hover:bg-[#f3f4f6] dark:text-[var(--primary-white)] dark:hover:bg-[var(--neutral-200)]"
-                  onClick={(e) => handleSmoothScroll(e, '#pricing-card')}
-                >
-                  Price
-                </Link>
-              </motion.div>
-
-              <motion.div variants={itemVariants}>
-                <Link
-                  href="https://jobsmate.global/why-jobsmate/"
-                  className="block rounded-md px-3 py-2 text-base font-medium text-black transition-colors duration-300 hover:bg-[#f3f4f6] dark:text-[var(--primary-white)] dark:hover:bg-[var(--neutral-200)]"
-                >
-                  About us
-                </Link>
-              </motion.div>
+              {navbarData.navigationItems.map((item, index) => (
+                <motion.div key={index} variants={itemVariants}>
+                  <Link
+                    href={item.href}
+                    className="block rounded-md px-3 py-2 text-base font-medium text-black transition-colors duration-300 hover:bg-[#f3f4f6] dark:text-[var(--primary-white)] dark:hover:bg-[var(--neutral-200)]"
+                    onClick={item.isExternal ? undefined : (e) => handleSmoothScroll(e, item.href)}
+                    {...(item.isExternal && { target: '_blank', rel: 'noopener noreferrer' })}
+                  >
+                    {item.title}
+                  </Link>
+                </motion.div>
+              ))}
 
               <div className="mt-1 flex flex-col gap-5">
-                <motion.div variants={buttonVariants}>
-                  <Link
-                    href="https://platform.jobsmate.global/candidate/onboarding?_gl=1*3v7v81*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY4Mi4wLjAuMA"
-                    className="w-full rounded-full border border-slate-300 bg-white px-8 py-2 text-center text-sm font-medium text-black transition-colors duration-300 dark:border-[var(--neutral-200)] dark:bg-[var(--neutral-50)] dark:text-[var(--primary-white)]"
-                    aria-label="Company portal access"
-                  >
-                    Company
-                  </Link>
-                </motion.div>
-
-                <motion.div variants={buttonVariants}>
-                  <Link
-                    href="https://platform.jobsmate.global/candidate/onboarding?_gl=1*3v7v81*_ga*NzU1NTc2NDU5LjE3NDU3NjU2Nzk.*_ga_0YKSTQGZFY*MTc0NTc2NTY3OC4xLjAuMTc0NTc2NTY4Mi4wLjAuMA"
-                    className="w-full rounded-full border border-slate-300 bg-white px-8 py-2 text-center text-sm font-medium text-black transition-colors duration-300 dark:border-[var(--neutral-200)] dark:bg-[var(--neutral-50)] dark:text-[var(--primary-white)]"
-                    aria-label="Candidate portal access"
-                  >
-                    Candidate
-                  </Link>
-                </motion.div>
+                {navbarData.ctaButtons.map((button, index) => (
+                  <motion.div key={index} variants={buttonVariants}>
+                    <Link
+                      href={button.href}
+                      className="w-full rounded-full border border-slate-300 bg-white px-8 py-2 text-center text-sm font-medium text-black transition-colors duration-300 dark:border-[var(--neutral-200)] dark:bg-[var(--neutral-50)] dark:text-[var(--primary-white)]"
+                      aria-label={button.ariaLabel || button.text}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {button.text}
+                    </Link>
+                  </motion.div>
+                ))}
               </div>
             </div>
           </motion.div>
