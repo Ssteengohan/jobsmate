@@ -12,7 +12,14 @@ export const structure: StructureResolver = (S) =>
             .schemaType('navbar')
             .documentId('navbar')
         ),
+      S.listItem()
+        .title('Hero Banner')
+        .child(
+          S.document()
+            .schemaType('heroBanner')
+            .documentId('heroBanner')
+        ),
       ...S.documentTypeListItems().filter(
-        (listItem) => !['navbar'].includes(listItem.getId() as string)
+        (listItem) => !['heroBanner', 'navbar'].includes(listItem.getId() as string)
       ),
     ])

@@ -24,5 +24,27 @@ export const NAVBAR_QUERY = groq`*[_type == "navbar"][0] {
   }
 }`;
 
+// Hero Banner query
+export const HERO_BANNER_QUERY = groq`*[_type == "heroBanner"][0] {
+  _id,
+  title,
+  subtitle,
+  ctaButtons[] {
+    text,
+    href,
+    variant,
+    ariaLabel,
+    isExternal
+  },
+  backgroundImage {
+    asset->{
+      _id,
+      url
+    },
+    alt
+  },
+  showGradientOverlay
+}`;
+
 // You can add more queries here as needed
 // export const ABOUT_QUERY = groq`*[_type == "about"][0] { ... }`;
