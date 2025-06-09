@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useRef, useEffect, useState, lazy, Suspense } from 'react';
 import AnimatedHeading from '../AnimatedHeading';
 

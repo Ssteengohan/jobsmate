@@ -32,13 +32,17 @@ interface NavbarData {
   }>;
 }
 
-const Navbar = () => {
+interface NavbarProps {
+  initialData?: NavbarData | null;
+}
+
+const Navbar = ({ initialData }: NavbarProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScroll, setLastScroll] = useState(0);
   const [activeItem, setActiveItem] = useState<number | null>(null);
-  const [navbarData, setNavbarData] = useState<NavbarData | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [navbarData, setNavbarData] = useState<NavbarData | null>(initialData || null);
+  const [loading, setLoading] = useState<boolean>(!initialData);
   const [error, setError] = useState<string | null>(null);
   const [logoBlur, setLogoBlur] = useState<string>('');
   const navRefs = useRef<(HTMLLIElement | null)[]>([]);
@@ -47,8 +51,22 @@ const Navbar = () => {
 
   const { scroll, direction } = useScrollData();
 
-  // Fetch navbar data from Sanity
+  // Fetch navbar data from Sanity only if not provided as props
   useEffect(() => {
+    // If we already have initial data, set up blur data URL and skip fetching
+    if (initialData) {
+      if (initialData.logo?.asset?.url) {
+        const logoUrl = transformToImageUrl(initialData.logo.asset.url);
+        const isSvg = logoUrl.toLowerCase().includes('.svg');
+        if (!isSvg) {
+          const blurUrl = getBlurDataURL(initialData.logo.asset.url, 20);
+          setLogoBlur(blurUrl);
+        }
+      }
+      return;
+    }
+
+    // Only fetch if no initial data provided
     const fetchNavbarData = async () => {
       try {
         const data = await client.fetch(NAVBAR_QUERY);
@@ -60,10 +78,14 @@ const Navbar = () => {
 
         setNavbarData(data);
 
-        // Generate blur data URL for logo
+        // Generate blur data URL for logo (only for non-SVG images)
         if (data.logo?.asset?.url) {
-          const blurUrl = getBlurDataURL(data.logo.asset.url, 20);
-          setLogoBlur(blurUrl);
+          const logoUrl = transformToImageUrl(data.logo.asset.url);
+          const isSvg = logoUrl.toLowerCase().includes('.svg');
+          if (!isSvg) {
+            const blurUrl = getBlurDataURL(data.logo.asset.url, 20);
+            setLogoBlur(blurUrl);
+          }
         }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Unknown error';
@@ -74,7 +96,7 @@ const Navbar = () => {
     };
 
     fetchNavbarData();
-  }, []);
+  }, [initialData]);
 
   const handleScroll = useCallback(
     (scrollPosition: number, scrollDirection: number) => {
@@ -418,15 +440,24 @@ const Navbar = () => {
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               {navbarData.logo?.asset?.url ? (
-                <Image
-                  src={transformToImageUrl(navbarData.logo.asset.url)}
-                  alt={navbarData.logo.alt || 'Logo'}
-                  width={40}
-                  height={40}
-                  className="h-18 w-18 transition-opacity duration-300"
-                  placeholder="blur"
-                  blurDataURL={logoBlur}
-                />
+                (() => {
+                  const logoUrl = transformToImageUrl(navbarData.logo.asset.url);
+                  const isSvg = logoUrl.toLowerCase().includes('.svg');
+                  
+                  return (
+                    <Image
+                      src={logoUrl}
+                      alt={navbarData.logo.alt || 'Logo'}
+                      width={40}
+                      height={40}
+                      className="h-18 w-18 transition-opacity duration-300"
+                      {...(!isSvg && logoBlur && { 
+                        placeholder: "blur" as const,
+                        blurDataURL: logoBlur 
+                      })}
+                    />
+                  );
+                })()
               ) : (
                 <Image
                   src="/jobsmate-mob.svg"

@@ -34,12 +34,22 @@ interface HeroBannerData {
   showGradientOverlay: boolean;
 }
 
-export function SpotlightPreview() {
-  const [heroBannerData, setHeroBannerData] = useState<HeroBannerData | null>(null);
-  const [loading, setLoading] = useState(true);
+interface SpotlightPreviewProps {
+  initialData?: HeroBannerData | null;
+}
+
+export function SpotlightPreview({ initialData }: SpotlightPreviewProps) {
+  const [heroBannerData, setHeroBannerData] = useState<HeroBannerData | null>(initialData || null);
+  const [loading, setLoading] = useState(!initialData);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // If we already have initial data, skip fetching
+    if (initialData) {
+      return;
+    }
+
+    // Only fetch if no initial data provided
     const fetchHeroBannerData = async () => {
       try {
         setLoading(true);
@@ -55,7 +65,7 @@ export function SpotlightPreview() {
     };
 
     fetchHeroBannerData();
-  }, []);
+  }, [initialData]);
 
   if (loading) {
     return (

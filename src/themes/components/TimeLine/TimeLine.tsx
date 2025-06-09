@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 import React, { useEffect, useRef } from 'react';
 import { Timeline } from '../ui/timeline';

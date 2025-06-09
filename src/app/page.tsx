@@ -1,5 +1,3 @@
-'use client';
-
 import Navbar from '@/themes/components/Navbar/Navbar';
 import { SpotlightPreview } from '@/themes/components/HeroBanner/HeroBanner';
 import { TabsDemo } from '@/themes/components/Tabs/Tabs';
@@ -10,11 +8,31 @@ import PricingCard from '@/themes/components/PricingCard/PricingCard';
 import ShowCase from '@/themes/components/ShowCases/ShowCase';
 import Footer from '@/themes/components/Footer/Footer';
 import Card from '@/themes/components/Cards/Card';
+import { client } from '@/sanity/lib/client';
+import { HOME_PAGE_QUERY } from '@/sanity/lib/queries';
 
-export default function Home() {
+// Fetch data on server for optimal performance
+async function getHomePageData() {
+  try {
+    const data = await client.fetch(HOME_PAGE_QUERY, {}, {
+      // Enable caching for better performance
+      cache: 'force-cache',
+      next: { revalidate: 60 } // Revalidate every 60 seconds
+    });
+    return data;
+  } catch (error) {
+    console.error('Error fetching home page data:', error);
+    return { navbar: null, heroBanner: null };
+  }
+}
+
+export default async function Home() {
+  // Fetch data on server side for fastest possible loading
+  const { navbar, heroBanner } = await getHomePageData();
+
   return (
     <main className="mx-auto min-h-screen overflow-hidden bg-gradient-to-b from-white via-[#f9f9f9] to-[var(--primary-gold)]/15 transition-colors duration-300 dark:bg-[var(--neutral-50)] dark:bg-none">
-      <Navbar />
+      <Navbar initialData={navbar} />
       <div className="relative z-20 container">
         <div className="absolute inset-0 z-0 bg-gradient-to-b from-transparent to-gray-50/30 transition-colors duration-300 dark:from-transparent dark:to-[var(--primary-dark)]/20" />
         <div className="absolute inset-y-0 left-[1%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]/80"></div>
@@ -37,7 +55,7 @@ export default function Home() {
           darkModeFill="rgba(142, 85, 255, 0.22)"
         />
 
-        <SpotlightPreview />
+        <SpotlightPreview initialData={heroBanner} />
       </div>
       <div className="relative z-10 container">
         <div className="absolute inset-y-0 left-[1%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]"></div>
