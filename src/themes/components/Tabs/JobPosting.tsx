@@ -9,14 +9,12 @@ const JobPosting = () => {
   const [mobileVideoError, setMobileVideoError] = useState<boolean>(false);
 
   useEffect(() => {
-
     if (desktopVideoRef.current) {
       desktopVideoRef.current.play().catch((error) => {
         console.log('Desktop video play error:', error);
         setDesktopVideoError(true);
       });
     }
-
 
     if (mobileVideoRef.current) {
       mobileVideoRef.current.play().catch((error) => {
@@ -29,7 +27,6 @@ const JobPosting = () => {
   return (
     <motion.section className="relative flex h-full items-center justify-center overflow-hidden rounded-2xl">
       <div className="absolute inset-0 z-10" aria-hidden="true"></div>
-
 
       {!desktopVideoError ? (
         <video

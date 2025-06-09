@@ -14,11 +14,15 @@ import { HOME_PAGE_QUERY } from '@/sanity/lib/queries';
 // Fetch data on server for optimal performance
 async function getHomePageData() {
   try {
-    const data = await client.fetch(HOME_PAGE_QUERY, {}, {
-      // Enable caching for better performance
-      cache: 'force-cache',
-      next: { revalidate: 60 } // Revalidate every 60 seconds
-    });
+    const data = await client.fetch(
+      HOME_PAGE_QUERY,
+      {},
+      {
+        // Enable caching for better performance
+        cache: 'force-cache',
+        next: { revalidate: 60 }, // Revalidate every 60 seconds
+      },
+    );
     return data;
   } catch (error) {
     console.error('Error fetching home page data:', error);

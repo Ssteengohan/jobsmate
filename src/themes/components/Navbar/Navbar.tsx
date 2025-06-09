@@ -443,7 +443,7 @@ const Navbar = ({ initialData }: NavbarProps) => {
                 (() => {
                   const logoUrl = transformToImageUrl(navbarData.logo.asset.url);
                   const isSvg = logoUrl.toLowerCase().includes('.svg');
-                  
+
                   return (
                     <Image
                       src={logoUrl}
@@ -451,10 +451,11 @@ const Navbar = ({ initialData }: NavbarProps) => {
                       width={40}
                       height={40}
                       className="h-18 w-18 transition-opacity duration-300"
-                      {...(!isSvg && logoBlur && { 
-                        placeholder: "blur" as const,
-                        blurDataURL: logoBlur 
-                      })}
+                      {...(!isSvg &&
+                        logoBlur && {
+                          placeholder: 'blur' as const,
+                          blurDataURL: logoBlur,
+                        })}
                     />
                   );
                 })()
