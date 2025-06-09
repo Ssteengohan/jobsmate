@@ -115,7 +115,7 @@ export const heroBanner = defineType({
     },
     prepare({ title, subtitle, backgroundImage }) {
       // Extract plain text from rich text for preview
-      const plainTitle = title && title[0]?.children?.map((child: any) => child.text).join('') || 'Hero Banner';
+      const plainTitle = title && title[0]?.children?.map((child: { text?: string }) => child.text || '').join('') || 'Hero Banner';
       
       return {
         title: plainTitle,
