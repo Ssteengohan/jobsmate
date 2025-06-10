@@ -42,14 +42,23 @@ async function getHomePageData() {
       timeline: null,
       freeTrialCard: null,
       pricingCard: null,
+      footer: null,
     };
   }
 }
 
 export default async function Home() {
   // Fetch data on server side for fastest possible loading
-  const { navbar, heroBanner, tabsSection, sliderSection, timeline, freeTrialCard, pricingCard } =
-    await getHomePageData();
+  const {
+    navbar,
+    heroBanner,
+    tabsSection,
+    sliderSection,
+    timeline,
+    freeTrialCard,
+    pricingCard,
+    footer,
+  } = await getHomePageData();
 
   return (
     <main className="mx-auto min-h-screen overflow-hidden bg-gradient-to-b from-white via-[#f9f9f9] to-[var(--primary-gold)]/15 transition-colors duration-300 dark:bg-[var(--neutral-50)] dark:bg-none">
@@ -93,7 +102,7 @@ export default async function Home() {
         <Card initialData={freeTrialCard} />
         <PricingCard initialData={pricingCard} />
       </div>
-      <Footer />
+      <Footer initialData={footer} />
     </main>
   );
 }

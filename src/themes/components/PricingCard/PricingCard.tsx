@@ -58,7 +58,12 @@ const defaultTiers = [
       { text: 'Advanced analytics', included: false },
       { text: 'API access', included: false },
     ],
-    ctaButton: { text: 'Get Started', url: 'https://platform.jobsmate.global/company/onboarding/preferences', style: 'gradient', openInNewTab: true },
+    ctaButton: {
+      text: 'Get Started',
+      url: 'https://platform.jobsmate.global/company/onboarding/preferences',
+      style: 'gradient',
+      openInNewTab: true,
+    },
     isHighlighted: false,
   },
   {
@@ -74,7 +79,12 @@ const defaultTiers = [
       { text: 'Advanced analytics', included: true },
       { text: 'API access', included: false },
     ],
-    ctaButton: { text: 'Start 14-day trial', url: 'https://calendly.com/info-jtq/jobsmate-introduction', style: 'primary', openInNewTab: true },
+    ctaButton: {
+      text: 'Start 14-day trial',
+      url: 'https://calendly.com/info-jtq/jobsmate-introduction',
+      style: 'primary',
+      openInNewTab: true,
+    },
     isHighlighted: true,
   },
   {
@@ -90,7 +100,12 @@ const defaultTiers = [
       { text: 'Custom analytics & reporting', included: true },
       { text: 'Full API access & custom integrations', included: true },
     ],
-    ctaButton: { text: 'Contact Sales', url: 'https://calendly.com/info-jtq/jobsmate-introduction', style: 'gradient', openInNewTab: true },
+    ctaButton: {
+      text: 'Contact Sales',
+      url: 'https://calendly.com/info-jtq/jobsmate-introduction',
+      style: 'gradient',
+      openInNewTab: true,
+    },
     isHighlighted: false,
   },
 ];
@@ -107,7 +122,7 @@ const PricingCard: React.FC<PricingCardProps> = ({ initialData }) => {
       try {
         setLoading(true);
         const data = await client.fetch(PRICING_CARD_QUERY);
-        
+
         if (!data) {
           setError('No pricing data found. Please add a pricing card document in Sanity.');
           return;
@@ -145,11 +160,11 @@ const PricingCard: React.FC<PricingCardProps> = ({ initialData }) => {
   const displayData = pricingData || {
     sectionHeader: {
       title: { beforeHighlight: 'Simple, transparent', highlightedWord: 'pricing' },
-      subtitle: 'Choose the plan that\'s right for your business'
+      subtitle: "Choose the plan that's right for your business",
     },
     pricingTiers: defaultTiers,
     sectionSettings: { backgroundColor: 'gradient' },
-    seoSettings: { sectionId: 'pricing-card' }
+    seoSettings: { sectionId: 'pricing-card' },
   };
 
   if (error) {
@@ -159,10 +174,10 @@ const PricingCard: React.FC<PricingCardProps> = ({ initialData }) => {
   const getButtonStyle = (style: string) => {
     switch (style) {
       case 'primary':
-        return "group text-2xs relative w-full cursor-pointer rounded-full border border-transparent bg-[var(--primary-gold)] px-3 py-1.5 text-center font-medium text-[var(--primary-dark-blue)] transition-all duration-300 ease-in-out hover:shadow-lg focus:ring-2 focus:ring-[var(--primary-gold)] focus:ring-offset-2 focus:outline-none sm:px-4 sm:py-2 sm:text-xs md:px-6 md:py-3 md:text-sm dark:text-[var(--primary-dark)] dark:hover:shadow-[0_0_15px_rgba(240,180,41,0.4)]";
+        return 'group text-2xs relative w-full cursor-pointer rounded-full border border-transparent bg-[var(--primary-gold)] px-3 py-1.5 text-center font-medium text-[var(--primary-dark-blue)] transition-all duration-300 ease-in-out hover:shadow-lg focus:ring-2 focus:ring-[var(--primary-gold)] focus:ring-offset-2 focus:outline-none sm:px-4 sm:py-2 sm:text-xs md:px-6 md:py-3 md:text-sm dark:text-[var(--primary-dark)] dark:hover:shadow-[0_0_15px_rgba(240,180,41,0.4)]';
       case 'gradient':
       default:
-        return "group relative inline-flex w-full cursor-pointer justify-center overflow-hidden rounded-full p-[1px] shadow-sm transition-all duration-300 ease-in-out hover:shadow-xl focus:ring-2 focus:ring-[var(--primary-light-blue)] focus:ring-offset-2 focus:outline-none dark:hover:shadow-[0_0_20px_rgba(42,151,219,0.4)]";
+        return 'group relative inline-flex w-full cursor-pointer justify-center overflow-hidden rounded-full p-[1px] shadow-sm transition-all duration-300 ease-in-out hover:shadow-xl focus:ring-2 focus:ring-[var(--primary-light-blue)] focus:ring-offset-2 focus:outline-none dark:hover:shadow-[0_0_20px_rgba(42,151,219,0.4)]';
     }
   };
 
@@ -183,7 +198,9 @@ const PricingCard: React.FC<PricingCardProps> = ({ initialData }) => {
             <span className="bg-[var(--primary-gold)] bg-clip-text text-transparent">
               {displayData.sectionHeader.title.highlightedWord}
             </span>
-            {'afterHighlight' in displayData.sectionHeader.title && displayData.sectionHeader.title.afterHighlight && ` ${displayData.sectionHeader.title.afterHighlight}`}
+            {'afterHighlight' in displayData.sectionHeader.title &&
+              displayData.sectionHeader.title.afterHighlight &&
+              ` ${displayData.sectionHeader.title.afterHighlight}`}
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -231,22 +248,28 @@ const PricingCard: React.FC<PricingCardProps> = ({ initialData }) => {
               <div
                 className={`px-3 py-4 sm:px-6 sm:py-8 ${tier.isHighlighted ? 'bg-[var(--primary-gold)]/10 dark:bg-[var(--primary-gold)]/20' : ''}`}
               >
-                {tier.price && typeof tier.price === 'object' && 'discountBadge' in tier.price && tier.price.discountBadge && (
-                  <div className="mb-2 inline-block rounded-full bg-[var(--primary-gold)] px-3 py-1 text-xs font-semibold text-[var(--primary-dark-blue)]">
-                    {tier.price.discountBadge}
-                  </div>
-                )}
-                
+                {tier.price &&
+                  typeof tier.price === 'object' &&
+                  'discountBadge' in tier.price &&
+                  tier.price.discountBadge && (
+                    <div className="mb-2 inline-block rounded-full bg-[var(--primary-gold)] px-3 py-1 text-xs font-semibold text-[var(--primary-dark-blue)]">
+                      {tier.price.discountBadge}
+                    </div>
+                  )}
+
                 <h3 className="text-xl font-bold text-neutral-900 sm:text-2xl dark:text-white">
                   {tier.name}
                 </h3>
-                
+
                 <div className="mt-2 flex items-baseline">
-                  {tier.price && typeof tier.price === 'object' && 'originalPrice' in tier.price && tier.price.originalPrice && (
-                    <span className="mr-2 text-lg text-gray-500 line-through dark:text-gray-400">
-                      {tier.price.originalPrice}
-                    </span>
-                  )}
+                  {tier.price &&
+                    typeof tier.price === 'object' &&
+                    'originalPrice' in tier.price &&
+                    tier.price.originalPrice && (
+                      <span className="mr-2 text-lg text-gray-500 line-through dark:text-gray-400">
+                        {tier.price.originalPrice}
+                      </span>
+                    )}
                   <span className="text-3xl font-bold text-neutral-900 sm:text-4xl dark:text-white">
                     {tier.price?.amount || '$0'}
                   </span>
@@ -256,7 +279,7 @@ const PricingCard: React.FC<PricingCardProps> = ({ initialData }) => {
                     </span>
                   )}
                 </div>
-                
+
                 <p className="mt-2 text-sm text-neutral-600 sm:text-base dark:text-neutral-300">
                   {tier.description}
                 </p>
@@ -279,7 +302,11 @@ const PricingCard: React.FC<PricingCardProps> = ({ initialData }) => {
                             ? 'text-neutral-700 dark:text-neutral-200'
                             : 'text-neutral-400 dark:text-neutral-500'
                         } ${'highlight' in feature && (feature as { highlight?: boolean }).highlight ? 'font-semibold text-[var(--primary-gold)]' : ''}`}
-                        title={'tooltip' in feature ? (feature as { tooltip?: string }).tooltip : undefined}
+                        title={
+                          'tooltip' in feature
+                            ? (feature as { tooltip?: string }).tooltip
+                            : undefined
+                        }
                       >
                         {feature.text}
                       </span>
@@ -292,7 +319,11 @@ const PricingCard: React.FC<PricingCardProps> = ({ initialData }) => {
                     href={tier.ctaButton?.url || '#'}
                     target={tier.ctaButton?.openInNewTab ? '_blank' : '_self'}
                     className="block w-full"
-                    aria-label={'ariaLabel' in (tier.ctaButton || {}) ? (tier.ctaButton as { ariaLabel?: string }).ariaLabel : `${tier.ctaButton?.text} for ${tier.name} plan`}
+                    aria-label={
+                      'ariaLabel' in (tier.ctaButton || {})
+                        ? (tier.ctaButton as { ariaLabel?: string }).ariaLabel
+                        : `${tier.ctaButton?.text} for ${tier.name} plan`
+                    }
                   >
                     {tier.ctaButton?.style === 'primary' ? (
                       <motion.div

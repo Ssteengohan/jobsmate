@@ -399,6 +399,81 @@ export const FULL_HOME_PAGE_QUERY = groq`{
       }
     },
     isActive
+  },
+  "footer": *[_type == "footer" && isActive == true][0] {
+    _id,
+    brand {
+      logo {
+        image {
+          asset->{
+            _id,
+            url
+          },
+          alt
+        },
+        alt,
+        width,
+        height
+      },
+      description,
+      poweredBy {
+        text,
+        company,
+        email
+      }
+    },
+    navigationSections[] {
+      title,
+      links[] {
+        label,
+        href,
+        isExternal,
+        ariaLabel
+      },
+      displayOrder
+    } | order(displayOrder asc),
+    socialLinks {
+      linkedin {
+        url,
+        ariaLabel,
+        isActive
+      },
+      instagram {
+        url,
+        ariaLabel,
+        isActive
+      },
+      email {
+        address,
+        ariaLabel,
+        isActive
+      },
+      customSocials[] {
+        platform,
+        url,
+        ariaLabel,
+        iconSvg,
+        isActive
+      }
+    },
+    styling {
+      backgroundColor,
+      customBackgroundColor {
+        hex
+      },
+      borderStyle
+    },
+    seoSettings {
+      footerId,
+      structuredData,
+      cookieNotice {
+        enabled,
+        text,
+        linkText,
+        linkUrl
+      }
+    },
+    isActive
   }
 }`;
 
@@ -524,6 +599,83 @@ export const PRICING_CARD_QUERY = groq`*[_type == "pricingCard" && isActive == t
     trackingEvents[] {
       eventName,
       trigger
+    }
+  },
+  isActive
+}`;
+
+// Footer query
+export const FOOTER_QUERY = groq`*[_type == "footer" && isActive == true][0] {
+  _id,
+  brand {
+    logo {
+      image {
+        asset->{
+          _id,
+          url
+        },
+        alt
+      },
+      alt,
+      width,
+      height
+    },
+    description,
+    poweredBy {
+      text,
+      company,
+      email
+    }
+  },
+  navigationSections[] {
+    title,
+    links[] {
+      label,
+      href,
+      isExternal,
+      ariaLabel
+    },
+    displayOrder
+  } | order(displayOrder asc),
+  socialLinks {
+    linkedin {
+      url,
+      ariaLabel,
+      isActive
+    },
+    instagram {
+      url,
+      ariaLabel,
+      isActive
+    },
+    email {
+      address,
+      ariaLabel,
+      isActive
+    },
+    customSocials[] {
+      platform,
+      url,
+      ariaLabel,
+      iconSvg,
+      isActive
+    }
+  },
+  styling {
+    backgroundColor,
+    customBackgroundColor {
+      hex
+    },
+    borderStyle
+  },
+  seoSettings {
+    footerId,
+    structuredData,
+    cookieNotice {
+      enabled,
+      text,
+      linkText,
+      linkUrl
     }
   },
   isActive

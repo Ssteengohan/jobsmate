@@ -6,7 +6,8 @@ import { sliderSection } from './sliderSection'
 import { timeline } from './timeline'
 import { freeTrialCard } from './freeTrialCard'
 import { pricingCard } from './pricingCard'
+import { footer } from './footer'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [navbar, heroBanner, tabsSection, sliderSection, timeline, freeTrialCard, pricingCard],
+  types: [navbar, heroBanner, tabsSection, sliderSection, timeline, freeTrialCard, pricingCard, footer],
 }

@@ -54,7 +54,14 @@ export const structure: StructureResolver = (S) =>
             .schemaType('pricingCard')
             .documentId('pricingCard')
         ),
+      S.listItem()
+        .title('Footer')
+        .child(
+          S.document()
+            .schemaType('footer')
+            .documentId('footer')
+        ),
       ...S.documentTypeListItems().filter(
-        (listItem) => !['heroBanner', 'navbar', 'tabsSection', 'sliderSection', 'timeline', 'freeTrialCard', 'pricingCard'].includes(listItem.getId() as string)
+        (listItem) => !['heroBanner', 'navbar', 'tabsSection', 'sliderSection', 'timeline', 'freeTrialCard', 'pricingCard', 'footer'].includes(listItem.getId() as string)
       ),
     ])
