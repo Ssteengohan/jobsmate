@@ -40,13 +40,16 @@ async function getHomePageData() {
       tabsSection: null,
       sliderSection: null,
       timeline: null,
+      freeTrialCard: null,
+      pricingCard: null,
     };
   }
 }
 
 export default async function Home() {
   // Fetch data on server side for fastest possible loading
-  const { navbar, heroBanner, tabsSection, sliderSection, timeline } = await getHomePageData();
+  const { navbar, heroBanner, tabsSection, sliderSection, timeline, freeTrialCard, pricingCard } =
+    await getHomePageData();
 
   return (
     <main className="mx-auto min-h-screen overflow-hidden bg-gradient-to-b from-white via-[#f9f9f9] to-[var(--primary-gold)]/15 transition-colors duration-300 dark:bg-[var(--neutral-50)] dark:bg-none">
@@ -87,8 +90,8 @@ export default async function Home() {
 
         <TimelineDemo initialData={timeline} />
         <ShowCase id="features" />
-        <Card />
-        <PricingCard />
+        <Card initialData={freeTrialCard} />
+        <PricingCard initialData={pricingCard} />
       </div>
       <Footer />
     </main>

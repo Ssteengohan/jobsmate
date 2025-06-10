@@ -73,7 +73,82 @@ const Card = ({ initialData }: CardProps) => {
               free trial of Pro
             </span>
           </div>
-          {/* Rest of fallback content... */}
+          <div className="flex w-full flex-col items-center justify-center gap-4 pt-6 md:flex-row md:flex-wrap md:items-start md:pt-10">
+            <Link
+              href="https://calendly.com/info-jtq/jobsmate-introduction"
+              target="_blank"
+              aria-label="Start free trial - opens Calendly scheduling page"
+              className="card-button group relative w-full max-w-[240px] cursor-pointer rounded-full border border-transparent bg-[var(--primary-gold)] px-8 py-3 text-center text-xs font-medium text-[var(--primary-dark-blue)] transition-all duration-300 ease-in-out hover:border-transparent hover:shadow-lg focus:ring-2 focus:ring-[var(--primary-gold)] focus:ring-offset-2 focus:outline-none sm:text-sm md:w-auto dark:text-[var(--primary-dark)] dark:hover:shadow-[0_0_15px_rgba(240,180,41,0.4)]"
+            >
+              <span className="relative z-20 transition-all duration-300">Start for free</span>
+            </Link>
+            <Link
+              href="#pricing-card"
+              aria-label="View pricing plans"
+              className="card-button group relative inline-flex w-full max-w-[240px] cursor-pointer overflow-hidden rounded-full p-[1px] text-center shadow-sm transition-all duration-300 ease-in-out hover:shadow-xl focus:ring-2 focus:ring-[var(--primary-light-blue)] focus:ring-offset-2 focus:outline-none md:w-auto dark:hover:shadow-[0_0_20px_rgba(42,151,219,0.4)]"
+            >
+              <span className="relative z-10 inline-flex h-full w-full items-center justify-center rounded-full bg-white px-8 py-3 text-sm font-medium text-[var(--primary-light-blue)] backdrop-blur-3xl transition-all duration-300 ease-in-out group-hover:bg-[var(--primary-light-blue)] group-hover:text-white group-hover:shadow-inner dark:bg-[var(--neutral-50)] dark:text-[var(--primary-medium-blue)] dark:group-hover:bg-[var(--primary-dark-blue)] dark:group-hover:text-white dark:group-hover:shadow-[inset_0_2px_8px_rgba(0,0,0,0.3)]">
+                See our plans
+              </span>
+            </Link>
+          </div>
+        </div>
+        <div className="relative mt-4 flex h-[400px] w-full items-center justify-center overflow-hidden md:mt-0 md:h-full md:w-1/2">
+          <div className="absolute inset-0 bg-gradient-to-br bg-none from-[var(--primary-light-blue)]/10 to-[var(--primary-gold)]/10 opacity-60 dark:opacity-100"></div>
+          <div className="relative z-10 w-full max-w-xs md:max-w-md">
+            <div className="absolute -top-6 -right-4 z-20 rounded-lg border border-[var(--primary-light-blue)]/20 bg-white p-2 shadow-lg md:-top-10 md:-right-10 md:p-3 dark:border-[var(--primary-light-blue)]/40 dark:bg-[var(--neutral-50)]">
+              <p className="text-xs text-gray-600 dark:text-gray-400">Time saved</p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-xl font-bold text-[var(--primary-medium-blue)] md:text-2xl">
+                  68%
+                </span>
+                <span className="text-xs text-emerald-600 dark:text-emerald-500">↑12%</span>
+              </div>
+            </div>
+            <div className="absolute -right-2 -bottom-4 rounded-lg border border-[var(--primary-gold)]/20 bg-white p-2 shadow-lg md:-right-4 md:-bottom-6 md:p-3 dark:border-[var(--primary-gold)]/40 dark:bg-[var(--neutral-50)]">
+              <p className="text-xs text-gray-600 dark:text-gray-400">Hire quality</p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-xl font-bold text-[var(--primary-gold)] md:text-2xl">
+                  94%
+                </span>
+                <span className="text-xs text-emerald-600 dark:text-emerald-500">↑8%</span>
+              </div>
+            </div>
+            <div className="overflow-hidden rounded-xl border border-gray-200/70 shadow-xl md:shadow-2xl dark:border-white/20">
+              <div className="h-52 w-full bg-gradient-to-br from-[var(--primary-light-blue)] to-[var(--primary-gold)] p-4">
+                <div className="flex h-full flex-col justify-between">
+                  <div className="space-y-2">
+                    <div className="h-2 w-24 rounded bg-white/30"></div>
+                    <div className="h-6 w-40 rounded bg-white/50"></div>
+                    <div className="h-2 w-32 rounded bg-white/30"></div>
+                  </div>
+                  <div className="flex justify-between">
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="chart-bar h-16 w-16 rounded-md bg-white/20" />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="mt-3 grid grid-cols-3 gap-1 md:mt-4 md:gap-2">
+              {['Faster Hiring', 'More Candidates', 'Higher ROI'].map((text, i) => (
+                <div
+                  key={i}
+                  className="metric-item rounded border border-gray-200/20 bg-white/80 p-1 text-center backdrop-blur-sm md:p-2 dark:border-white/5 dark:bg-white/10"
+                >
+                  <span className="text-[10px] font-medium text-[var(--primary-dark-blue)] md:text-xs dark:text-white">
+                    {text}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-gray-200 md:mt-4 md:h-1.5 dark:bg-white/10">
+              <div className="h-full w-[85%] bg-gradient-to-r from-[var(--primary-light-blue)] to-[var(--primary-gold)]" />
+            </div>
+            <div className="absolute -top-2 -left-2 rounded-full bg-gradient-to-r from-[var(--primary-gold)] to-[var(--primary-light-blue)] px-2 py-0.5 text-[10px] font-bold text-white shadow-lg md:-top-4 md:-left-4 md:px-3 md:py-1 md:text-xs">
+              PRO
+            </div>
+          </div>
         </div>
       </section>
     );
@@ -150,7 +225,6 @@ const Card = ({ initialData }: CardProps) => {
           </div>
 
           <div className="overflow-hidden rounded-xl border border-gray-200/70 shadow-xl md:shadow-2xl dark:border-white/20">
-            {/* Replace with fallback UI since we don't have the dashboard image */}
             <div className="h-52 w-full bg-gradient-to-br from-[var(--primary-light-blue)] to-[var(--primary-gold)] p-4">
               <div className="flex h-full flex-col justify-between">
                 <div className="space-y-2">

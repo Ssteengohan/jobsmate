@@ -305,6 +305,100 @@ export const FULL_HOME_PAGE_QUERY = groq`{
       order
     },
     isActive
+  },
+  "freeTrialCard": *[_type == "freeTrialCard" && isActive == true][0] {
+    _id,
+    title {
+      line1,
+      line2
+    },
+    buttons {
+      primaryButton {
+        text,
+        href,
+        ariaLabel
+      },
+      secondaryButton {
+        text,
+        href,
+        ariaLabel
+      }
+    },
+    stats {
+      timeSaved {
+        label,
+        percentage,
+        increase
+      },
+      hireQuality {
+        label,
+        percentage,
+        increase
+      }
+    },
+    metrics[] {
+      text
+    },
+    progressBar {
+      percentage
+    },
+    isActive
+  },
+  "pricingCard": *[_type == "pricingCard" && isActive == true][0] {
+    _id,
+    sectionHeader {
+      title {
+        beforeHighlight,
+        highlightedWord,
+        afterHighlight
+      },
+      subtitle
+    },
+    pricingTiers[] | order(displayOrder asc) {
+      name,
+      price {
+        amount,
+        period,
+        originalPrice,
+        discountBadge
+      },
+      description,
+      isHighlighted,
+      features[] {
+        text,
+        included,
+        highlight,
+        tooltip
+      },
+      ctaButton {
+        text,
+        url,
+        style,
+        openInNewTab,
+        ariaLabel
+      },
+      additionalInfo {
+        freeTrialDays,
+        setupFee,
+        minimumUsers,
+        maxUsers
+      },
+      displayOrder
+    },
+    sectionSettings {
+      backgroundColor,
+      showComparison,
+      showAnnualDiscount,
+      annualDiscountPercent
+    },
+    seoSettings {
+      sectionId,
+      trackingEvents[] {
+        eventName,
+        trigger
+      }
+    },
+    isActive
   }
 }`;
 
@@ -333,7 +427,104 @@ export const TIMELINE_QUERY = groq`*[_type == "timeline" && isActive == true][0]
     },
     videoUrl,
     showCodeBlock,
-    order
+    },
+  isActive
+}`;
+
+// Individual free trial card query
+export const FREE_TRIAL_CARD_QUERY = groq`*[_type == "freeTrialCard" && isActive == true][0] {
+  _id,
+  title {
+    line1,
+    line2
+  },
+  buttons {
+    primaryButton {
+      text,
+      href,
+      ariaLabel
+    },
+    secondaryButton {
+      text,
+      href,
+      ariaLabel
+    }
+  },
+  stats {
+    timeSaved {
+      label,
+      percentage,
+      increase
+    },
+    hireQuality {
+      label,
+      percentage,
+      increase
+    }
+  },
+  metrics[] {
+    text
+  },
+  progressBar {
+    percentage
+  },
+  isActive
+}`;
+
+// Individual pricing card query
+export const PRICING_CARD_QUERY = groq`*[_type == "pricingCard" && isActive == true][0] {
+  _id,
+  sectionHeader {
+    title {
+      beforeHighlight,
+      highlightedWord,
+      afterHighlight
+    },
+    subtitle
+  },
+  pricingTiers[] | order(displayOrder asc) {
+    name,
+    price {
+      amount,
+      period,
+      originalPrice,
+      discountBadge
+    },
+    description,
+    isHighlighted,
+    features[] {
+      text,
+      included,
+      highlight,
+      tooltip
+    },
+    ctaButton {
+      text,
+      url,
+      style,
+      openInNewTab,
+      ariaLabel
+    },
+    additionalInfo {
+      freeTrialDays,
+      setupFee,
+      minimumUsers,
+      maxUsers
+    },
+    displayOrder
+  },
+  sectionSettings {
+    backgroundColor,
+    showComparison,
+    showAnnualDiscount,
+    annualDiscountPercent
+  },
+  seoSettings {
+    sectionId,
+    trackingEvents[] {
+      eventName,
+      trigger
+    }
   },
   isActive
 }`;

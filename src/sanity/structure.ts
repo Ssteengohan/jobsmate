@@ -40,7 +40,21 @@ export const structure: StructureResolver = (S) =>
             .schemaType('timeline')
             .documentId('timeline')
         ),
+      S.listItem()
+        .title('Free Trial Card')
+        .child(
+          S.document()
+            .schemaType('freeTrialCard')
+            .documentId('freeTrialCard')
+        ),
+      S.listItem()
+        .title('Pricing Card')
+        .child(
+          S.document()
+            .schemaType('pricingCard')
+            .documentId('pricingCard')
+        ),
       ...S.documentTypeListItems().filter(
-        (listItem) => !['heroBanner', 'navbar', 'tabsSection', 'sliderSection', 'timeline'].includes(listItem.getId() as string)
+        (listItem) => !['heroBanner', 'navbar', 'tabsSection', 'sliderSection', 'timeline', 'freeTrialCard', 'pricingCard'].includes(listItem.getId() as string)
       ),
     ])

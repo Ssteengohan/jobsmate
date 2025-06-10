@@ -4,7 +4,9 @@ import { heroBanner } from './heroBanner'
 import { tabsSection } from './tabsSection'
 import { sliderSection } from './sliderSection'
 import { timeline } from './timeline'
+import { freeTrialCard } from './freeTrialCard'
+import { pricingCard } from './pricingCard'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [navbar, heroBanner, tabsSection, sliderSection, timeline],
+  types: [navbar, heroBanner, tabsSection, sliderSection, timeline, freeTrialCard, pricingCard],
 }
