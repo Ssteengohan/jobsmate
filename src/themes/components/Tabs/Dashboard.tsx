@@ -1,3 +1,4 @@
+'use client';
 import Image from 'next/image';
 import { HiOutlineHome } from 'react-icons/hi2';
 import { TbUsers } from 'react-icons/tb';

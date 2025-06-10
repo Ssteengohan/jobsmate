@@ -1,5 +1,3 @@
-'use client';
-
 import Navbar from '@/themes/components/Navbar/Navbar';
 import { SpotlightPreview } from '@/themes/components/HeroBanner/HeroBanner';
 import { TabsDemo } from '@/themes/components/Tabs/Tabs';
@@ -10,11 +8,61 @@ import PricingCard from '@/themes/components/PricingCard/PricingCard';
 import ShowCase from '@/themes/components/ShowCases/ShowCase';
 import Footer from '@/themes/components/Footer/Footer';
 import Card from '@/themes/components/Cards/Card';
+import { client } from '@/sanity/lib/client';
+import { FULL_HOME_PAGE_QUERY } from '@/sanity/lib/queries';
 
-export default function Home() {
+// Force dynamic rendering and disable all caching for immediate updates
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+// Fetch data on server for optimal performance
+async function getHomePageData() {
+  try {
+    const data = await client.fetch(
+      FULL_HOME_PAGE_QUERY,
+      {},
+      {
+        // Completely disable caching for instant updates
+        cache: 'no-store',
+        next: {
+          revalidate: 0, // No caching at all
+          tags: ['home-page'], // For future tag-based revalidation
+        },
+      },
+    );
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching home page data:', error);
+    return {
+      navbar: null,
+      heroBanner: null,
+      tabsSection: null,
+      sliderSection: null,
+      timeline: null,
+      freeTrialCard: null,
+      pricingCard: null,
+      footer: null,
+    };
+  }
+}
+
+export default async function Home() {
+  // Fetch data on server side for fastest possible loading
+  const {
+    navbar,
+    heroBanner,
+    tabsSection,
+    sliderSection,
+    timeline,
+    freeTrialCard,
+    pricingCard,
+    footer,
+  } = await getHomePageData();
+
   return (
     <main className="mx-auto min-h-screen overflow-hidden bg-gradient-to-b from-white via-[#f9f9f9] to-[var(--primary-gold)]/15 transition-colors duration-300 dark:bg-[var(--neutral-50)] dark:bg-none">
-      <Navbar />
+      <Navbar initialData={navbar} />
       <div className="relative z-20 container">
         <div className="absolute inset-0 z-0 bg-gradient-to-b from-transparent to-gray-50/30 transition-colors duration-300 dark:from-transparent dark:to-[var(--primary-dark)]/20" />
         <div className="absolute inset-y-0 left-[1%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]/80"></div>
@@ -37,24 +85,24 @@ export default function Home() {
           darkModeFill="rgba(142, 85, 255, 0.22)"
         />
 
-        <SpotlightPreview />
+        <SpotlightPreview initialData={heroBanner} />
       </div>
       <div className="relative z-10 container">
         <div className="absolute inset-y-0 left-[1%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]"></div>
         <div className="absolute inset-y-0 left-[99%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]"></div>
-        <TabsDemo />
+        <TabsDemo initialData={tabsSection} />
       </div>
       <div className="relative z-5 container">
         <div className="absolute inset-y-0 left-[1%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]/90"></div>
         <div className="absolute inset-y-0 left-[99%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]/90"></div>
-        <Slider />
+        <Slider initialData={sliderSection} />
 
-        <TimelineDemo />
+        <TimelineDemo initialData={timeline} />
         <ShowCase id="features" />
-        <Card />
-        <PricingCard />
+        <Card initialData={freeTrialCard} />
+        <PricingCard initialData={pricingCard} />
       </div>
-      <Footer />
+      <Footer initialData={footer} />
     </main>
   );
 }

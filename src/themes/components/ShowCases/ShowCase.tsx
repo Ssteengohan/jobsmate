@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useRef, useEffect, useState, lazy, Suspense } from 'react';
 import AnimatedHeading from '../AnimatedHeading';
 
@@ -204,7 +206,9 @@ const ShowCase: React.FC<ShowCaseProps> = ({ id }) => {
       {isClient && shouldLoadCases && (
         <Suspense
           fallback={
-            <div className="flex h-[800px] items-center sm:hidden justify-center">Loading showcase...</div>
+            <div className="flex h-[800px] items-center justify-center sm:hidden">
+              Loading showcase...
+            </div>
           }
         >
           <CaseOne />

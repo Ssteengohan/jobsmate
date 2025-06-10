@@ -1,3 +1,4 @@
+'use client';
 import Link from 'next/link';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import Balancer from 'react-wrap-balancer';

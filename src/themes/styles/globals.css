@@ -435,3 +435,15 @@ html, body, div {
   }
 }
 
+/* Text highlight override for gold color */
+.text-gold-highlight {
+  color: var(--primary-gold) !important;
+  background: transparent !important;
+  background-clip: unset !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: var(--primary-gold) !important;
+  font-weight: 700 !important;
+  position: relative;
+  z-index: 10;
+}
+
