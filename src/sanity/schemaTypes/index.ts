@@ -3,7 +3,8 @@ import { navbar } from './navbar'
 import { heroBanner } from './heroBanner'
 import { tabsSection } from './tabsSection'
 import { sliderSection } from './sliderSection'
+import { timeline } from './timeline'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [navbar, heroBanner, tabsSection, sliderSection],
+  types: [navbar, heroBanner, tabsSection, sliderSection, timeline],
 }

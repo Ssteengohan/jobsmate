@@ -5,7 +5,7 @@ import { TextGenerateEffect } from '../ui/text-generate-effect';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Image from 'next/image';
 import gsap from 'gsap';
-import useLenis from '@/themes/lib/lenis';
+import { useLenis } from '@/themes/lib/lenis';
 import { client } from '@/sanity/lib/client';
 import { SLIDER_SECTION_QUERY } from '@/sanity/lib/queries';
 

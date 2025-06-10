@@ -34,13 +34,19 @@ async function getHomePageData() {
     return data;
   } catch (error) {
     console.error('Error fetching home page data:', error);
-    return { navbar: null, heroBanner: null, tabsSection: null, sliderSection: null };
+    return {
+      navbar: null,
+      heroBanner: null,
+      tabsSection: null,
+      sliderSection: null,
+      timeline: null,
+    };
   }
 }
 
 export default async function Home() {
   // Fetch data on server side for fastest possible loading
-  const { navbar, heroBanner, tabsSection, sliderSection } = await getHomePageData();
+  const { navbar, heroBanner, tabsSection, sliderSection, timeline } = await getHomePageData();
 
   return (
     <main className="mx-auto min-h-screen overflow-hidden bg-gradient-to-b from-white via-[#f9f9f9] to-[var(--primary-gold)]/15 transition-colors duration-300 dark:bg-[var(--neutral-50)] dark:bg-none">
@@ -79,7 +85,7 @@ export default async function Home() {
         <div className="absolute inset-y-0 left-[99%] z-10 hidden w-[1px] bg-neutral-400 opacity-30 lg:block dark:bg-[var(--primary-gold)]/90"></div>
         <Slider initialData={sliderSection} />
 
-        <TimelineDemo />
+        <TimelineDemo initialData={timeline} />
         <ShowCase id="features" />
         <Card />
         <PricingCard />

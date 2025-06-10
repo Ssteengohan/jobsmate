@@ -277,7 +277,65 @@ export const FULL_HOME_PAGE_QUERY = groq`{
       backgroundOpacity
     },
     isEnabled
+  },
+  "timeline": *[_type == "timeline" && isActive == true][0] {
+    _id,
+    title,
+    subtitle,
+    items[] | order(order asc) {
+      title,
+      description,
+      emoji,
+      image {
+        asset->{
+          _id,
+          url
+        },
+        alt
+      },
+      video {
+        asset->{
+          _id,
+          url
+        },
+        alt
+      },
+      videoUrl,
+      showCodeBlock,
+      order
+    },
+    isActive
   }
+}`;
+
+// Individual timeline query
+export const TIMELINE_QUERY = groq`*[_type == "timeline" && isActive == true][0] {
+  _id,
+  title,
+  subtitle,
+  items[] | order(order asc) {
+    title,
+    description,
+    emoji,
+    image {
+      asset->{
+        _id,
+        url
+      },
+      alt
+    },
+    video {
+      asset->{
+        _id,
+        url
+      },
+      alt
+    },
+    videoUrl,
+    showCodeBlock,
+    order
+  },
+  isActive
 }`;
 
 // You can add more queries here as needed

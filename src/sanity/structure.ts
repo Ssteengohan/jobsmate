@@ -33,7 +33,14 @@ export const structure: StructureResolver = (S) =>
             .schemaType('sliderSection')
             .documentId('sliderSection')
         ),
+      S.listItem()
+        .title('Timeline')
+        .child(
+          S.document()
+            .schemaType('timeline')
+            .documentId('timeline')
+        ),
       ...S.documentTypeListItems().filter(
-        (listItem) => !['heroBanner', 'navbar', 'tabsSection', 'sliderSection'].includes(listItem.getId() as string)
+        (listItem) => !['heroBanner', 'navbar', 'tabsSection', 'sliderSection', 'timeline'].includes(listItem.getId() as string)
       ),
     ])
