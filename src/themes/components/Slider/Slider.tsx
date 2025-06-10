@@ -451,7 +451,7 @@ const Slider = ({ initialData }: SliderProps) => {
         </motion.div>
       </motion.section>
 
-      <div className="h-[250vh] w-full sm:h-[240vh]"></div>
+      <div className="h-[220vh] w-full sm:h-[240vh]"></div>
     </div>
   );
 };
