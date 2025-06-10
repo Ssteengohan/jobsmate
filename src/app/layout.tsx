@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Lexend } from 'next/font/google';
 import '@/themes/styles/globals.css';
-import { SmoothScrollProvider } from '@/themes/lib/lenis';
+import { ConditionalSmoothScrollProvider } from '@/themes/lib/lenis';
 import Script from 'next/script';
 
 const lexend = Lexend({
@@ -145,7 +145,7 @@ export default function RootLayout({
         <meta name="subject" content="Job Search and Career Opportunities" />
       </head>
       <body className={`${lexend.variable} bg-white antialiased dark:bg-[#202735]`}>
-        <SmoothScrollProvider>{children}</SmoothScrollProvider>
+        <ConditionalSmoothScrollProvider>{children}</ConditionalSmoothScrollProvider>
       </body>
     </html>
   );

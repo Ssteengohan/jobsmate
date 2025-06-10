@@ -4,6 +4,7 @@ import Lenis from 'lenis';
 import { useEffect, useRef, createContext, useState, useContext } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { usePathname } from 'next/navigation';
 
 // Add interface to extend Window type
 interface WindowWithLenis extends Window {
@@ -182,4 +183,18 @@ export function useLenis() {
   }, []);
 
   return lenisRef;
+}
+
+// Conditional provider that only applies smooth scrolling outside studio routes
+export function ConditionalSmoothScrollProvider({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const isStudioRoute = pathname?.startsWith('/studio');
+
+  // If we're on a studio route, render children without smooth scrolling
+  if (isStudioRoute) {
+    return <>{children}</>;
+  }
+
+  // Otherwise, apply smooth scrolling
+  return <SmoothScrollProvider>{children}</SmoothScrollProvider>;
 }
