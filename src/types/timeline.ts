@@ -24,6 +24,7 @@ export interface TimelineItem {
 export interface TimelineData {
   _id: string;
   title: string;
+  highlightedTitle?: string;
   subtitle?: string;
   items: TimelineItem[];
   isActive: boolean;

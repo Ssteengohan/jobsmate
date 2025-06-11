@@ -7,10 +7,18 @@ export const timeline = defineType({
   fields: [
     defineField({
       name: 'title',
-      title: 'Timeline Title',
+      title: 'Main Title',
       type: 'string',
-      description: 'Main title for the timeline section',
+      description: 'Main title for the timeline section (e.g., "A Tech Platform")',
       validation: (Rule) => Rule.required(),
+      placeholder: 'A Tech Platform',
+    }),
+    defineField({
+      name: 'highlightedTitle',
+      title: 'Highlighted Title',
+      type: 'string',
+      description: 'Highlighted part of the title with gradient styling (e.g., "Created to Save Time")',
+      placeholder: 'Created to Save Time',
     }),
     defineField({
       name: 'subtitle',

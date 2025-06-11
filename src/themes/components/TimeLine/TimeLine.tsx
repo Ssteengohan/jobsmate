@@ -303,21 +303,12 @@ export function TimelineDemo({ initialData }: TimelineDemoProps) {
 
   return (
     <div ref={containerRef} className="relative z-20 h-full w-full" id="timeline">
-      {/* Timeline Header */}
-      {/* {timelineData.title && (
-        <div className="mb-16 text-center">
-          <h2 className="text-4xl font-bold text-[var(--primary-dark-blue)] md:text-6xl dark:text-white">
-            {timelineData.title}
-          </h2>
-          {timelineData.subtitle && (
-            <p className="mx-auto mt-6 max-w-3xl text-lg text-gray-600 md:text-xl dark:text-gray-300">
-              {timelineData.subtitle}
-            </p>
-          )}
-        </div>
-      )} */}
-
-      <Timeline data={data} />
+      <Timeline
+        data={data}
+        title={timelineData.title}
+        highlightedTitle={timelineData.highlightedTitle}
+        subtitle={timelineData.subtitle}
+      />
     </div>
   );
 }

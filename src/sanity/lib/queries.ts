@@ -281,6 +281,7 @@ export const FULL_HOME_PAGE_QUERY = groq`{
   "timeline": *[_type == "timeline" && isActive == true][0] {
     _id,
     title,
+    highlightedTitle,
     subtitle,
     items[] | order(order asc) {
       title,
@@ -481,6 +482,7 @@ export const FULL_HOME_PAGE_QUERY = groq`{
 export const TIMELINE_QUERY = groq`*[_type == "timeline" && isActive == true][0] {
   _id,
   title,
+  highlightedTitle,
   subtitle,
   items[] | order(order asc) {
     title,
@@ -502,7 +504,8 @@ export const TIMELINE_QUERY = groq`*[_type == "timeline" && isActive == true][0]
     },
     videoUrl,
     showCodeBlock,
-    },
+    order
+  },
   isActive
 }`;
 
