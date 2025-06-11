@@ -102,6 +102,7 @@ export const Timeline = ({ data, title, highlightedTitle, subtitle }: TimelinePr
               {title && (
                 <span className="text-[var(--primary-dark-blue)] dark:text-[var(--primary-white)]">
                   {title}
+                  <br/>
                   {highlightedTitle ? ' ' : ''}
                 </span>
               )}
