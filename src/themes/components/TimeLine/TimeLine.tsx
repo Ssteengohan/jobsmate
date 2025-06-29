@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Timeline } from '../ui/timeline';
 import { CodeBlockDemo } from './VsCode';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { getVideoUrlWithFallback } from '@/lib/spaces';
 import { client } from '@/sanity/lib/client';
 import { TIMELINE_QUERY } from '@/sanity/lib/queries';
 import { urlFor } from '@/sanity/lib/image';
@@ -194,30 +195,22 @@ export function TimelineDemo({ initialData }: TimelineDemoProps) {
         <div className="flex h-96 items-center justify-center">
           <div className="text-center">
             <p className="mb-4 text-red-500">{error || 'Timeline data not found'}</p>
-            <p className="text-gray-500">Please check your Sanity configuration.</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+            >
+              Retry
+            </button>
           </div>
         </div>
       </div>
     );
   }
 
-  // Generate timeline data from Sanity
-  const data = timelineData.items.map((item, index) => {
-    const progress = progressTransforms[index] || firstItemProgress;
-    const yTransform = yTransforms[index] || yTransforms[0];
-    const scaleTransform = scaleTransforms[index] || scaleTransforms[0];
-    const blurTransform = blurTransforms[index] || blurTransforms[0];
-
-    // Debug: Log item data to see what we're receiving
-    console.log('Timeline item:', {
-      title: item.title,
-      hasImage: !!item.image?.asset?.url,
-      hasVideo: !!(item.video?.asset?.url || item.videoUrl),
-      showCodeBlock: item.showCodeBlock,
-    });
-
-    return {
-      title: item.title,
+  // Use Sanity data if available, otherwise fall back to hardcoded data
+  const data = timelineData?.timelineItems || [
+    {
+      title: 'Anti-cheat Monitor',
       content: (
         <div>
           <motion.p
@@ -227,13 +220,14 @@ export function TimelineDemo({ initialData }: TimelineDemoProps) {
               type: 'tween',
             }}
             style={{
-              opacity: progress,
-              y: yTransform,
+              opacity: firstItemProgress,
+              y: useTransform(firstItemProgress, [0, 1], [20, 0], { clamp: false }),
               willChange: 'opacity, transform',
             }}
             className="mb-8 text-xs font-normal text-[var(--primary-dark-blue)] md:text-lg dark:text-neutral-200"
           >
-            {item.emoji} {item.description}
+            🔍 Beyond our elite tech candidate pool, we rigorously screen every applicant with our
+            advanced Anti-cheat monitor, ensuring integrity and authenticity in your hiring process.
           </motion.p>
           <motion.div
             transition={{
@@ -241,74 +235,145 @@ export function TimelineDemo({ initialData }: TimelineDemoProps) {
               ease: 'linear',
             }}
             style={{
-              opacity: progress,
-              scale: scaleTransform,
-              filter: blurTransform,
+              opacity: firstItemProgress,
+              scale: useTransform(firstItemProgress, [0, 1], [0.95, 1], { clamp: false }),
+              filter: useTransform(
+                firstItemProgress,
+                [0, 0.5, 1],
+                ['blur(4px)', 'blur(1px)', 'blur(0px)'],
+              ),
               willChange: 'opacity, transform, filter',
             }}
-            className="flex h-full w-full flex-col gap-4 md:gap-8"
+            className="flex h-full w-full gap-4"
           >
-            {/* Render Image if available */}
-            {item.image?.asset?.url && (
-              <div className="w-full">
-                <Image
-                  src={urlFor(item.image).width(700).height(700).url()}
-                  alt={item.image?.alt || item.title}
-                  width={700}
-                  height={700}
-                  className="h-full w-full rounded-lg border-1 border-zinc-300 shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
-                  loading="eager"
-                  priority
-                />
-              </div>
-            )}
-
-            {/* Video and Code Block Container */}
-            {(item.video?.asset?.url || item.videoUrl || item.showCodeBlock) && (
-              <div
-                className={`flex h-full w-full ${(item.video?.asset?.url || item.videoUrl) && item.showCodeBlock ? 'flex-col-reverse gap-4 md:gap-12' : 'flex-col gap-4 md:gap-8'}`}
-              >
-                {/* Code Block */}
-                {item.showCodeBlock && (
-                  <div className="w-full max-w-full overflow-hidden">
-                    <CodeBlockDemo scrollProgress={progress} />
-                  </div>
-                )}
-
-                {/* Video */}
-                {(item.video?.asset?.url || item.videoUrl) && (
-                  <video
-                    ref={index === 0 ? videoRef : index === 1 ? videoRef2 : undefined}
-                    className="h-full w-full rounded-2xl border-1 border-zinc-300 object-cover object-top shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
-                    src={
-                      item.video?.asset?.url || item.videoUrl || '/anti-cheat.mp4' // Fallback video
-                    }
-                    muted
-                    loop
-                    autoPlay
-                    playsInline
-                    preload="metadata"
-                    controls={false}
-                  >
-                    Your browser does not support the video tag.
-                  </video>
-                )}
-              </div>
-            )}
+            <Image
+              src="/anti-cheat.png"
+              alt="startup template"
+              width={700}
+              height={700}
+              className="h-full w-full rounded-lg border-1 border-zinc-300 shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+              loading="eager"
+              priority
+            />
           </motion.div>
         </div>
       ),
-    };
-  });
+    },
+    {
+      title: 'Review live coding',
+      content: (
+        <div>
+          <motion.p
+            transition={{
+              duration: 0.05,
+              ease: 'linear',
+            }}
+            style={{
+              opacity: secondItemProgress,
+              y: useTransform(secondItemProgress, [0, 1], [10, 0], { clamp: false }),
+              willChange: 'opacity, transform',
+            }}
+            className="mt-4 mb-12 text-xs font-normal text-[var(--primary-dark-blue)] md:text-lg dark:text-neutral-200"
+          >
+            💻 Watch candidates code in real-time! We meticulously track every line of code,
+            providing you with deep insights into their problem-solving abilities and coding style.
+          </motion.p>
+          <motion.div
+            transition={{
+              duration: 0.05,
+              ease: 'linear',
+            }}
+            style={{
+              opacity: secondItemProgress,
+              scale: useTransform(secondItemProgress, [0, 1], [0.95, 1], { clamp: false }),
+              filter: useTransform(
+                secondItemProgress,
+                [0, 0.5, 1],
+                ['blur(3px)', 'blur(1px)', 'blur(0px)'],
+              ),
+              willChange: 'opacity, transform, filter',
+            }}
+            className="flex h-full w-full flex-col-reverse gap-4 md:gap-12"
+          >
+            <div className="w-full max-w-full overflow-hidden">
+              <CodeBlockDemo scrollProgress={secondItemProgress} />
+            </div>
+            <video
+              ref={videoRef}
+              className="h-full w-full rounded-2xl border-1 border-zinc-300 object-cover object-top shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+              src={getVideoUrlWithFallback('antiCheat')}
+              muted
+              loop
+              autoPlay
+              playsInline
+              preload="metadata"
+              controls={false}
+            >
+              Your browser does not support the video tag.
+            </video>
+          </motion.div>
+        </div>
+      ),
+    },
+    {
+      title: 'Review, message, reject',
+      content: (
+        <div>
+          <motion.p
+            transition={{
+              duration: 0.05,
+              ease: 'linear',
+            }}
+            style={{
+              opacity: thirdItemProgress,
+              y: useTransform(thirdItemProgress, [0, 1], [20, 0], { clamp: false }),
+              willChange: 'opacity, transform',
+            }}
+            className="mb-4 text-xs font-normal text-[var(--primary-dark-blue)] md:mb-8 md:text-lg dark:text-neutral-200"
+          >
+            ✅ Streamline your hiring workflow with our automated candidate management system. Boost
+            response rates and save time with one-click reviews, personalized messaging, and
+            professional rejections.
+          </motion.p>
+          <motion.div
+            transition={{
+              duration: 0.01,
+              ease: 'linear',
+            }}
+            style={{
+              opacity: thirdItemProgress,
+              scale: useTransform(thirdItemProgress, [0, 1], [0.95, 1], { clamp: false }),
+              filter: useTransform(
+                thirdItemProgress,
+                [0, 0.5, 1],
+                ['blur(4px)', 'blur(1px)', 'blur(0px)'],
+              ),
+              willChange: 'opacity, transform, filter',
+            }}
+            className="flex h-full w-full flex-col-reverse gap-4 md:gap-8"
+          >
+            <video
+              ref={videoRef2}
+              className="h-full w-full rounded-2xl border-1 border-zinc-300 object-cover object-top shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+              src={getVideoUrlWithFallback('review')}
+              muted
+              loop
+              autoPlay
+              playsInline
+              preload="metadata"
+              controls={false}
+            >
+              Your browser does not support the video tag.
+            </video>
+          </motion.div>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div ref={containerRef} className="relative z-20 h-full w-full" id="timeline">
-      <Timeline
-        data={data}
-        title={timelineData.title}
-        highlightedTitle={timelineData.highlightedTitle}
-        subtitle={timelineData.subtitle}
-      />
+      <Timeline data={data} />
     </div>
   );
 }
