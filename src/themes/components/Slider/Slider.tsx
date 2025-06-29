@@ -1,20 +1,65 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { TextGenerateEffect } from '../ui/text-generate-effect';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Image from 'next/image';
 import gsap from 'gsap';
-import useLenis from '@/themes/lib/lenis';
+import { useLenis } from '@/themes/lib/lenis';
+import { client } from '@/sanity/lib/client';
+import { SLIDER_SECTION_QUERY } from '@/sanity/lib/queries';
 
-const words = `<span class="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-dark-blue)] bg-clip-text text-transparent">Integration with</span> <span class="bg-gradient-to-r from-[var(--primary-gold)] to-[var(--primary-gold)]/80 bg-clip-text text-transparent font-bold">15+ ATS</span>`;
+interface SliderLogo {
+  image: {
+    asset: {
+      _id: string;
+      url: string;
+    } | null;
+    alt?: string;
+  } | null;
+  alt: string;
+  companyName: string;
+  order: number;
+  isVisible: boolean;
+}
 
-const TiltLogo = ({ src, alt }: { src: string; alt: string }) => {
+interface SliderSectionData {
+  _id: string;
+  title?: string;
+  headingText: string;
+  headingPrefix: string;
+  highlightText: string;
+  logos: SliderLogo[];
+  animationSettings: {
+    enableAnimations: boolean;
+    animationDuration: number;
+    enableTiltEffect: boolean;
+  };
+  backgroundSettings: {
+    showBackground: boolean;
+    backgroundOpacity: number;
+  };
+  isEnabled: boolean;
+}
+
+interface SliderProps {
+  initialData?: SliderSectionData | null;
+}
+
+const TiltLogo = ({
+  src,
+  alt,
+  enableTilt = true,
+}: {
+  src: string;
+  alt: string;
+  enableTilt?: boolean;
+}) => {
   const imageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const image = imageRef.current;
-    if (!image) return;
+    if (!image || !enableTilt) return;
 
     let bounds: DOMRect;
     let mouseX = 0;
@@ -58,7 +103,7 @@ const TiltLogo = ({ src, alt }: { src: string; alt: string }) => {
       image.removeEventListener('mousemove', mouseMove);
       image.removeEventListener('mouseleave', mouseLeave);
     };
-  }, []);
+  }, [enableTilt]);
 
   return (
     <div className="relative" style={{ perspective: '1200px' }}>
@@ -77,13 +122,95 @@ const TiltLogo = ({ src, alt }: { src: string; alt: string }) => {
   );
 };
 
-const Slider = () => {
+const Slider = ({ initialData }: SliderProps) => {
   const sliderRef = useRef(null);
   const containerRef = useRef(null);
   const textRef = useRef(null);
+  const [sliderData, setSliderData] = useState<SliderSectionData | null>(initialData || null);
+  const [loading, setLoading] = useState<boolean>(!initialData);
+  const [error, setError] = useState<string | null>(null);
 
   const lenis = useLenis();
 
+  // Real-time data fetching with aggressive polling for instant updates
+  useEffect(() => {
+    let isActive = true;
+
+    const fetchSliderData = async () => {
+      if (!isActive) return;
+
+      try {
+        const data = await client.fetch(
+          SLIDER_SECTION_QUERY,
+          { _timestamp: Date.now() }, // Cache busting parameter
+          {
+            cache: 'no-store',
+            next: { revalidate: 0 },
+          },
+        );
+
+        console.log('🔄 Real-time fetched slider data:', data);
+        console.log(
+          '📝 Generated heading:',
+          data?.title || data?.headingText || 'Integration with 15+ ATS',
+        );
+
+        if (isActive) {
+          if (!data) {
+            setError('No slider data found. Using default configuration.');
+            // Set fallback data to show something
+            setSliderData({
+              _id: 'fallback',
+              title: 'Integration with 15+ ATS',
+              headingText: 'Integration with 15+ ATS',
+              headingPrefix: 'Integration with',
+              highlightText: '15+ ATS',
+              logos: [],
+              animationSettings: {
+                enableAnimations: true,
+                animationDuration: 1000,
+                enableTiltEffect: true,
+              },
+              backgroundSettings: {
+                showBackground: true,
+                backgroundOpacity: 0.5,
+              },
+              isEnabled: true,
+            });
+          } else {
+            setSliderData(data);
+            setError(null);
+          }
+          setLoading(false);
+        }
+      } catch (err) {
+        if (isActive) {
+          const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+          setError(`Failed to load slider data: ${errorMessage}`);
+          console.error('Slider fetch error:', err);
+          setLoading(false);
+        }
+      }
+    };
+
+    // Initial fetch
+    fetchSliderData();
+
+    // Set up polling for real-time updates (every 1 second for super fast updates)
+    const intervalId = setInterval(fetchSliderData, 1000);
+
+    return () => {
+      isActive = false;
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, []); // Only run once, polling handles updates
+
+  // Only use Sanity data - no fallback defaults
+  const data = sliderData;
+
+  // All hooks must be called before any early returns
   useEffect(() => {
     if (!lenis.current) return;
 
@@ -106,68 +233,69 @@ const Slider = () => {
     offset: ['start end', 'end start'],
   });
 
-  const wordProgress = useTransform(scrollYProgress, [0.25, 0.35], [0, 1]);
-
+  const wordProgress = useTransform(scrollYProgress, [0.15, 0.35], [0, 1]);
   const firstRowAnimProgress = useTransform(scrollYProgress, [0.4, 0.55], [0, 1]);
-
-  const secondRowAnimProgress = useTransform(scrollYProgress, [0.6, 0.75], [0, 1]);
-
-  const scale = useTransform(scrollYProgress, [0.25, 0.35], [0.9, 1]);
-  const y = useTransform(scrollYProgress, [0.25, 0.35], [30, 0]);
+  const secondRowAnimProgress = useTransform(scrollYProgress, [0.5, 0.65], [0, 1]);
+  const scale = useTransform(scrollYProgress, [0.15, 0.28], [0.9, 1]);
+  const y = useTransform(scrollYProgress, [0.15, 0.28], [30, 0]);
 
   const combinedOpacity = useTransform(scrollYProgress, (latest) => {
-    if (latest < 0.2 || latest > 1) return 0;
+    if (latest < 0.12 || latest > 1) return 0;
     return 1;
   });
 
   const displayStyle = useTransform(scrollYProgress, (latest) => {
-    if (latest < 0.15 || latest > 1) return 'none';
+    if (latest < 0.12 || latest > 1) return 'none';
     return 'flex';
   });
 
+  // Additional useTransform for background opacity animation
+  const backgroundOpacity = useTransform(scrollYProgress, [0, 0.15, 0.5, 0.7], [0.6, 0.4, 0.2, 0]);
+
+  // Animation transforms - faster, compressed sequence
   const firstRowTrans0 = {
-    opacity: useTransform(firstRowAnimProgress, [0, 0.15], [0, 1]),
-    x: useTransform(firstRowAnimProgress, [0, 0.15], [-20, 0]),
-    filter: useTransform(firstRowAnimProgress, [0, 0.15], ['blur(8px)', 'blur(0px)']),
-    scale: useTransform(firstRowAnimProgress, [0, 0.15], [0.9, 1]),
+    opacity: useTransform(firstRowAnimProgress, [0, 0.4], [0, 1]),
+    x: useTransform(firstRowAnimProgress, [0, 0.4], [-20, 0]),
+    filter: useTransform(firstRowAnimProgress, [0, 0.4], ['blur(8px)', 'blur(0px)']),
+    scale: useTransform(firstRowAnimProgress, [0, 0.4], [0.9, 1]),
   };
   const firstRowTrans1 = {
-    opacity: useTransform(firstRowAnimProgress, [0.25, 0.4], [0, 1]),
-    x: useTransform(firstRowAnimProgress, [0.25, 0.4], [-20, 0]),
-    filter: useTransform(firstRowAnimProgress, [0.25, 0.4], ['blur(8px)', 'blur(0px)']),
-    scale: useTransform(firstRowAnimProgress, [0.25, 0.4], [0.9, 1]),
+    opacity: useTransform(firstRowAnimProgress, [0.3, 0.7], [0, 1]),
+    x: useTransform(firstRowAnimProgress, [0.3, 0.7], [-20, 0]),
+    filter: useTransform(firstRowAnimProgress, [0.3, 0.7], ['blur(8px)', 'blur(0px)']),
+    scale: useTransform(firstRowAnimProgress, [0.3, 0.7], [0.9, 1]),
   };
   const firstRowTrans2 = {
-    opacity: useTransform(firstRowAnimProgress, [0.5, 0.65], [0, 1]),
-    x: useTransform(firstRowAnimProgress, [0.5, 0.65], [-20, 0]),
-    filter: useTransform(firstRowAnimProgress, [0.5, 0.65], ['blur(8px)', 'blur(0px)']),
-    scale: useTransform(firstRowAnimProgress, [0.5, 0.65], [0.9, 1]),
+    opacity: useTransform(firstRowAnimProgress, [0.6, 1], [0, 1]),
+    x: useTransform(firstRowAnimProgress, [0.6, 1], [-20, 0]),
+    filter: useTransform(firstRowAnimProgress, [0.6, 1], ['blur(8px)', 'blur(0px)']),
+    scale: useTransform(firstRowAnimProgress, [0.6, 1], [0.9, 1]),
   };
   const firstRowTransforms = [firstRowTrans0, firstRowTrans1, firstRowTrans2];
 
   const secondRowTrans0 = {
-    opacity: useTransform(secondRowAnimProgress, [0, 0.15], [0, 1]),
-    x: useTransform(secondRowAnimProgress, [0, 0.15], [-20, 0]),
-    filter: useTransform(secondRowAnimProgress, [0, 0.15], ['blur(8px)', 'blur(0px)']),
-    scale: useTransform(secondRowAnimProgress, [0, 0.15], [0.9, 1]),
+    opacity: useTransform(secondRowAnimProgress, [0, 0.3], [0, 1]),
+    x: useTransform(secondRowAnimProgress, [0, 0.3], [-20, 0]),
+    filter: useTransform(secondRowAnimProgress, [0, 0.3], ['blur(8px)', 'blur(0px)']),
+    scale: useTransform(secondRowAnimProgress, [0, 0.3], [0.9, 1]),
   };
   const secondRowTrans1 = {
-    opacity: useTransform(secondRowAnimProgress, [0.25, 0.4], [0, 1]),
-    x: useTransform(secondRowAnimProgress, [0.25, 0.4], [-20, 0]),
-    filter: useTransform(secondRowAnimProgress, [0.25, 0.4], ['blur(8px)', 'blur(0px)']),
-    scale: useTransform(secondRowAnimProgress, [0.25, 0.4], [0.9, 1]),
+    opacity: useTransform(secondRowAnimProgress, [0.25, 0.55], [0, 1]),
+    x: useTransform(secondRowAnimProgress, [0.25, 0.55], [-20, 0]),
+    filter: useTransform(secondRowAnimProgress, [0.25, 0.55], ['blur(8px)', 'blur(0px)']),
+    scale: useTransform(secondRowAnimProgress, [0.25, 0.55], [0.9, 1]),
   };
   const secondRowTrans2 = {
-    opacity: useTransform(secondRowAnimProgress, [0.5, 0.65], [0, 1]),
-    x: useTransform(secondRowAnimProgress, [0.5, 0.65], [-20, 0]),
-    filter: useTransform(secondRowAnimProgress, [0.5, 0.65], ['blur(8px)', 'blur(0px)']),
-    scale: useTransform(secondRowAnimProgress, [0.5, 0.65], [0.9, 1]),
+    opacity: useTransform(secondRowAnimProgress, [0.5, 0.8], [0, 1]),
+    x: useTransform(secondRowAnimProgress, [0.5, 0.8], [-20, 0]),
+    filter: useTransform(secondRowAnimProgress, [0.5, 0.8], ['blur(8px)', 'blur(0px)']),
+    scale: useTransform(secondRowAnimProgress, [0.5, 0.8], [0.9, 1]),
   };
   const secondRowTrans3 = {
-    opacity: useTransform(secondRowAnimProgress, [0.75, 0.9], [0, 1]),
-    x: useTransform(secondRowAnimProgress, [0.75, 0.9], [-20, 0]),
-    filter: useTransform(secondRowAnimProgress, [0.75, 0.9], ['blur(8px)', 'blur(0px)']),
-    scale: useTransform(secondRowAnimProgress, [0.75, 0.9], [0.9, 1]),
+    opacity: useTransform(secondRowAnimProgress, [0.75, 1], [0, 1]),
+    x: useTransform(secondRowAnimProgress, [0.75, 1], [-20, 0]),
+    filter: useTransform(secondRowAnimProgress, [0.75, 1], ['blur(8px)', 'blur(0px)']),
+    scale: useTransform(secondRowAnimProgress, [0.75, 1], [0.9, 1]),
   };
 
   const mobileSecondRowTransforms = [secondRowTrans0, secondRowTrans1, secondRowTrans2];
@@ -177,6 +305,85 @@ const Slider = () => {
     secondRowTrans2,
     secondRowTrans3,
   ];
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="relative -top-0 -z-50 min-h-[90vh] w-full">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="animate-pulse text-center">
+            <div className="mb-4 h-8 w-64 rounded bg-gray-200 dark:bg-gray-700"></div>
+            <div className="grid grid-cols-3 gap-4">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="h-16 w-16 rounded bg-gray-200 dark:bg-gray-700"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render if no data or disabled
+  if (!data || (!data.isEnabled && sliderData)) {
+    return null;
+  }
+
+  // Show error state (continue with defaults)
+  if (error) {
+    console.warn('Slider error:', error);
+  }
+
+  // Generate heading with styling
+  const generateStyledHeading = () => {
+    // Return the plain title from Sanity - let TextGenerateEffect handle highlighting
+    const result = data.title || data.headingText || 'Integration with 15+ ATS';
+    console.log('Generated heading:', result, 'from data:', {
+      title: data.title,
+      headingText: data.headingText,
+    });
+    return result;
+  };
+
+  const words = generateStyledHeading();
+
+  const firstRow = (
+    <div className="mx-auto grid w-3/4 grid-cols-3 items-center justify-center gap-12 pt-12 dark:invert">
+      {firstRowTransforms.map((trans, i) => (
+        <motion.div
+          key={i + 1}
+          style={{
+            opacity: trans.opacity,
+            x: trans.x,
+            filter: trans.filter,
+            scale: trans.scale,
+          }}
+          className="pointer-events-auto"
+        >
+          <TiltLogo src={`/${i + 1}.svg`} alt={`ATS Integration ${i + 1}`} />
+        </motion.div>
+      ))}
+    </div>
+  );
+
+  const secondRow = (
+    <div className="mb-24 grid w-full grid-cols-4 items-center justify-center gap-12 px-16 dark:invert-100">
+      {desktopSecondRowTransforms.map((trans, i) => (
+        <motion.div
+          key={i + 4}
+          style={{
+            opacity: trans.opacity,
+            x: trans.x,
+            filter: trans.filter,
+            scale: trans.scale,
+          }}
+          className="pointer-events-auto"
+        >
+          <TiltLogo src={`/${i + 4}.svg`} alt={`ATS Integration ${i + 4}`} />
+        </motion.div>
+      ))}
+    </div>
+  );
 
   return (
     <div ref={containerRef} className="relative -top-0 -z-50 min-h-[90vh] w-full">
@@ -190,7 +397,7 @@ const Slider = () => {
       <motion.div
         className="absolute inset-0 -z-50 [background-image:radial-gradient(var(--primary-light-blue)_1.5px,transparent_1.5px)] [background-size:18px_18px] dark:[background-image:radial-gradient(var(--accent-purple)_1.3px,transparent_1.3px)]"
         style={{
-          opacity: useTransform(scrollYProgress, [0, 0.2, 0.6, 0.8], [0.6, 0.4, 0.2, 0]),
+          opacity: backgroundOpacity,
         }}
       />
 
@@ -208,7 +415,7 @@ const Slider = () => {
           style={{ scale, y }}
           className="container flex h-full w-full flex-col items-center justify-start"
         >
-          <div className="">
+          <div className="relative">
             <TextGenerateEffect
               words={words}
               html={true}
@@ -238,44 +445,13 @@ const Slider = () => {
           </div>
 
           <div className="hidden md:block">
-            <div className="mx-auto grid w-3/4 grid-cols-3 items-center justify-center gap-12 pt-12 dark:invert">
-              {firstRowTransforms.map((trans, i) => (
-                <motion.div
-                  key={i + 1}
-                  style={{
-                    opacity: trans.opacity,
-                    x: trans.x,
-                    filter: trans.filter,
-                    scale: trans.scale,
-                  }}
-                  className="pointer-events-auto"
-                >
-                  <TiltLogo src={`/${i + 1}.svg`} alt={`ATS Integration ${i + 1}`} />
-                </motion.div>
-              ))}
-            </div>
-
-            <div className="mb-24 grid w-full grid-cols-4 items-center justify-center gap-12 px-16 dark:invert-100">
-              {desktopSecondRowTransforms.map((trans, i) => (
-                <motion.div
-                  key={i + 4}
-                  style={{
-                    opacity: trans.opacity,
-                    x: trans.x,
-                    filter: trans.filter,
-                    scale: trans.scale,
-                  }}
-                  className="pointer-events-auto"
-                >
-                  <TiltLogo src={`/${i + 4}.svg`} alt={`ATS Integration ${i + 4}`} />
-                </motion.div>
-              ))}
-            </div>
+            {firstRow}
+            {secondRow}
           </div>
         </motion.div>
       </motion.section>
 
-      <div className="h-[250vh] w-full sm:h-[280vh]"></div>
+      <div className="h-[220vh] w-full sm:h-[240vh]"></div>
     </div>
   );
 };

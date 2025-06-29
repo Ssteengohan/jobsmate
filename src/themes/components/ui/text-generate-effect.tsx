@@ -126,46 +126,26 @@ export const TextGenerateEffect = ({
 
     return (
       <Tag ref={scope} className="text-[#05253c] dark:text-white" style={{ opacity: 1 }}>
-        <span
-          className="text-word"
-          style={{
-            opacity: 0,
-            transition: 'opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease',
-            transform: 'translateY(10px)',
-          }}
-        >
-          Integration
-        </span>{' '}
-        <span
-          className="text-word"
-          style={{
-            opacity: 0,
-            transition: 'opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease',
-            transform: 'translateY(10px)',
-          }}
-        >
-          with
-        </span>{' '}
-        <span
-          className="text-word text-[var(--primary-gold)]"
-          style={{
-            opacity: 0,
-            transition: 'opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease',
-            transform: 'translateY(10px)',
-          }}
-        >
-          15+
-        </span>{' '}
-        <span
-          className="text-word text-[var(--primary-gold)]"
-          style={{
-            opacity: 0,
-            transition: 'opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease',
-            transform: 'translateY(10px)',
-          }}
-        >
-          ATS
-        </span>
+        {wordsArray.map((word, index) => {
+          // Check if this word should be highlighted (contains digits or specific keywords)
+          const shouldHighlight = /\d+/.test(word) || ['ATS', 'ats'].includes(word);
+
+          return (
+            <span key={`${word}-${index}`}>
+              <span
+                className={`text-word ${shouldHighlight ? 'text-gold-highlight' : ''}`}
+                style={{
+                  opacity: 0,
+                  transition: 'opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease',
+                  transform: 'translateY(10px)',
+                }}
+              >
+                {word}
+              </span>
+              {index < wordsArray.length - 1 && ' '}
+            </span>
+          );
+        })}
       </Tag>
     );
   };

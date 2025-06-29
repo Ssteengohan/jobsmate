@@ -8,7 +8,14 @@ interface TimelineEntry {
   content: React.ReactNode;
 }
 
-export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
+interface TimelineProps {
+  data: TimelineEntry[];
+  title?: string;
+  highlightedTitle?: string;
+  subtitle?: string;
+}
+
+export const Timeline = ({ data, title, highlightedTitle, subtitle }: TimelineProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
@@ -89,21 +96,29 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
       ref={containerRef}
     >
       <div className="mx-auto max-w-7xl px-4 py-20 md:px-8 lg:px-10">
-        <h2 className="mb-4 max-w-4xl text-3xl font-bold transition-colors duration-300 md:text-5xl">
-          <Balancer>
-            <span className="text-[var(--primary-dark-blue)] dark:text-[var(--primary-white)]">
-              A Tech Platform{' '}
-            </span>
-            <span className="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-gold)] bg-clip-text text-transparent">
-              Created to Safe Time
-            </span>
-          </Balancer>
-        </h2>
-        <p className="max-w-lg text-sm text-neutral-700 transition-colors duration-300 md:text-base dark:text-neutral-300">
-          Jobsmate seamlessly connects with your ATS (Applicant Tracking System) to streamline your
-          hiring workflow. Whether you&apos;re harvesting candidate data or posting new jobs, we
-          ensure you only spend time on what matters most: interviewing the right candidates.
-        </p>
+        {(title || highlightedTitle) && (
+          <h2 className="mb-4 max-w-4xl text-3xl font-bold transition-colors duration-300 md:text-5xl">
+            <Balancer>
+              {title && (
+                <span className="text-[var(--primary-dark-blue)] dark:text-[var(--primary-white)]">
+                  {title}
+                  <br/>
+                  {highlightedTitle ? ' ' : ''}
+                </span>
+              )}
+              {highlightedTitle && (
+                <span className="bg-gradient-to-r from-[var(--primary-light-blue)] via-[var(--primary-medium-blue)] to-[var(--primary-gold)] bg-clip-text text-transparent">
+                  {highlightedTitle}
+                </span>
+              )}
+            </Balancer>
+          </h2>
+        )}
+        {subtitle && (
+          <p className="max-w-lg text-sm text-neutral-700 transition-colors duration-300 md:text-base dark:text-neutral-300">
+            {subtitle}
+          </p>
+        )}
       </div>
 
       <div ref={ref} className="relative mx-auto flex max-w-7xl flex-col pb-20">
