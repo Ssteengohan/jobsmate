@@ -423,7 +423,7 @@ const Navbar = ({ initialData }: NavbarProps) => {
                 height={40}
                 className="h-18 w-18 transition-opacity duration-300"
               />
-              <span className="text-3xl text-black transition-colors duration-300 dark:text-[var(--primary-white)]">
+              <span className="sm:text-3xl text-black transition-colors duration-300 dark:text-[var(--primary-white)]">
                 Jobsmate
               </span>
             </Link>
@@ -468,7 +468,7 @@ const Navbar = ({ initialData }: NavbarProps) => {
                   className="h-18 w-18 transition-opacity duration-300"
                 />
               )}
-              <span className="text-3xl text-black transition-colors duration-300 dark:text-[var(--primary-white)]">
+              <span className="text-2xl sm:text-3xl text-black transition-colors duration-300 dark:text-[var(--primary-white)]">
                 {navbarData.logoText}
               </span>
             </Link>
