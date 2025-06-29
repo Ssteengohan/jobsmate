@@ -39,15 +39,3 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# Large cache files and build artifacts
-.next/cache/
-.next/static/chunks/
-.next/static/webpack/
-*.pack
-*.pack.gz
-
-# Temporary video files
-public/optimized-*.mp4
-public/optimized-*.webm
-.idea/

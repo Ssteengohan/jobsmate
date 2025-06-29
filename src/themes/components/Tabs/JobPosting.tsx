@@ -1,7 +1,6 @@
 'use client';
 import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { getVideoUrlWithFallback } from '@/lib/spaces';
 
 const JobPosting = () => {
   const desktopVideoRef = useRef<HTMLVideoElement>(null);
@@ -33,7 +32,7 @@ const JobPosting = () => {
         <video
           ref={desktopVideoRef}
           className="h-full w-full rounded-2xl object-cover object-top max-sm:hidden"
-          src={getVideoUrlWithFallback('jobpostDesktop')}
+          src="/CleanShot 2025-04-04 at 18.37.34.mp4"
           muted
           loop
           playsInline
@@ -55,7 +54,7 @@ const JobPosting = () => {
         <video
           ref={mobileVideoRef}
           className="h-full w-full rounded-2xl object-cover object-top sm:hidden"
-          src={getVideoUrlWithFallback('jobpostMobile')}
+          src="/jobpost-mobile.mp4"
           muted
           loop
           playsInline
