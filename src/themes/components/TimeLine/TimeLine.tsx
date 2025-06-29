@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { Timeline } from '../ui/timeline';
 import { CodeBlockDemo } from './VsCode';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { getVideoUrlWithFallback } from '@/lib/spaces';
 
 export function TimelineDemo() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -139,7 +140,7 @@ export function TimelineDemo() {
             <video
               ref={videoRef}
               className="h-full w-full rounded-2xl border-1 border-zinc-300 object-cover object-top shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
-              src="/anti-cheat.mp4"
+              src={getVideoUrlWithFallback('antiCheat')}
               muted
               loop
               autoPlay
@@ -193,7 +194,7 @@ export function TimelineDemo() {
             <video
               ref={videoRef2}
               className="h-full w-full rounded-2xl border-1 border-zinc-300 object-cover object-top shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
-              src="/review.mp4"
+              src={getVideoUrlWithFallback('review')}
               muted
               loop
               autoPlay
